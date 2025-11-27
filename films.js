@@ -5,13 +5,13 @@ const filmsData = [
         "name": "Velvia 50",
         "img": "img/fujifilm-velvia-50-50.jpg",
         "iso": 50,
-        "type": "Color Negative",
+        "type": "Slide",
         "formats": [
             "120",
             "35mm",
             "Sheet"
         ],
-        "process": "C-41",
+        "process": "E-6",
         "shortDesc": "Extrem gesättigter Diafilm für Landschaft und Natur. Maximale Farbdichte und Detailtreue bei idealen Lichtbedingungen.",
         "specs": {
             "grain": "Feinkorn",
@@ -26,8 +26,9 @@ const filmsData = [
             "Travel"
         ],
         "keywords": [
-            "Farbe",
-            "Color",
+            "Dia",
+            "Slide",
+            "E6",
             "Feinkorn",
             "Präzise",
             "Premium",
@@ -123,7 +124,7 @@ const filmsData = [
         },
         "tips": {
             "exposure": "Markantes, grobkörnigeres Korn. Hoher Mikrokontrast. Typischer Zeitungs-Reportagelook: rau, direkt und sehr ausdrucksstark.",
-            "scanning": "Kontrast oft etwas hoch → flacher scannen und Kontrast in der Nachbearbeitung gezielt setzen. Korn als Gestaltungselement beibehalten.",
+            "scanning": "Kontrast oft etwas hoch → flacher scannen und Kontrast in der Nachbearbeitungå gezielt setzen. Korn als Gestaltungselement beibehalten.",
             "dev": "Sehr vielseitig: D-76 für klassischen Look, Rodinal für ausgeprägtes Korn, HC-110 für etwas mehr Kontrast. Push-Entwicklung funktioniert hervorragend."
         }
     },
