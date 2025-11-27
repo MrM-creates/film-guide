@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Film Stock Guide</title>
-    <!-- HIER EINFÜGEN: START -->
-    <link rel="apple-touch-icon" href="icon.png">
-    <link rel="icon" type="image/png" href="icon.png">
+
+    <!-- App Icon für iPhone/Android -->
+    <!-- Das ?v=2 zwingt das Handy, das Icon neu zu laden -->
+    <link rel="apple-touch-icon" href="icon.png?v=2">
+    <link rel="icon" type="image/png" href="icon.png?v=2">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<!-- HIER EINFÜGEN: ENDE -->
-   
-   <style>
+
+    <style>
         :root {
             --bg: #121212;
             --surface: #1e1e1e;
@@ -28,6 +29,9 @@
             color: var(--text);
             margin: 0;
             padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         header {
@@ -39,7 +43,7 @@
         }
         h1 { margin: 0; font-size: 1.5rem; color: var(--primary); letter-spacing: 1px; }
 
-        .controls { padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .controls { padding: 20px; max-width: 1200px; margin: 0 auto; width: 100%; box-sizing: border-box; }
         
         .search-box {
             width: 100%; padding: 16px; border-radius: 8px; border: 1px solid #444;
@@ -62,7 +66,7 @@
 
         .grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px; padding: 0 20px 40px 20px; max-width: 1200px; margin: 0 auto;
+            gap: 20px; padding: 0 20px 40px 20px; max-width: 1200px; margin: 0 auto; width: 100%; box-sizing: border-box;
         }
 
         .card {
@@ -72,37 +76,32 @@
         }
         .card:hover { transform: translateY(-4px); border-color: var(--primary); }
 
-        /* --- NEU: PACKSHOT STYLE (Kleiner & Hochwertiger) --- */
+        /* PACKSHOT STYLE (Bilder) */
         .card-img-container {
             width: 100%;
-            height: 140px; /* Feste Höhe, aber nicht zu riesig */
-            background: transparent; /* Kein harter schwarzer Kasten mehr */
+            height: 150px;           
+            background: transparent; 
             margin-bottom: 15px;
             display: flex;
-            align-items: center;     /* Vertikal zentrieren */
-            justify-content: center; /* Horizontal zentrieren */
-            overflow: visible;       /* Schatten dürfen rausragen */
+            align-items: center;     
+            justify-content: center; 
+            overflow: visible;      
         }
 
         .card-img {
-            max-width: 100%;    /* Darf nicht breiter als Container sein */
-            max-height: 100%;   /* Darf nicht höher als Container sein */
-            width: auto;        /* WICHTIG: Verhindert das Strecken */
-            height: auto;       /* Behält Seitenverhältnis bei */
-            object-fit: contain; /* Zeigt das ganze Bild ohne Beschnitt */
-            border-radius: 4px;
-            /* Ein sanfter Schatten lässt die Packung "schweben" -> sieht edel aus */
-            box-shadow: 0 5px 15px rgba(0,0,0,0.4); 
-            transform: scale(1);
-            transition: transform 0.2s;
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;             
+            height: auto;
+            object-fit: contain;     
+            border-radius: 3px;      
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5); 
+            transition: transform 0.2s ease;
         }
 
-        /* Kleiner Zoom-Effekt beim Hover über die Karte */
         .card:hover .card-img {
-            transform: scale(1.05) translateY(-2px);
+            transform: scale(1.05) translateY(-3px);
         }
-        
-        .card:hover .card-img { opacity: 1; }
 
         .card-top { display: flex; justify-content: space-between; align-items: start; margin-bottom: 5px; }
         .card-brand { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
@@ -142,6 +141,21 @@
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
         .info-item label { display: block; font-size: 0.8rem; color: #777; }
         .info-item span { font-size: 1rem; color: #eee; }
+
+        /* FOOTER */
+        footer {
+            margin-top: auto; /* Drückt Footer nach unten */
+            padding-top: 40px;
+            border-top: 1px solid #333;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            padding-bottom: 40px;
+            background: var(--bg);
+        }
+        footer a { color: var(--text-secondary); text-decoration: none; border-bottom: 1px solid #555; }
+        footer a:hover { color: var(--primary); border-color: var(--primary); }
+        .disclaimer { margin-top: 10px; font-size: 0.7rem; opacity: 0.6; line-height: 1.4; }
     </style>
 </head>
 <body>
@@ -175,13 +189,13 @@
         </div>
     </div>
 
-    <!-- Filter Gruppe 2: Eigenschaften (Angepasst an deine Notion Begriffe) -->
+    <!-- Filter Gruppe 2: Eigenschaften (Exakt wie in Notion) -->
     <div class="filter-section">
         <span class="filter-label">Eigenschaften</span>
         <div class="filter-row">
             <button class="chip" onclick="setFilter('all', this, 'spec')">Alle</button>
             
-            <!-- Korn (Begriffe: Feinkorn, Mittel, Klassisch, Grob) -->
+            <!-- Korn -->
             <button class="chip" onclick="setFilter('Feinkorn', this, 'spec')">Feinkorn</button>
             <button class="chip" onclick="setFilter('Mittel', this, 'spec')">Korn: Mittel</button>
             <button class="chip" onclick="setFilter('Klassisch', this, 'spec')">Klassisch</button>
@@ -190,7 +204,7 @@
             <!-- Trenner -->
             <div style="width:1px; background:#333; margin:0 5px;"></div>
 
-            <!-- Budget (Begriffe: Budget, Medium, Premium) -->
+            <!-- Budget -->
             <button class="chip" onclick="setFilter('Budget', this, 'spec')">Budget</button>
             <button class="chip" onclick="setFilter('Medium', this, 'spec')">Preis: Mittel</button>
             <button class="chip" onclick="setFilter('Premium', this, 'spec')">Premium</button>
@@ -200,6 +214,19 @@
 
 <div class="grid" id="grid"></div>
 
+<!-- FOOTER (Variante A) -->
+<footer>
+    <p>
+        Made with 🎞️ & Code by <strong>MrM</strong> | 
+        <a href="mailto:deine-email@example.com">Feedback</a>
+    </p>
+    <p class="disclaimer">
+        Alle Angaben basieren auf Erfahrungswerten und sind ohne Gewähr.<br>
+        Entwicklung & Belichtung auf eigene Gefahr.
+    </p>
+</footer>
+
+<!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
     <div class="modal-content" onclick="event.stopPropagation()">
         <button class="close-btn" onclick="closeModal(null)">&times;</button>
@@ -231,9 +258,9 @@
                 });
             }
 
-            // 2. Intelligente Synonyme (Mapping für Suche)
+            // 2. Intelligente Synonyme (Mapping)
             
-            // Wenn Korn = "Klassisch" oder "Grob" -> Suche nach "Grain" oder "Korn" findet das
+            // Korn Synonyme
             if (film.specs.grain === "Klassisch" || film.specs.grain === "Grob") {
                 film.keywords.push("Grain", "Korn", "Stark");
             }
@@ -276,7 +303,7 @@
             const highlightClass = (val) => (val === activeFilter) ? 'highlight' : '';
 
             card.innerHTML = `
-                <!-- BILD -->
+                <!-- BILD (Packshot Style) -->
                 <div class="card-img-container">
                     <img src="${film.img}" 
                          alt="${film.name}" 
