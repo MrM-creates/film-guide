@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Film Guide</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Film Guide</h1>
+    <p>Eine kleine Datenbank für analoge Filme – Eigenschaften, Look und Einsatzgebiete.</p>
+  </header>
+
+  <section id="controls">
+    <label for="searchInput">Suche nach Film, ISO, Marke oder Einsatzgebiet:</label>
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="z.B. Portra, 400, Portrait, Low Light..."
+    />
+  </section>
+
+  <main>
+    <section id="filmListSection">
+      <h2>Filme</h2>
+      <div id="filmList">
+        <!-- Liste der Filme wird hier per JavaScript eingefügt -->
+      </div>
+    </section>
+
+    <section id="filmDetailSection">
+      <h2>Details</h2>
+      <div id="filmDetail">
+        <p>Bitte einen Film in der Liste auswählen.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Analoge Film-Referenz – Work in Progress.</p>
+  </footer>
+
+  <script>
+    // --- Datenbank der Filme ---
+    const films = [
+      {
+        id: "portra400",
+        name: "Kodak Portra 400",
+        brand: "Kodak",
+        iso: 400,
+        type: "Farbnegativ",
+        formats: ["35mm", "120"],
+        grain: "fein bis mittel",
+        contrast: "mittel",
+        colors: "leicht warm, sehr gute Hauttöne, eher weiche Pastellfarben bei Überbelichtung",
+        dynamicRange: "sehr groß, lässt sich gut +1 bis +2 Blenden überbelichten",
+        description:
+          "Moderner Allround-Farbfilm mit sehr gutem Dynamikumfang, weichen Farben und hervorragenden Hauttönen. Ideal für Portraits und Reportage, aber auch für Reisefotografie.",
+        recommendedUses: [
+          "Portrait",
+          "Street",
+          "Reise",
+          "Available Light",
+          "Outdoor (gemischtes Licht)"
+        ],
+        tips: [
+          "Lässt sich sehr gut bei ISO 200 oder 320 belichten (+1 bis +2 EV) für noch weichere, pastellige Farben.",
+          "Unterbelichtung vermeiden – wird schnell matschig und kontrastarm.",
+          "Ideal, wenn du einen 'sauberen' modernen Look willst."
+        ]
+      },
+      {
+        id: "ektar100",
+        name: "Kodak Ektar 100",
+        brand: "Kodak",
+        iso: 100,
+        type: "Farbnegativ",
+        formats: ["35mm", "120"],
+        grain: "sehr fein",
+        contrast: "hoch",
+        colors: "starke, gesättigte Farben, eher kühl, sehr knackige Blautöne und Grüntöne",
+        dynamicRange: "gut, aber weniger gnädig als Portra bei Fehlbelichtung",
+        description:
+          "Sehr feinkörniger Farbfilm mit hohem Kontrast und stark gesättigten Farben. Ideal für Landschaft, Architektur und Szenen mit viel Licht.",
+        recommendedUses: [
+          "Landschaft",
+          "Architektur",
+          "Reise bei Tageslicht",
+          "Still Life"
+        ],
+        tips: [
+          "Am besten bei gutem Licht einsetzen – nicht ideal für Low Light.",
+          "Hauttöne können schnell hart und zu bunt wirken, daher Portrait nur mit Vorsicht.",
+          "Sorgfältiges Belichten – er verzeiht Unterbelichtung weniger."
+        ]
+      },
+      {
+        id: "hp5",
+        name: "Ilford HP5 Plus 400",
+        brand: "Ilford",
+        iso: 400,
+        type: "Schwarzweiß",
+        formats: ["35mm", "120"],
+        grain: "mittel",
+        contrast: "mittel",
+        colors: "n/a (Schwarzweiß)",
+        dynamicRange:
+          "sehr flexibel, lässt sich gut pushen (800, 1600 und darüber) mit deutlicherem Korn und mehr Kontrast",
+        description:
+          "Klassischer Schwarzweiß-Film mit flexiblem Belichtungsspielraum und angenehmem Korn. Ein echter Allrounder für Street, Reportage und Portrait.",
+        recommendedUses: [
+          "Street",
+          "Reportage",
+          "Portrait",
+          "Low Light (mit Push)",
+          "Dokumentarisch"
+        ],
+        tips: [
+          "Lässt sich gut auf 800 oder 1600 pushen – ideal für Low-Light-Situationen.",
+          "Charaktervolles Korn, aber nicht extrem grob.",
+          "Sehr vielseitig – guter Standard-SW-Film, wenn du dich nicht festlegen magst."
+        ]
+      }
+    ];
+
+    // --- DOM-Elemente holen ---
+    const filmListEl = document.getElementById("filmList");
+    const filmDetailEl = document.getElementById("filmDetail");
+    const searchInputEl = document.getElementById("searchInput");
+
+    // --- Film-Liste rendern ---
+    function renderFilmList(list) {
+      filmListEl.innerHTML = "";
+
+      if (!list.length) {
+        filmListEl.innerHTML = "<p>Keine Filme gefunden.</p>";
+        return;
+      }
+
+      list.forEach((film) => {
+        const item = document.createElement("div");
+        item.className = "film-item";
+        item.dataset.id = film.id;
+        item.innerHTML = `
+          <strong>${film.name}</strong><br />
+          <span>${film.brand} · ISO ${film.iso} · ${film.type}</span>
+        `;
+        item.addEventListener("click", () => {
+          selectFilm(film.id, list);
+        });
+        filmListEl.appendChild(item);
+      });
+    }
+
+    // --- Film-Details anzeigen ---
+    function renderFilmDetail(film) {
+      filmDetailEl.innerHTML = `
+        <h3>${film.name}</h3>
+        <div class="meta-row"><strong>Marke:</strong> ${film.brand}</div>
+        <div class="meta-row"><strong>Typ:</strong> ${film.type}</div>
+        <div class="meta-row"><strong>ISO:</strong> ${film.iso}</div>
+        <div class="meta-row"><strong>Formate:</strong> ${film.formats.join(", ")}</div>
+        <div class="meta-row"><strong>Grain:</strong> ${film.grain}</div>
+        <div class="meta-row"><strong>Kontrast:</strong> ${film.contrast}</div>
+        <div class="meta-row"><strong>Farben/Look:</strong> ${film.colors}</div>
+        <div class="meta-row"><strong>Dynamikumfang:</strong> ${film.dynamicRange}</div>
+
+        <h4>Beschreibung</h4>
+        <p>${film.description}</p>
+
+        <h4>Empfohlene Einsatzgebiete</h4>
+        <div class="tag-list">
+          ${(film.recommendedUses || [])
+            .map((use) => `<span class="tag">${use}</span>`)
+            .join("")}
+        </div>
+
+        <h4>Tipps</h4>
+        <ul>
+          ${(film.tips || []).map((tip) => `<li>${tip}</li>`).join("")}
+        </ul>
+      `;
+    }
+
+    // --- Film auswählen ---
+    function selectFilm(id, currentList = films) {
+      const film = currentList.find((f) => f.id === id);
+      if (!film) return;
+
+      const items = filmListEl.querySelectorAll(".film-item");
+      items.forEach((item) => {
+        item.classList.toggle("active", item.dataset.id === id);
+      });
+
+      renderFilmDetail(film);
+    }
+
+    // --- Filter anwenden ---
+    function applyFilter() {
+      const q = searchInputEl.value.trim().toLowerCase();
+
+      if (!q) {
+        renderFilmList(films);
+        selectFilm(films[0].id, films);
+        return;
+      }
+
+      const filtered = films.filter((film) => {
+        const haystack = [
+          film.name,
+          film.brand,
+          film.type,
+          String(film.iso),
+          film.grain,
+          film.contrast,
+          film.colors,
+          film.dynamicRange,
+          film.description,
+          ...(film.recommendedUses || []),
+          ...(film.tips || [])
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+
+        return haystack.includes(q);
+      });
+
+      renderFilmList(filtered);
+
+      if (filtered.length === 1) {
+        selectFilm(filtered[0].id, filtered);
+      } else {
+        filmDetailEl.innerHTML = "<p>Bitte einen Film in der Liste auswählen.</p>";
+      }
+    }
+
+    // Suche reagieren lassen
+    if (searchInputEl) {
+      searchInputEl.addEventListener("input", applyFilter);
+    }
+
+    // Initial: komplette Liste + erster Film
+    renderFilmList(films);
+    if (films.length > 0) {
+      selectFilm(films[0].id, films);
+    }
+  </script>
+</body>
+</html>

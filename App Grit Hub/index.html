@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Film Stock Guide</title>
+    <!-- HIER EINFÜGEN: START -->
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="icon" type="image/png" href="icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- HIER EINFÜGEN: ENDE -->
+   
+   <style>
+        :root {
+            --bg: #121212;
+            --surface: #1e1e1e;
+            --surface-hover: #2c2c2c;
+            --primary: #f5c518;
+            --text: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --tag-bg: #2a2a2a;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: var(--surface);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #333;
+            position: sticky; top: 0; z-index: 100;
+        }
+        h1 { margin: 0; font-size: 1.5rem; color: var(--primary); letter-spacing: 1px; }
+
+        .controls { padding: 20px; max-width: 1200px; margin: 0 auto; }
+        
+        .search-box {
+            width: 100%; padding: 16px; border-radius: 8px; border: 1px solid #444;
+            background: var(--surface); color: white; font-size: 16px; box-sizing: border-box;
+        }
+        .search-box:focus { outline: 2px solid var(--primary); border-color: transparent; }
+
+        .filter-section { margin-top: 15px; margin-bottom: 15px; }
+        .filter-label { font-size: 0.75rem; color: #777; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: block; }
+        
+        .filter-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+        .filter-row::-webkit-scrollbar { display: none; }
+
+        .chip {
+            background: var(--surface); border: 1px solid #444; color: var(--text-secondary);
+            padding: 6px 14px; border-radius: 50px; cursor: pointer; white-space: nowrap; font-size: 0.85rem; transition: all 0.2s;
+        }
+        .chip:hover { border-color: #777; color: #fff; }
+        .chip.active { background: var(--primary); color: #000; border-color: var(--primary); font-weight: bold; }
+
+        .grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px; padding: 0 20px 40px 20px; max-width: 1200px; margin: 0 auto;
+        }
+
+        .card {
+            background: var(--surface); border-radius: 12px; padding: 15px; border: 1px solid #333;
+            cursor: pointer; transition: transform 0.2s, border-color 0.2s;
+            display: flex; flex-direction: column;
+        }
+        .card:hover { transform: translateY(-4px); border-color: var(--primary); }
+
+        /* --- NEU: PACKSHOT STYLE (Kleiner & Hochwertiger) --- */
+        .card-img-container {
+            width: 100%;
+            height: 140px; /* Feste Höhe, aber nicht zu riesig */
+            background: transparent; /* Kein harter schwarzer Kasten mehr */
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;     /* Vertikal zentrieren */
+            justify-content: center; /* Horizontal zentrieren */
+            overflow: visible;       /* Schatten dürfen rausragen */
+        }
+
+        .card-img {
+            max-width: 100%;    /* Darf nicht breiter als Container sein */
+            max-height: 100%;   /* Darf nicht höher als Container sein */
+            width: auto;        /* WICHTIG: Verhindert das Strecken */
+            height: auto;       /* Behält Seitenverhältnis bei */
+            object-fit: contain; /* Zeigt das ganze Bild ohne Beschnitt */
+            border-radius: 4px;
+            /* Ein sanfter Schatten lässt die Packung "schweben" -> sieht edel aus */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4); 
+            transform: scale(1);
+            transition: transform 0.2s;
+        }
+
+        /* Kleiner Zoom-Effekt beim Hover über die Karte */
+        .card:hover .card-img {
+            transform: scale(1.05) translateY(-2px);
+        }
+        
+        .card:hover .card-img { opacity: 1; }
+
+        .card-top { display: flex; justify-content: space-between; align-items: start; margin-bottom: 5px; }
+        .card-brand { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
+        .card-name { font-size: 1.3rem; font-weight: 700; color: #fff; margin: 0 0 5px 0; }
+        .card-short-desc { font-size: 0.9rem; color: #ccc; margin-bottom: 15px; line-height: 1.4; flex-grow: 1; }
+
+        .spec-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
+        .spec-tag { 
+            font-size: 0.75rem; background: var(--tag-bg); padding: 3px 8px; border-radius: 4px; color: #aaa; border: 1px solid transparent;
+        }
+        .spec-tag.highlight { color: var(--primary); border-color: #f5c51855; }
+
+        .badge { font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; background: #333; color: #ddd; }
+        .badge-iso { background: var(--primary); color: #000; }
+        .badge-bw { background: #eee; color: #000; }
+        .badge-slide { background: #5fafff; color: #000; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(5px);
+            display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; box-sizing: border-box;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-content {
+            background: var(--surface); width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto;
+            border-radius: 16px; border: 1px solid #444; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        .close-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; color: #fff; font-size: 28px; cursor: pointer; z-index: 10; }
+        .modal-header { padding: 30px 30px 20px 30px; border-bottom: 1px solid #333; }
+        .modal-body { padding: 30px; }
+        
+        .pro-tip-box {
+            background: rgba(245, 197, 24, 0.15); border-left: 4px solid var(--primary);
+            padding: 15px; border-radius: 0 8px 8px 0; margin: 20px 0;
+        }
+        .section-title { color: var(--primary); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 25px; margin-bottom: 10px; font-weight: bold; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .info-item label { display: block; font-size: 0.8rem; color: #777; }
+        .info-item span { font-size: 1rem; color: #eee; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>FILM STOCK GUIDE</h1>
+</header>
+
+<div class="controls">
+    <!-- Suche + Reset -->
+    <div style="display:flex; gap:8px; align-items:center; margin-bottom:10px;">
+        <input
+            type="text"
+            id="searchInput"
+            class="search-box"
+            placeholder="Suche... (z.B. 'Farbe', 'Korn', 'Portrait')"
+        >
+        <button type="button" class="chip" onclick="resetFilters()">Reset</button>
+    </div>
+    
+    <!-- Filter Gruppe 1: Einsatz -->
+    <div class="filter-section">
+        <span class="filter-label">Einsatz / Motiv</span>
+        <div class="filter-row">
+            <button id="useAllChip" class="chip active" onclick="setFilter('all', this, 'use')">Alle</button>
+            <button class="chip" onclick="setFilter('Portrait', this, 'use')">Portrait</button>
+            <button class="chip" onclick="setFilter('Travel', this, 'use')">Travel</button>
+            <button class="chip" onclick="setFilter('Street', this, 'use')">Street</button>
+            <button class="chip" onclick="setFilter('Landscape', this, 'use')">Landscape</button>
+            <button class="chip" onclick="setFilter('Low Light', this, 'use')">Low Light</button>
+        </div>
+    </div>
+
+    <!-- Filter Gruppe 2: Eigenschaften (Angepasst an deine Notion Begriffe) -->
+    <div class="filter-section">
+        <span class="filter-label">Eigenschaften</span>
+        <div class="filter-row">
+            <button class="chip" onclick="setFilter('all', this, 'spec')">Alle</button>
+            
+            <!-- Korn (Begriffe: Feinkorn, Mittel, Klassisch, Grob) -->
+            <button class="chip" onclick="setFilter('Feinkorn', this, 'spec')">Feinkorn</button>
+            <button class="chip" onclick="setFilter('Mittel', this, 'spec')">Korn: Mittel</button>
+            <button class="chip" onclick="setFilter('Klassisch', this, 'spec')">Klassisch</button>
+            <button class="chip" onclick="setFilter('Grob', this, 'spec')">Grob</button>
+            
+            <!-- Trenner -->
+            <div style="width:1px; background:#333; margin:0 5px;"></div>
+
+            <!-- Budget (Begriffe: Budget, Medium, Premium) -->
+            <button class="chip" onclick="setFilter('Budget', this, 'spec')">Budget</button>
+            <button class="chip" onclick="setFilter('Medium', this, 'spec')">Preis: Mittel</button>
+            <button class="chip" onclick="setFilter('Premium', this, 'spec')">Premium</button>
+        </div>
+    </div>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <button class="close-btn" onclick="closeModal(null)">&times;</button>
+        <div class="modal-header" id="modalHeader"></div>
+        <div class="modal-body" id="modalBody"></div>
+    </div>
+</div>
+
+<script src="films.js"></script>
+
+<script>
+    let activeFilter = 'all';
+    let filterMode = 'use';
+
+    function prepareData() {
+        if (typeof filmsData === 'undefined') {
+            document.getElementById('grid').innerHTML =
+                '<div style="color:red; text-align:center;">Fehler: films.js nicht geladen.</div>';
+            return;
+        }
+
+        filmsData.forEach(film => {
+            if (!film.keywords) film.keywords = [];
+
+            // 1. Alle Specs aus Notion (z.B. "Premium", "Grob") suchbar machen
+            if (film.specs) {
+                Object.values(film.specs).forEach(val => {
+                    if(val) film.keywords.push(val);
+                });
+            }
+
+            // 2. Intelligente Synonyme (Mapping für Suche)
+            
+            // Wenn Korn = "Klassisch" oder "Grob" -> Suche nach "Grain" oder "Korn" findet das
+            if (film.specs.grain === "Klassisch" || film.specs.grain === "Grob") {
+                film.keywords.push("Grain", "Korn", "Stark");
+            }
+
+            // Budget Synonyme
+            if (film.specs.budget === "Budget") {
+                film.keywords.push("Günstig", "Billig", "Cheap");
+            }
+            if (film.specs.budget === "Premium") {
+                film.keywords.push("Teuer", "Pro", "Professional", "Profi");
+            }
+
+            // Sicherstellen, dass Bildpfad existiert
+            if (!film.img) film.img = ""; 
+        });
+
+        renderGrid(filmsData);
+    }
+
+    function renderGrid(data) {
+        const grid = document.getElementById('grid');
+        grid.innerHTML = "";
+
+        if (data.length === 0) {
+            grid.innerHTML =
+                `<div style="grid-column: 1/-1; text-align: center; color: #777; margin-top: 40px;">Keine Filme gefunden.</div>`;
+            return;
+        }
+
+        data.forEach(film => {
+            let badgeClass = "badge-iso";
+            // Check für Typ (inkl. Schreibweisen wie "SW" oder "B&W")
+            if (film.type && (film.type.includes("B&W") || film.type.includes("SW"))) badgeClass = "badge-bw";
+            if (film.type && (film.type.includes("Slide") || film.type.includes("Dia"))) badgeClass = "badge-slide";
+
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.onclick = () => openModal(film);
+
+            const highlightClass = (val) => (val === activeFilter) ? 'highlight' : '';
+
+            card.innerHTML = `
+                <!-- BILD -->
+                <div class="card-img-container">
+                    <img src="${film.img}" 
+                         alt="${film.name}" 
+                         class="card-img" 
+                         onerror="this.parentNode.style.display='none'">
+                </div>
+
+                <div class="card-top">
+                    <span class="card-brand">${film.brand}</span>
+                    <span class="badge ${badgeClass}">${film.process}</span>
+                </div>
+                <h3 class="card-name">
+                    ${film.name}
+                    <span style="font-size:0.6em; color:var(--primary); vertical-align:middle; margin-left:5px;">
+                        ISO ${film.iso}
+                    </span>
+                </h3>
+                <p class="card-short-desc">${film.shortDesc}</p>
+                <div class="spec-tags">
+                    <span class="spec-tag ${highlightClass(film.specs.grain)}">${film.specs.grain}</span>
+                    <span class="spec-tag ${highlightClass(film.specs.handling)}">${film.specs.handling}</span>
+                    <span class="spec-tag ${highlightClass(film.specs.budget)}">${film.specs.budget}</span>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function setFilter(filterValue, btnElement, mode) {
+        activeFilter = filterValue;
+        filterMode = mode;
+
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        btnElement.classList.add('active');
+
+        executeSearch();
+    }
+
+    function executeSearch() {
+        const rawQuery = document.getElementById('searchInput').value.toLowerCase();
+        const query = rawQuery.trim();
+        
+        const filtered = filmsData.filter(film => {
+            const searchableText = [
+                film.name,
+                film.brand,
+                film.shortDesc,
+                film.keywords.join(" "),
+                film.uses.join(" ")
+            ].join(" ").toLowerCase();
+
+            const textMatch = searchableText.includes(query);
+
+            let catMatch = true;
+            if (activeFilter !== 'all') {
+                if (filterMode === 'use') {
+                    // Prüfen ob einer der Uses matcht
+                    catMatch = film.uses.some(u => u === activeFilter || u.includes(activeFilter));
+                } else if (filterMode === 'spec') {
+                    // Prüfen ob eine der Specs matcht
+                    const specsValues = Object.values(film.specs);
+                    catMatch = specsValues.includes(activeFilter);
+                }
+            }
+
+            return textMatch && catMatch;
+        });
+
+        renderGrid(filtered);
+    }
+
+    document.getElementById('searchInput').addEventListener('input', executeSearch);
+
+    function resetFilters() {
+        const search = document.getElementById('searchInput');
+        search.value = '';
+
+        activeFilter = 'all';
+        filterMode = 'use';
+
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+
+        const allUseChip = document.getElementById('useAllChip');
+        if (allUseChip) {
+            allUseChip.classList.add('active');
+        }
+
+        renderGrid(filmsData);
+    }
+
+    function openModal(film) {
+        const overlay = document.getElementById('modalOverlay');
+        const header = document.getElementById('modalHeader');
+        const body = document.getElementById('modalBody');
+
+        let badgeClass = "badge-iso";
+        if (film.type && (film.type.includes("B&W") || film.type.includes("SW"))) badgeClass = "badge-bw";
+        if (film.type && (film.type.includes("Slide") || film.type.includes("Dia"))) badgeClass = "badge-slide";
+
+        header.innerHTML = `
+            <span class="card-brand">${film.brand}</span>
+            <h2 style="margin: 5px 0; font-size: 2rem; color: #fff;">${film.name}</h2>
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <span class="badge ${badgeClass}" style="font-size:1rem; padding: 4px 10px;">ISO ${film.iso}</span>
+                <span class="badge" style="background:#444; font-size:1rem; padding: 4px 10px;">${film.formats.join(', ')}</span>
+            </div>
+        `;
+
+        body.innerHTML = `
+            <div class="pro-tip-box">
+                <span style="font-weight:bold; color:var(--primary); display:block; margin-bottom:5px;">💡 PRO TIP</span>
+                <p style="margin: 0; color: #ddd;">${film.tips.exposure}</p>
+            </div>
+
+            <div class="section-title">Eigenschaften</div>
+            <div class="info-grid">
+                <div class="info-item"><label>Korn</label><span>${film.specs.grain}</span></div>
+                <div class="info-item"><label>Handling</label><span>${film.specs.handling}</span></div>
+                <div class="info-item"><label>Sättigung</label><span>${film.specs.saturation}</span></div>
+                <div class="info-item"><label>Budget</label><span>${film.specs.budget}</span></div>
+            </div>
+            <p style="color: #ccc; line-height: 1.5;"><em>"${film.look.desc}"</em></p>
+
+            <div class="section-title">Einsatzgebiete</div>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                ${film.uses.map(u => `<span class="chip" style="cursor:default; background:#333; border:none; color:#fff;">${u}</span>`).join('')}
+            </div>
+            
+            <div class="section-title" style="margin-top:30px">Technische Infos</div>
+            <div style="font-size: 0.9rem; color: #aaa; display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <div><strong>Scan:</strong> ${film.tips.scanning}</div>
+                <div><strong>Dev:</strong> ${film.tips.dev}</div>
+            </div>
+        `;
+
+        overlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(e) {
+        if (e === null || e.target.id === 'modalOverlay') {
+            document.getElementById('modalOverlay').classList.remove('open');
+            document.body.style.overflow = 'auto';
+        }
+    }
+
+    prepareData();
+</script>
+
+</body>
+</html>
