@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Notion zu Films.js Konverter (Profi Parser)</title>
+    <style>
+        body { font-family: -apple-system, sans-serif; padding: 20px; background: #f4f4f4; max-width: 1000px; margin: 0 auto; }
+        h1 { color: #333; }
+        .container { display: flex; gap: 20px; }
+        .box { flex: 1; display: flex; flex-direction: column; }
+        textarea { width: 100%; height: 400px; padding: 10px; font-family: monospace; border: 1px solid #ccc; border-radius: 8px; }
+        button { padding: 15px; background: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; margin-bottom: 10px; font-weight: bold; }
+        button:hover { background: #0056b3; }
+        label { font-weight: bold; margin-bottom: 5px; display: block; }
+        .info { background: #e8f4ff; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #007bff; line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+    <h1>🎞️ Notion CSV zu Films.js (Profi Parser)</h1>
+    
+    <div class="info">
+        <strong>Update v5:</strong><br>
+        Dieser Konverter beherrscht jetzt <strong>Zeilenumbrüche innerhalb von Notion-Feldern</strong>.<br>
+        Dadurch verschwinden die "leeren" Geister-Einträge und abgeschnittene Filme (wie Provia) tauchen wieder auf.
+    </div>
+
+    <div class="container">
+        <div class="box">
+            <label>1. CSV Text hier einfügen:</label>
+            <textarea id="csvInput" placeholder="Name, Marke, ISO, Dateiname..."></textarea>
+            <button onclick="convert()">➡️ Konvertieren</button>
+        </div>
+        <div class="box">
+            <label>2. Ergebnis (films.js):</label>
+            <textarea id="jsonOutput" readonly></textarea>
+            <button onclick="copyToClipboard()" style="background:#28a745;">📋 Code kopieren</button>
+        </div>
+    </div>
+
+<script>
+    // --- HOCHLEISTUNGS CSV PARSER ---
+    // Dieser Parser zerlegt die CSV Zeichen für Zeichen und ignoriert Newlines innerhalb von Quotes
+    function parseCSVRobust(text) {
+        let arr = [];
+        let row = [];
+        let col = "";
+        let inQuote = false;
+        
+        // Auto-Detect Separator (Semikolon oder Komma) anhand der ersten Zeile
+        const firstLine = text.split('\n')[0];
+        const separator = firstLine.includes(';') ? ';' : ',';
+
+        for (let i = 0; i < text.length; i++) {
+            let c = text[i];
+            let next = text[i+1];
+
+            if (c === '"') {
+                if (inQuote && next === '"') {
+                    // Doppeltes Anführungszeichen wird zu einem ("") -> (")
+                    col += '"';
+                    i++; 
+                } else {
+                    // Toggle Quote Status
+                    inQuote = !inQuote;
+                }
+            } else if (c === separator && !inQuote) {
+                // Spalte zu Ende
+                row.push(col);
+                col = "";
+            } else if ((c === '\r' || c === '\n') && !inQuote) {
+                // Zeile zu Ende
+                if (col || row.length > 0) row.push(col);
+                if (row.length > 0) arr.push(row);
+                row = [];
+                col = "";
+                // Falls \r\n (Windows), überspringen wir das \n im nächsten Durchlauf
+                if (c === '\r' && next === '\n') i++;
+            } else {
+                col += c;
+            }
+        }
+        // Letzten Eintrag hinzufügen falls Datei nicht mit Newline endet
+        if (col || row.length > 0) {
+            row.push(col);
+            arr.push(row);
+        }
+        return arr;
+    }
+
+    function csvJSON(csv){
+        // Schritt 1: CSV korrekt parsen (Array of Arrays)
+        const data = parseCSVRobust(csv);
+        
+        if (data.length < 2) return "[]"; // Keine Daten
+
+        // Header bereinigen
+        const headers = data[0].map(h => h.trim());
+        const result = [];
+
+        const getColIdx = (name) => {
+            return headers.findIndex(h => h.toLowerCase().trim() === name.toLowerCase());
+        };
+
+        const cleanSpec = (str) => {
+            if(!str) return "Mittel";
+            let s = str.trim();
+            return s.charAt(0).toUpperCase() + s.slice(1);
+        };
+
+        // Ab Zeile 1 iterieren (Zeile 0 ist Header)
+        for(let i=1; i<data.length; i++){
+            const row = data[i];
+            
+            // Hilfsfunktion um Wert aus aktueller Zeile zu holen
+            const val = (colName) => {
+                const idx = getColIdx(colName);
+                if(idx === -1 || idx >= row.length) return "";
+                return row[idx] ? row[idx].trim() : "";
+            };
+
+            let brand = val('Marke');
+            let name = val('Name');
+            let iso = val('ISO');
+
+            // WICHTIG: Leere Zeilen ignorieren (Fix für Geister-Einträge)
+            if(!brand || !name) continue;
+
+            let idString = (brand + "-" + name).toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9-]/g, '');
+
+            // BILD LOGIK
+            let imgFilename = val('Dateiname');
+            if(imgFilename.startsWith('img/')) imgFilename = imgFilename.replace('img/', '');
+            let imgPath = imgFilename ? `img/${imgFilename}` : "";
+
+            let formatsArray = val('Formate').split(',').map(s => s.trim()).filter(s => s);
+            let usesArray = val('Einsatz').split(',').map(s => s.trim()).filter(s => s);
+
+            let type = val('Typ');
+            let process = "C-41"; 
+            if(type.includes('B&W') || type.includes('SW')) process = "B&W";
+            if(type.includes('Slide') || type.includes('Dia')) process = "E-6";
+
+            let keywords = [];
+            if(type.includes('Color')) keywords.push("Farbe", "Color");
+            if(type.includes('B&W')) keywords.push("Schwarzweiß", "SW", "B&W");
+            if(type.includes('Slide')) keywords.push("Dia", "Slide", "E6");
+
+            let grain = cleanSpec(val('Grain'));
+            let handling = cleanSpec(val('Handling'));
+            let budget = cleanSpec(val('Budget'));
+            let saturation = cleanSpec(val('Sättigung'));
+
+            keywords.push(grain, handling, budget, saturation);
+
+            let filmObj = {
+                id: idString,
+                brand: brand,
+                name: name,
+                img: imgPath,
+                iso: parseInt(iso) || 0,
+                type: type,
+                formats: formatsArray,
+                process: process, 
+                shortDesc: val('Kurzbeschreibung'),
+                specs: {
+                    grain: grain,
+                    handling: handling,
+                    saturation: saturation,
+                    budget: budget
+                },
+                uses: usesArray,
+                keywords: keywords.filter(k => k),
+                look: {
+                    desc: val('Look Beschreibung')
+                },
+                tips: {
+                    exposure: val('Tipp: Belichtung'),
+                    scanning: val('Tipp: Scan'),
+                    dev: val('Tipp: Dev')
+                }
+            };
+
+            result.push(filmObj);
+        }
+        return JSON.stringify(result, null, 4);
+    }
+
+    function convert() {
+        const input = document.getElementById('csvInput').value;
+        if(!input) { alert("Bitte CSV einfügen!"); return; }
+        const json = csvJSON(input);
+        document.getElementById('jsonOutput').value = `const filmsData = ${json};`;
+    }
+
+    function copyToClipboard() {
+        const copyText = document.getElementById("jsonOutput");
+        copyText.select();
+        document.execCommand("copy");
+    }
+</script>
+
+</body>
+</html>
