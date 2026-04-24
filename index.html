@@ -909,10 +909,46 @@
 
         function formatDateForDisplay(dateValue) {
             if (!dateValue) return 'Kein Datum';
-            const dateText = String(dateValue).slice(0, 10);
-            const parts = dateText.split('-');
-            if (parts.length !== 3) return 'Kein Datum';
-            return `${parts[0].slice(-2)}-${parts[1]}-${parts[2]}`;
+            const rawDate = String(dateValue).trim();
+            const isoMatch = rawDate.match(/^(\d{4})-(\d{2})-(\d{2})/);
+            if (isoMatch) return `${isoMatch[1].slice(-2)}-${isoMatch[2]}-${isoMatch[3]}`;
+
+            const shortIsoMatch = rawDate.match(/^(\d{2})-(\d{2})-(\d{2})$/);
+            if (shortIsoMatch) return rawDate;
+
+            const swissMatch = rawDate.match(/^(\d{1,2})[./](\d{1,2})[./](\d{2,4})/);
+            if (swissMatch) {
+                const day = swissMatch[1].padStart(2, '0');
+                const month = swissMatch[2].padStart(2, '0');
+                const year = swissMatch[3].slice(-2);
+                return `${year}-${month}-${day}`;
+            }
+
+            const parsedDate = new Date(rawDate);
+            if (!Number.isNaN(parsedDate.getTime())) {
+                const year = String(parsedDate.getFullYear()).slice(-2);
+                const month = String(parsedDate.getMonth() + 1).padStart(2, '0');
+                const day = String(parsedDate.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+
+            return 'Kein Datum';
+        }
+
+        function getRollDateValue(roll) {
+            return roll.loadedAt ||
+                roll.loaded_at ||
+                roll['Loaded at'] ||
+                roll['loaded at'] ||
+                roll['Datum'] ||
+                roll.createdAt ||
+                roll.created_at ||
+                roll['Created at'] ||
+                roll['created at'] ||
+                roll.updatedAt ||
+                roll.updated_at ||
+                roll['Updated at'] ||
+                roll['updated at'];
         }
 
         function rollNamePart(value, fallback) {
@@ -1110,7 +1146,7 @@
 
             sortedRolls.forEach(roll => {
                 const film = getFilmById(roll.filmId);
-                const rollDate = roll.loadedAt || roll.createdAt || roll.updatedAt;
+                const rollDate = getRollDateValue(roll);
                 const card = document.createElement('div');
                 card.className = 'card roll-card';
                 card.innerHTML = `
