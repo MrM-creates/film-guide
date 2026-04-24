@@ -908,7 +908,9 @@
         }
 
         function formatDateForDisplay(dateValue) {
-            const parts = (dateValue || '').split('-');
+            if (!dateValue) return 'Kein Datum';
+            const dateText = String(dateValue).slice(0, 10);
+            const parts = dateText.split('-');
             if (parts.length !== 3) return 'Kein Datum';
             return `${parts[0].slice(-2)}-${parts[1]}-${parts[2]}`;
         }
@@ -1108,12 +1110,13 @@
 
             sortedRolls.forEach(roll => {
                 const film = getFilmById(roll.filmId);
+                const rollDate = roll.loadedAt || roll.createdAt || roll.updatedAt;
                 const card = document.createElement('div');
                 card.className = 'card roll-card';
                 card.innerHTML = `
                     <div class="card-top">
                         <span class="card-brand">${escapeHtml(roll.status || 'In Kamera')}</span>
-                        <span class="badge badge-iso">${escapeHtml(formatDateForDisplay(roll.loadedAt))}</span>
+                        <span class="badge badge-iso">${escapeHtml(formatDateForDisplay(rollDate))}</span>
                     </div>
                     <h3 class="card-name">${escapeHtml(roll.name)}</h3>
                     <p class="card-short-desc">${escapeHtml(film ? `${film.brand} ${film.name}` : roll.filmName)}</p>
