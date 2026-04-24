@@ -886,6 +886,39 @@
             localStorage.setItem(ROLLS_KEY, JSON.stringify(rollsData));
         }
 
+        function normalizeRollFormat(value) {
+            const rawFormat = String(value || '').trim();
+            const compactFormat = rawFormat.toLowerCase().replace(/\s+/g, '');
+            if (!compactFormat) return '';
+            if (compactFormat === '35mm' || compactFormat === '35' || compactFormat === '135mm') return '135';
+            if (compactFormat === '120mm') return '120';
+            if (compactFormat.includes('4x5') || compactFormat.includes('4×5')) return '4x5';
+            if (compactFormat.includes('8x10') || compactFormat.includes('8×10')) return '8x10';
+            if (compactFormat.includes('instax')) return 'Instax';
+            return rawFormat;
+        }
+
+        function mergeSyncedRolls(syncedRolls) {
+            return syncedRolls
+                .filter(roll => roll && roll.id)
+                .map(serverRoll => {
+                    const localRoll = rollsData.find(item => item.id === serverRoll.id) || {};
+                    const mergedRoll = { ...localRoll, ...serverRoll };
+
+                    ['format', 'ratedIso', 'note', 'process'].forEach(key => {
+                        if (!serverRoll[key] && localRoll[key]) {
+                            mergedRoll[key] = localRoll[key];
+                        }
+                    });
+
+                    if (!serverRoll.loadedAt && localRoll.loadedAt) mergedRoll.loadedAt = localRoll.loadedAt;
+                    if (!serverRoll.createdAt && localRoll.createdAt) mergedRoll.createdAt = localRoll.createdAt;
+                    if (!serverRoll.updatedAt && localRoll.updatedAt) mergedRoll.updatedAt = localRoll.updatedAt;
+                    mergedRoll.format = normalizeRollFormat(mergedRoll.format);
+                    return mergedRoll;
+                });
+        }
+
         function loadRolls() {
             const savedRolls = localStorage.getItem(ROLLS_KEY);
             if (!savedRolls) {
@@ -924,7 +957,7 @@
 
                 const payload = await response.json();
                 const nextRolls = Array.isArray(payload) ? payload : (payload.rolls || []);
-                rollsData = nextRolls.filter(roll => roll && roll.id);
+                rollsData = mergeSyncedRolls(nextRolls);
                 cacheRolls();
                 renderRolls();
                 setRollsSyncStatus('Synchronisiert');
@@ -952,7 +985,7 @@
                 const payload = await response.json();
                 if (payload.ok === false) throw new Error(payload.error || 'Sync failed');
                 if (payload.rolls) {
-                    rollsData = payload.rolls.filter(item => item && item.id);
+                    rollsData = mergeSyncedRolls(payload.rolls);
                     cacheRolls();
                     renderRolls();
                 }
@@ -1026,6 +1059,34 @@
             return 'Kein Datum';
         }
 
+        function formatDateForInputValue(dateValue) {
+            if (!dateValue) return formatTodayForInput();
+            const rawDate = String(dateValue).trim();
+            const isoMatch = rawDate.match(/^(\d{4})-(\d{2})-(\d{2})/);
+            if (isoMatch) return `${isoMatch[1]}-${isoMatch[2]}-${isoMatch[3]}`;
+
+            const shortIsoMatch = rawDate.match(/^(\d{2})-(\d{2})-(\d{2})$/);
+            if (shortIsoMatch) return `20${shortIsoMatch[1]}-${shortIsoMatch[2]}-${shortIsoMatch[3]}`;
+
+            const swissMatch = rawDate.match(/^(\d{1,2})[./](\d{1,2})[./](\d{2,4})/);
+            if (swissMatch) {
+                const day = swissMatch[1].padStart(2, '0');
+                const month = swissMatch[2].padStart(2, '0');
+                const year = swissMatch[3].length === 2 ? `20${swissMatch[3]}` : swissMatch[3];
+                return `${year}-${month}-${day}`;
+            }
+
+            const parsedDate = new Date(rawDate);
+            if (!Number.isNaN(parsedDate.getTime())) {
+                const year = parsedDate.getFullYear();
+                const month = String(parsedDate.getMonth() + 1).padStart(2, '0');
+                const day = String(parsedDate.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+
+            return formatTodayForInput();
+        }
+
         function getRollDateValue(roll) {
             return roll.loadedAt ||
                 roll.loaded_at ||
@@ -1050,7 +1111,7 @@
         }
 
         function getRollFormat(roll) {
-            return getRollValue(roll, ['format', 'Format']);
+            return normalizeRollFormat(getRollValue(roll, ['format', 'Format']));
         }
 
         function getRollRatedIso(roll) {
@@ -1336,17 +1397,17 @@
         function openRollForm(filmId, rollId) {
             const existingRoll = rollId ? rollsData.find(roll => roll.id === rollId) : null;
             const film = getFilmById(filmId) || null;
-            const loadedAt = existingRoll ? existingRoll.loadedAt : formatTodayForInput();
+            const loadedAt = existingRoll ? formatDateForInputValue(getRollDateValue(existingRoll)) : formatTodayForInput();
             const camera = existingRoll ? existingRoll.camera : '';
             const filmName = existingRoll ? existingRoll.filmName : (film ? film.name : '');
-            const selectedFormat = existingRoll ? getRollFormat(existingRoll) : (film && film.formats.length === 1 ? film.formats[0] : '');
+            const selectedFormat = existingRoll ? getRollFormat(existingRoll) : (film && film.formats.length === 1 ? normalizeRollFormat(film.formats[0]) : '');
             const ratedIso = existingRoll ? getRollRatedIso(existingRoll) : (film && film.iso ? String(film.iso) : '');
             const note = existingRoll ? getRollNote(existingRoll) : '';
             const process = existingRoll ? getRollProcess(existingRoll) : (film ? film.process : '');
             const rollName = existingRoll ? existingRoll.name : buildRollName(loadedAt, filmName, camera);
             const overlay = document.getElementById('modalOverlay');
             const contentBlock = document.querySelector('.modal-content');
-            const formatChoices = film ? [...film.formats] : [];
+            const formatChoices = film ? [...new Set(film.formats.map(normalizeRollFormat).filter(Boolean))] : [];
             if (selectedFormat && !formatChoices.includes(selectedFormat)) formatChoices.push(selectedFormat);
             const formatOptions = formatChoices.length > 0
                 ? formatChoices.map(format => `<option value="${escapeHtml(format)}" ${format === selectedFormat ? 'selected' : ''}>${escapeHtml(format)}</option>`).join('')
@@ -1441,7 +1502,7 @@
             const camera = document.getElementById('rollCamera').value.trim();
             const loadedAt = document.getElementById('rollLoadedAt').value;
             const filmName = document.getElementById('rollFilmName').value.trim();
-            const format = document.getElementById('rollFormat').value.trim();
+            const format = normalizeRollFormat(document.getElementById('rollFormat').value);
             const ratedIso = document.getElementById('rollRatedIso').value.trim();
             const note = document.getElementById('rollNote').value.trim();
             const process = document.getElementById('rollProcess').value.trim();
@@ -1459,7 +1520,7 @@
                 note,
                 process,
                 status,
-                createdAt: existingRoll ? existingRoll.createdAt : '',
+                createdAt: existingRoll ? getRollValue(existingRoll, ['createdAt', 'created_at', 'Created at', 'created at']) : '',
                 updatedAt: new Date().toISOString()
             };
 
