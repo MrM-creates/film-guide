@@ -398,6 +398,56 @@
             justify-content: flex-end;
         }
 
+        .rolls-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            max-width: 1200px;
+            margin: 0 auto 14px;
+            padding: 0 20px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .roll-filter-row {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .roll-filter-row::-webkit-scrollbar {
+            display: none;
+        }
+
+        .roll-filter-btn {
+            background: var(--surface);
+            border: 1px solid #444;
+            color: var(--text-secondary);
+            padding: 8px 12px;
+            border-radius: 999px;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 0.85rem;
+        }
+
+        .roll-filter-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #000;
+            font-weight: 700;
+        }
+
+        .roll-sort {
+            background: #171717;
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: #fff;
+            padding: 9px 10px;
+            font-size: 0.9rem;
+        }
+
         .sync-status {
             color: var(--text-secondary);
             font-size: 0.8rem;
@@ -418,7 +468,8 @@
         }
 
         .form-field input,
-        .form-field select {
+        .form-field select,
+        .form-field textarea {
             width: 100%;
             box-sizing: border-box;
             background: #171717;
@@ -429,8 +480,15 @@
             font-size: 16px;
         }
 
+        .form-field textarea {
+            min-height: 90px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
         .form-field input:focus,
-        .form-field select:focus {
+        .form-field select:focus,
+        .form-field textarea:focus {
             outline: 2px solid var(--primary);
             border-color: transparent;
         }
@@ -657,6 +715,15 @@
                 flex-direction: column;
             }
 
+            .rolls-controls {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .roll-sort {
+                width: 100%;
+            }
+
             .rolls-tools {
                 justify-content: stretch;
             }
@@ -748,6 +815,21 @@
                     <span class="sync-status" id="rollsSyncStatus">Lokal gespeichert</span>
                 </div>
             </div>
+            <div class="rolls-controls">
+                <div class="roll-filter-row" aria-label="Rollen filtern">
+                    <button type="button" class="roll-filter-btn active" data-roll-status="all" onclick="setRollStatusFilter('all')">Alle</button>
+                    <button type="button" class="roll-filter-btn" data-roll-status="In Kamera" onclick="setRollStatusFilter('In Kamera')">In Kamera</button>
+                    <button type="button" class="roll-filter-btn" data-roll-status="Belichtet" onclick="setRollStatusFilter('Belichtet')">Belichtet</button>
+                    <button type="button" class="roll-filter-btn" data-roll-status="Entwickelt" onclick="setRollStatusFilter('Entwickelt')">Entwickelt</button>
+                </div>
+                <select id="rollSortSelect" class="roll-sort" onchange="setRollSortMode(this.value)" aria-label="Rollen sortieren">
+                    <option value="status">Status</option>
+                    <option value="date">Datum</option>
+                    <option value="camera">Kamera</option>
+                    <option value="film">Film</option>
+                    <option value="format">Format</option>
+                </select>
+            </div>
             <div class="grid" id="rollsGrid"></div>
         </section>
     </main>
@@ -786,6 +868,8 @@
         const ROLLS_API_URL = 'https://script.google.com/macros/s/AKfycbydvznEWiep5zSacKZtXPTLV9apm9OqxvciB5mEXuUG1TmQuU6cRH7LfzVVtvb1KWCXtA/exec';
         let filmsData = [];
         let rollsData = [];
+        let rollStatusFilter = 'all';
+        let rollSortMode = 'status';
         let rollNameWasEdited = false;
         let lastGeneratedRollName = '';
 
@@ -958,6 +1042,29 @@
                 roll['updated at'];
         }
 
+        function getRollValue(roll, keys) {
+            for (const key of keys) {
+                if (roll[key]) return roll[key];
+            }
+            return '';
+        }
+
+        function getRollFormat(roll) {
+            return getRollValue(roll, ['format', 'Format']);
+        }
+
+        function getRollRatedIso(roll) {
+            return getRollValue(roll, ['ratedIso', 'ratedISO', 'ISO geratet', 'Rated ISO']);
+        }
+
+        function getRollNote(roll) {
+            return getRollValue(roll, ['note', 'Notiz', 'notes']);
+        }
+
+        function getRollProcess(roll) {
+            return getRollValue(roll, ['process', 'Prozess', 'Entwicklung']);
+        }
+
         function rollNamePart(value, fallback) {
             const source = String(value || fallback || '').trim();
             return source
@@ -1128,6 +1235,19 @@
             renderGrid(filmsData);
         }
 
+        function setRollStatusFilter(status) {
+            rollStatusFilter = status;
+            document.querySelectorAll('.roll-filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.rollStatus === status);
+            });
+            renderRolls();
+        }
+
+        function setRollSortMode(mode) {
+            rollSortMode = mode;
+            renderRolls();
+        }
+
         function renderRolls() {
             const grid = document.getElementById('rollsGrid');
             if (!grid) return;
@@ -1145,15 +1265,44 @@
             }
 
             const statusRank = { "In Kamera": 1, "Belichtet": 2, "Entwickelt": 3 };
-            const sortedRolls = [...rollsData].sort((a, b) => {
+            const visibleRolls = rollsData.filter(roll => rollStatusFilter === 'all' || roll.status === rollStatusFilter);
+
+            if (visibleRolls.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <strong>Keine Rollen gefunden.</strong><br>
+                        Passe den Filter an oder lege eine neue Rolle an.
+                    </div>
+                `;
+                return;
+            }
+
+            const sortedRolls = [...visibleRolls].sort((a, b) => {
+                if (rollSortMode === 'date') {
+                    return String(getRollDateValue(b) || '').localeCompare(String(getRollDateValue(a) || ''));
+                }
+                if (rollSortMode === 'camera') {
+                    return String(a.camera || '').localeCompare(String(b.camera || ''));
+                }
+                if (rollSortMode === 'film') {
+                    return String(a.filmName || '').localeCompare(String(b.filmName || ''));
+                }
+                if (rollSortMode === 'format') {
+                    return String(getRollFormat(a) || '').localeCompare(String(getRollFormat(b) || ''));
+                }
+
                 const byStatus = (statusRank[a.status] || 9) - (statusRank[b.status] || 9);
                 if (byStatus !== 0) return byStatus;
-                return String(b.loadedAt || '').localeCompare(String(a.loadedAt || ''));
+                return String(getRollDateValue(b) || '').localeCompare(String(getRollDateValue(a) || ''));
             });
 
             sortedRolls.forEach(roll => {
                 const film = getFilmById(roll.filmId);
                 const rollDate = getRollDateValue(roll);
+                const format = getRollFormat(roll);
+                const ratedIso = getRollRatedIso(roll);
+                const note = getRollNote(roll);
+                const process = getRollProcess(roll);
                 const card = document.createElement('div');
                 card.className = 'card roll-card';
                 card.innerHTML = `
@@ -1165,8 +1314,11 @@
                     <p class="card-short-desc">${escapeHtml(film ? `${film.brand} ${film.name}` : roll.filmName)}</p>
                     <div class="roll-meta">
                         <div class="info-card"><div class="info-item"><label>Kamera</label><span>${escapeHtml(roll.camera || 'Nicht gesetzt')}</span></div></div>
-                        <div class="info-card"><div class="info-item"><label>Film</label><span>${escapeHtml(roll.filmName || 'Nicht gesetzt')}</span></div></div>
+                        <div class="info-card"><div class="info-item"><label>Format</label><span>${escapeHtml(format || 'Nicht gesetzt')}</span></div></div>
+                        <div class="info-card"><div class="info-item"><label>ISO geratet</label><span>${escapeHtml(ratedIso || 'Nicht gesetzt')}</span></div></div>
+                        <div class="info-card"><div class="info-item"><label>Entwicklung</label><span>${escapeHtml(process || (film ? film.process : '') || 'Nicht gesetzt')}</span></div></div>
                     </div>
+                    ${note ? `<p class="card-short-desc" style="margin-bottom:14px;">${escapeHtml(note)}</p>` : ''}
                     <div class="roll-actions">
                         ${film ? `<button type="button" class="secondary-btn" onclick="openModal(getFilmById('${escapeHtml(roll.filmId)}'))">Guide öffnen</button>` : ''}
                         <button type="button" class="secondary-btn" onclick="openRollForm('${escapeHtml(roll.filmId)}', '${escapeHtml(roll.id)}')">Bearbeiten</button>
@@ -1187,9 +1339,18 @@
             const loadedAt = existingRoll ? existingRoll.loadedAt : formatTodayForInput();
             const camera = existingRoll ? existingRoll.camera : '';
             const filmName = existingRoll ? existingRoll.filmName : (film ? film.name : '');
+            const selectedFormat = existingRoll ? getRollFormat(existingRoll) : (film && film.formats.length === 1 ? film.formats[0] : '');
+            const ratedIso = existingRoll ? getRollRatedIso(existingRoll) : (film && film.iso ? String(film.iso) : '');
+            const note = existingRoll ? getRollNote(existingRoll) : '';
+            const process = existingRoll ? getRollProcess(existingRoll) : (film ? film.process : '');
             const rollName = existingRoll ? existingRoll.name : buildRollName(loadedAt, filmName, camera);
             const overlay = document.getElementById('modalOverlay');
             const contentBlock = document.querySelector('.modal-content');
+            const formatChoices = film ? [...film.formats] : [];
+            if (selectedFormat && !formatChoices.includes(selectedFormat)) formatChoices.push(selectedFormat);
+            const formatOptions = formatChoices.length > 0
+                ? formatChoices.map(format => `<option value="${escapeHtml(format)}" ${format === selectedFormat ? 'selected' : ''}>${escapeHtml(format)}</option>`).join('')
+                : '';
 
             rollNameWasEdited = Boolean(existingRoll);
             lastGeneratedRollName = rollName;
@@ -1213,8 +1374,27 @@
                             <input id="rollLoadedAt" type="date" value="${escapeHtml(loadedAt)}" onchange="syncRollNameDefault()" required>
                         </div>
                         <div class="form-field">
+                            <label for="rollFormat">Format</label>
+                            ${formatOptions ? `
+                                <select id="rollFormat" required>
+                                    <option value="">Format wählen</option>
+                                    ${formatOptions}
+                                </select>
+                            ` : `
+                                <input id="rollFormat" type="text" value="${escapeHtml(selectedFormat)}" placeholder="z.B. 135 oder 120" required>
+                            `}
+                        </div>
+                        <div class="form-field">
+                            <label for="rollRatedIso">ISO geratet</label>
+                            <input id="rollRatedIso" type="number" inputmode="numeric" value="${escapeHtml(ratedIso)}" placeholder="z.B. 200">
+                        </div>
+                        <div class="form-field">
                             <label for="rollName">Roll-Name</label>
                             <input id="rollName" type="text" value="${escapeHtml(rollName)}" oninput="rollNameWasEdited = true" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="rollNote">Notiz</label>
+                            <textarea id="rollNote" placeholder="z.B. Push/Pull, Motiv, Reise, Laborhinweis">${escapeHtml(note)}</textarea>
                         </div>
                         <div class="form-field">
                             <label for="rollStatus">Status</label>
@@ -1224,6 +1404,7 @@
                                 <option ${(existingRoll && existingRoll.status === 'Entwickelt') ? 'selected' : ''}>Entwickelt</option>
                             </select>
                         </div>
+                        <input id="rollProcess" type="hidden" value="${escapeHtml(process)}">
                         <button type="submit" class="primary-btn">Speichern</button>
                     </form>
                 </div>
@@ -1260,6 +1441,10 @@
             const camera = document.getElementById('rollCamera').value.trim();
             const loadedAt = document.getElementById('rollLoadedAt').value;
             const filmName = document.getElementById('rollFilmName').value.trim();
+            const format = document.getElementById('rollFormat').value.trim();
+            const ratedIso = document.getElementById('rollRatedIso').value.trim();
+            const note = document.getElementById('rollNote').value.trim();
+            const process = document.getElementById('rollProcess').value.trim();
             const status = document.getElementById('rollStatus').value;
             const existingRoll = rollId ? rollsData.find(item => item.id === rollId) : null;
             const roll = {
@@ -1269,6 +1454,10 @@
                 name: name || buildRollName(loadedAt, filmName, camera),
                 camera,
                 loadedAt,
+                format,
+                ratedIso,
+                note,
+                process,
                 status,
                 createdAt: existingRoll ? existingRoll.createdAt : '',
                 updatedAt: new Date().toISOString()

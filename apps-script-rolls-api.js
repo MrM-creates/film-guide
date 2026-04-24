@@ -9,7 +9,11 @@ const HEADERS = [
   'loadedAt',
   'status',
   'createdAt',
-  'updatedAt'
+  'updatedAt',
+  'format',
+  'ratedIso',
+  'note',
+  'process'
 ];
 
 function doGet(event) {
