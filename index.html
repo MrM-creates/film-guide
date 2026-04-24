@@ -804,13 +804,13 @@
         function formatDateForRollName(dateValue) {
             const parts = (dateValue || '').split('-');
             if (parts.length !== 3) return '';
-            return `${parts[2]}_${parts[1]}_${parts[0].slice(-2)}`;
+            return `${parts[0].slice(-2)}-${parts[1]}-${parts[2]}`;
         }
 
         function formatDateForDisplay(dateValue) {
             const parts = (dateValue || '').split('-');
             if (parts.length !== 3) return 'Kein Datum';
-            return `${parts[2]}.${parts[1]}.${parts[0]}`;
+            return `${parts[0].slice(-2)}-${parts[1]}-${parts[2]}`;
         }
 
         function rollNamePart(value, fallback) {
