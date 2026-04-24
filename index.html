@@ -383,6 +383,21 @@
             margin-top: auto;
         }
 
+        .rolls-tools {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .sync-status {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            width: 100%;
+            text-align: right;
+        }
+
         .form-grid {
             display: grid;
             gap: 14px;
@@ -635,6 +650,18 @@
                 flex-direction: column;
             }
 
+            .rolls-tools {
+                justify-content: stretch;
+            }
+
+            .rolls-tools button {
+                flex: 1;
+            }
+
+            .sync-status {
+                text-align: left;
+            }
+
             .roll-meta,
             .info-grid {
                 grid-template-columns: 1fr;
@@ -708,7 +735,11 @@
                     <h2>Rollen</h2>
                     <p>Welche Filme gerade in welchen Kameras stecken.</p>
                 </div>
-                <button type="button" class="primary-btn" onclick="openEmptyRollForm()">Rolle anlegen</button>
+                <div class="rolls-tools">
+                    <button type="button" class="secondary-btn" onclick="fetchRollsFromSync()">Sync</button>
+                    <button type="button" class="primary-btn" onclick="openEmptyRollForm()">Rolle anlegen</button>
+                    <span class="sync-status" id="rollsSyncStatus">Lokal gespeichert</span>
+                </div>
             </div>
             <div class="grid" id="rollsGrid"></div>
         </section>
@@ -744,32 +775,101 @@
         // Diese URL erhältst du aus Google Sheets -> Datei -> Freigeben -> Im Web veröffentlichen -> als CSV
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQM0mtgFQ8vdcCsFCQPWBrcg0d-kNgUgJO1Sf_gH2qpCbGpDtsIJaPysqqXUBB1_-C5_4FhbUymRkBB/pub?output=csv&gid=0";
         const ROLLS_KEY = 'filmGuideRolls_v1';
+        // Nach dem Deploy des Apps Scripts hier die Web-App-URL eintragen.
+        const ROLLS_API_URL = '';
         let filmsData = [];
         let rollsData = [];
         let rollNameWasEdited = false;
         let lastGeneratedRollName = '';
+
+        function hasRollsApi() {
+            return Boolean(ROLLS_API_URL && ROLLS_API_URL.trim());
+        }
+
+        function setRollsSyncStatus(message) {
+            const status = document.getElementById('rollsSyncStatus');
+            if (status) status.textContent = message;
+        }
+
+        function cacheRolls() {
+            localStorage.setItem(ROLLS_KEY, JSON.stringify(rollsData));
+        }
 
         function loadRolls() {
             const savedRolls = localStorage.getItem(ROLLS_KEY);
             if (!savedRolls) {
                 rollsData = [];
                 renderRolls();
-                return;
+            } else {
+                try {
+                    rollsData = JSON.parse(savedRolls);
+                } catch (e) {
+                    console.error("Fehler beim Lesen der Rollen", e);
+                    rollsData = [];
+                }
+
+                renderRolls();
             }
 
-            try {
-                rollsData = JSON.parse(savedRolls);
-            } catch (e) {
-                console.error("Fehler beim Lesen der Rollen", e);
-                rollsData = [];
-            }
-
-            renderRolls();
+            fetchRollsFromSync({ silent: true });
         }
 
         function saveRolls() {
-            localStorage.setItem(ROLLS_KEY, JSON.stringify(rollsData));
+            cacheRolls();
             renderRolls();
+        }
+
+        async function fetchRollsFromSync(options = {}) {
+            if (!hasRollsApi()) {
+                setRollsSyncStatus('Lokal gespeichert');
+                return;
+            }
+
+            if (!options.silent) setRollsSyncStatus('Synchronisiere...');
+
+            try {
+                const response = await fetch(`${ROLLS_API_URL}?action=list&ts=${Date.now()}`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const payload = await response.json();
+                const nextRolls = Array.isArray(payload) ? payload : (payload.rolls || []);
+                rollsData = nextRolls.filter(roll => roll && roll.id);
+                cacheRolls();
+                renderRolls();
+                setRollsSyncStatus('Synchronisiert');
+            } catch (error) {
+                console.error("Fehler beim Synchronisieren der Rollen", error);
+                setRollsSyncStatus('Offline: lokaler Stand');
+            }
+        }
+
+        async function syncRollMutation(action, roll) {
+            if (!hasRollsApi()) {
+                setRollsSyncStatus('Lokal gespeichert');
+                return;
+            }
+
+            setRollsSyncStatus('Speichere...');
+
+            try {
+                const response = await fetch(ROLLS_API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action, roll, id: roll ? roll.id : '' })
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const payload = await response.json();
+                if (payload.ok === false) throw new Error(payload.error || 'Sync failed');
+                if (payload.rolls) {
+                    rollsData = payload.rolls.filter(item => item && item.id);
+                    cacheRolls();
+                    renderRolls();
+                }
+                setRollsSyncStatus('Synchronisiert');
+            } catch (error) {
+                console.error("Fehler beim Speichern der Rolle", error);
+                setRollsSyncStatus('Nicht synchronisiert');
+            }
         }
 
         function switchView(viewName) {
@@ -1106,7 +1206,7 @@
             lastGeneratedRollName = nextName;
         }
 
-        function saveRollFromForm(event, rollId, filmId) {
+        async function saveRollFromForm(event, rollId, filmId) {
             event.preventDefault();
 
             const film = getFilmById(filmId);
@@ -1115,6 +1215,7 @@
             const loadedAt = document.getElementById('rollLoadedAt').value;
             const filmName = document.getElementById('rollFilmName').value.trim();
             const status = document.getElementById('rollStatus').value;
+            const existingRoll = rollId ? rollsData.find(item => item.id === rollId) : null;
             const roll = {
                 id: rollId || `roll_${Date.now()}`,
                 filmId: film ? film.id : '',
@@ -1122,26 +1223,31 @@
                 name: name || buildRollName(loadedAt, filmName, camera),
                 camera,
                 loadedAt,
-                status
+                status,
+                createdAt: existingRoll ? existingRoll.createdAt : '',
+                updatedAt: new Date().toISOString()
             };
 
             if (rollId) {
                 rollsData = rollsData.map(item => item.id === rollId ? roll : item);
             } else {
+                roll.createdAt = roll.updatedAt;
                 rollsData.unshift(roll);
             }
 
             saveRolls();
             closeModal(null);
             switchView('rolls');
+            await syncRollMutation('upsert', roll);
         }
 
-        function deleteRoll(rollId) {
+        async function deleteRoll(rollId) {
             const roll = rollsData.find(item => item.id === rollId);
             if (!roll) return;
             if (!window.confirm(`Rolle "${roll.name}" löschen?`)) return;
             rollsData = rollsData.filter(item => item.id !== rollId);
             saveRolls();
+            await syncRollMutation('delete', { id: rollId });
         }
 
         function openModal(film) {
