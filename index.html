@@ -43,7 +43,7 @@
 
         header {
             background: var(--surface);
-            padding: 20px;
+            padding: 16px 20px 14px;
             text-align: center;
             border-bottom: 1px solid #333;
             position: sticky;
@@ -56,6 +56,30 @@
             font-size: 1.5rem;
             color: var(--primary);
             letter-spacing: 1px;
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid #444;
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .nav-btn.active {
+            background: var(--primary);
+            color: #000;
+            border-color: var(--primary);
+            font-weight: 700;
         }
 
         .controls {
@@ -276,6 +300,130 @@
             box-shadow: 0 2px 10px rgba(236, 72, 153, 0.2);
         }
 
+        .primary-btn {
+            background: var(--primary);
+            color: #000;
+            border: 0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .secondary-btn {
+            background: #333;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .danger-btn {
+            background: transparent;
+            color: #ff8b8b;
+            border: 1px solid #744;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .view-section.hidden {
+            display: none;
+        }
+
+        .rolls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 20px 20px 10px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .rolls-header h2 {
+            margin: 0;
+            font-family: var(--font-headings);
+            font-size: 1.4rem;
+            color: #fff;
+        }
+
+        .rolls-header p {
+            margin: 4px 0 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .roll-card {
+            cursor: default;
+        }
+
+        .roll-card:hover {
+            transform: none;
+            border-color: #444;
+        }
+
+        .roll-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 14px 0;
+        }
+
+        .roll-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: auto;
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 14px;
+        }
+
+        .form-field label {
+            display: block;
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 6px;
+        }
+
+        .form-field input,
+        .form-field select {
+            width: 100%;
+            box-sizing: border-box;
+            background: #171717;
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: #fff;
+            padding: 12px;
+            font-size: 16px;
+        }
+
+        .form-field input:focus,
+        .form-field select:focus {
+            outline: 2px solid var(--primary);
+            border-color: transparent;
+        }
+
+        .empty-state {
+            grid-column: 1/-1;
+            text-align: center;
+            color: #777;
+            margin-top: 40px;
+            background: var(--surface);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 28px;
+        }
+
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -480,6 +628,18 @@
             opacity: 0.6;
             line-height: 1.4;
         }
+
+        @media (max-width: 640px) {
+            .rolls-header {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .roll-meta,
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 
@@ -487,53 +647,72 @@
 
     <header>
         <h1>FILM STOCK GUIDE</h1>
+        <nav class="top-nav" aria-label="Hauptnavigation">
+            <button type="button" id="guideNavBtn" class="nav-btn active" onclick="switchView('guide')">Guide</button>
+            <button type="button" id="rollsNavBtn" class="nav-btn" onclick="switchView('rolls')">Rollen</button>
+        </nav>
     </header>
 
-    <div class="controls">
-        <!-- Suche + Reset -->
-        <div style="display:flex; gap:8px; align-items:center; margin-bottom:10px;">
-            <input type="text" id="searchInput" class="search-box"
-                placeholder="Suche... (z.B. 'Farbe', 'Korn', 'Portrait')">
-            <button type="button" class="chip" onclick="resetFilters()">Reset</button>
-        </div>
+    <main>
+        <section id="guideView" class="view-section">
+            <div class="controls">
+                <!-- Suche + Reset -->
+                <div style="display:flex; gap:8px; align-items:center; margin-bottom:10px;">
+                    <input type="text" id="searchInput" class="search-box"
+                        placeholder="Suche... (z.B. 'Farbe', 'Korn', 'Portrait')">
+                    <button type="button" class="chip" onclick="resetFilters()">Reset</button>
+                </div>
 
-        <!-- Filter Gruppe 1: Einsatz -->
-        <div class="filter-section">
-            <span class="filter-label">Einsatz / Motiv</span>
-            <div class="filter-row">
-                <button id="useAllChip" class="chip active" onclick="setFilter('all', this, 'use')">Alle</button>
-                <button class="chip" onclick="setFilter('Portrait', this, 'use')">Portrait</button>
-                <button class="chip" onclick="setFilter('Travel', this, 'use')">Travel</button>
-                <button class="chip" onclick="setFilter('Street', this, 'use')">Street</button>
-                <button class="chip" onclick="setFilter('Landscape', this, 'use')">Landscape</button>
-                <button class="chip" onclick="setFilter('Low Light', this, 'use')">Low Light</button>
+                <!-- Filter Gruppe 1: Einsatz -->
+                <div class="filter-section">
+                    <span class="filter-label">Einsatz / Motiv</span>
+                    <div class="filter-row">
+                        <button id="useAllChip" class="chip active" onclick="setFilter('all', this, 'use')">Alle</button>
+                        <button class="chip" onclick="setFilter('Portrait', this, 'use')">Portrait</button>
+                        <button class="chip" onclick="setFilter('Travel', this, 'use')">Travel</button>
+                        <button class="chip" onclick="setFilter('Street', this, 'use')">Street</button>
+                        <button class="chip" onclick="setFilter('Landscape', this, 'use')">Landscape</button>
+                        <button class="chip" onclick="setFilter('Low Light', this, 'use')">Low Light</button>
+                    </div>
+                </div>
+
+                <!-- Filter Gruppe 2: Eigenschaften (Exakt wie in Notion) -->
+                <div class="filter-section">
+                    <span class="filter-label">Eigenschaften</span>
+                    <div class="filter-row">
+                        <button class="chip" onclick="setFilter('all', this, 'spec')">Alle</button>
+
+                        <!-- Korn -->
+                        <button class="chip" onclick="setFilter('Feinkorn', this, 'spec')">Feinkorn</button>
+                        <button class="chip" onclick="setFilter('Mittel', this, 'spec')">Korn: Mittel</button>
+                        <button class="chip" onclick="setFilter('Klassisch', this, 'spec')">Klassisch</button>
+                        <button class="chip" onclick="setFilter('Grob', this, 'spec')">Grob</button>
+
+                        <!-- Trenner -->
+                        <div style="width:1px; background:#333; margin:0 5px;"></div>
+
+                        <!-- Budget -->
+                        <button class="chip" onclick="setFilter('Budget', this, 'spec')">Budget</button>
+                        <button class="chip" onclick="setFilter('Medium', this, 'spec')">Preis: Mittel</button>
+                        <button class="chip" onclick="setFilter('Premium', this, 'spec')">Premium</button>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <!-- Filter Gruppe 2: Eigenschaften (Exakt wie in Notion) -->
-        <div class="filter-section">
-            <span class="filter-label">Eigenschaften</span>
-            <div class="filter-row">
-                <button class="chip" onclick="setFilter('all', this, 'spec')">Alle</button>
+            <div class="grid" id="grid"></div>
+        </section>
 
-                <!-- Korn -->
-                <button class="chip" onclick="setFilter('Feinkorn', this, 'spec')">Feinkorn</button>
-                <button class="chip" onclick="setFilter('Mittel', this, 'spec')">Korn: Mittel</button>
-                <button class="chip" onclick="setFilter('Klassisch', this, 'spec')">Klassisch</button>
-                <button class="chip" onclick="setFilter('Grob', this, 'spec')">Grob</button>
-
-                <!-- Trenner -->
-                <div style="width:1px; background:#333; margin:0 5px;"></div>
-
-                <!-- Budget -->
-                <button class="chip" onclick="setFilter('Budget', this, 'spec')">Budget</button>
-                <button class="chip" onclick="setFilter('Medium', this, 'spec')">Preis: Mittel</button>
-                <button class="chip" onclick="setFilter('Premium', this, 'spec')">Premium</button>
+        <section id="rollsView" class="view-section hidden">
+            <div class="rolls-header">
+                <div>
+                    <h2>Rollen</h2>
+                    <p>Welche Filme gerade in welchen Kameras stecken.</p>
+                </div>
+                <button type="button" class="primary-btn" onclick="openEmptyRollForm()">Rolle anlegen</button>
             </div>
-        </div>
-    </div>
-
-    <div class="grid" id="grid"></div>
+            <div class="grid" id="rollsGrid"></div>
+        </section>
+    </main>
 
     <!-- FOOTER (Variante A) -->
     <footer>
@@ -564,7 +743,89 @@
 
         // Diese URL erhältst du aus Google Sheets -> Datei -> Freigeben -> Im Web veröffentlichen -> als CSV
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQM0mtgFQ8vdcCsFCQPWBrcg0d-kNgUgJO1Sf_gH2qpCbGpDtsIJaPysqqXUBB1_-C5_4FhbUymRkBB/pub?output=csv&gid=0";
+        const ROLLS_KEY = 'filmGuideRolls_v1';
         let filmsData = [];
+        let rollsData = [];
+        let rollNameWasEdited = false;
+        let lastGeneratedRollName = '';
+
+        function loadRolls() {
+            const savedRolls = localStorage.getItem(ROLLS_KEY);
+            if (!savedRolls) {
+                rollsData = [];
+                renderRolls();
+                return;
+            }
+
+            try {
+                rollsData = JSON.parse(savedRolls);
+            } catch (e) {
+                console.error("Fehler beim Lesen der Rollen", e);
+                rollsData = [];
+            }
+
+            renderRolls();
+        }
+
+        function saveRolls() {
+            localStorage.setItem(ROLLS_KEY, JSON.stringify(rollsData));
+            renderRolls();
+        }
+
+        function switchView(viewName) {
+            const showGuide = viewName === 'guide';
+            document.getElementById('guideView').classList.toggle('hidden', !showGuide);
+            document.getElementById('rollsView').classList.toggle('hidden', showGuide);
+            document.getElementById('guideNavBtn').classList.toggle('active', showGuide);
+            document.getElementById('rollsNavBtn').classList.toggle('active', !showGuide);
+        }
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function getFilmById(filmId) {
+            return filmsData.find(film => film.id === filmId);
+        }
+
+        function formatTodayForInput() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function formatDateForRollName(dateValue) {
+            const parts = (dateValue || '').split('-');
+            if (parts.length !== 3) return '';
+            return `${parts[2]}_${parts[1]}_${parts[0].slice(-2)}`;
+        }
+
+        function formatDateForDisplay(dateValue) {
+            const parts = (dateValue || '').split('-');
+            if (parts.length !== 3) return 'Kein Datum';
+            return `${parts[2]}.${parts[1]}.${parts[0]}`;
+        }
+
+        function rollNamePart(value, fallback) {
+            const source = String(value || fallback || '').trim();
+            return source
+                .replace(/[^a-zA-Z0-9äöüÄÖÜß]+/g, '_')
+                .replace(/^_+|_+$/g, '') || fallback;
+        }
+
+        function buildRollName(dateValue, filmName, cameraName) {
+            const datePart = formatDateForRollName(dateValue) || formatDateForRollName(formatTodayForInput());
+            const filmPart = rollNamePart(filmName, 'Film');
+            const cameraPart = rollNamePart(cameraName, 'Kamera');
+            return `${datePart}_${filmPart}_${cameraPart}`;
+        }
 
         function prepareData() {
             if (!filmsData || filmsData.length === 0) {
@@ -603,6 +864,7 @@
             });
 
             renderGrid(filmsData);
+            renderRolls();
         }
 
         function renderGrid(data) {
@@ -721,7 +983,169 @@
             renderGrid(filmsData);
         }
 
+        function renderRolls() {
+            const grid = document.getElementById('rollsGrid');
+            if (!grid) return;
+
+            grid.innerHTML = '';
+
+            if (rollsData.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <strong>Noch keine Rollen.</strong><br>
+                        Lege eine Rolle direkt aus einem Film im Guide an.
+                    </div>
+                `;
+                return;
+            }
+
+            const statusRank = { "In Kamera": 1, "Belichtet": 2, "Entwickelt": 3 };
+            const sortedRolls = [...rollsData].sort((a, b) => {
+                const byStatus = (statusRank[a.status] || 9) - (statusRank[b.status] || 9);
+                if (byStatus !== 0) return byStatus;
+                return String(b.loadedAt || '').localeCompare(String(a.loadedAt || ''));
+            });
+
+            sortedRolls.forEach(roll => {
+                const film = getFilmById(roll.filmId);
+                const card = document.createElement('div');
+                card.className = 'card roll-card';
+                card.innerHTML = `
+                    <div class="card-top">
+                        <span class="card-brand">${escapeHtml(roll.status || 'In Kamera')}</span>
+                        <span class="badge badge-iso">${escapeHtml(formatDateForDisplay(roll.loadedAt))}</span>
+                    </div>
+                    <h3 class="card-name">${escapeHtml(roll.name)}</h3>
+                    <p class="card-short-desc">${escapeHtml(film ? `${film.brand} ${film.name}` : roll.filmName)}</p>
+                    <div class="roll-meta">
+                        <div class="info-card"><div class="info-item"><label>Kamera</label><span>${escapeHtml(roll.camera || 'Nicht gesetzt')}</span></div></div>
+                        <div class="info-card"><div class="info-item"><label>Film</label><span>${escapeHtml(roll.filmName || 'Nicht gesetzt')}</span></div></div>
+                    </div>
+                    <div class="roll-actions">
+                        ${film ? `<button type="button" class="secondary-btn" onclick="openModal(getFilmById('${escapeHtml(roll.filmId)}'))">Guide öffnen</button>` : ''}
+                        <button type="button" class="secondary-btn" onclick="openRollForm('${escapeHtml(roll.filmId)}', '${escapeHtml(roll.id)}')">Bearbeiten</button>
+                        <button type="button" class="danger-btn" onclick="deleteRoll('${escapeHtml(roll.id)}')">Löschen</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openEmptyRollForm() {
+            openRollForm('');
+        }
+
+        function openRollForm(filmId, rollId) {
+            const existingRoll = rollId ? rollsData.find(roll => roll.id === rollId) : null;
+            const film = getFilmById(filmId) || null;
+            const loadedAt = existingRoll ? existingRoll.loadedAt : formatTodayForInput();
+            const camera = existingRoll ? existingRoll.camera : '';
+            const filmName = existingRoll ? existingRoll.filmName : (film ? film.name : '');
+            const rollName = existingRoll ? existingRoll.name : buildRollName(loadedAt, filmName, camera);
+            const overlay = document.getElementById('modalOverlay');
+            const contentBlock = document.querySelector('.modal-content');
+
+            rollNameWasEdited = Boolean(existingRoll);
+            lastGeneratedRollName = rollName;
+
+            contentBlock.innerHTML = `
+                <button class="close-btn" onclick="closeModal(null)">&times;</button>
+                <div class="modal-body">
+                    <span class="card-brand" style="color:var(--primary);">${existingRoll ? 'Rolle bearbeiten' : 'Neue Rolle'}</span>
+                    <h2 style="font-family: var(--font-headings); font-weight:800; margin: 5px 0 24px; font-size: 2rem; color: #fff; line-height:1.1;">${escapeHtml(filmName || 'Film wählen')}</h2>
+                    <form class="form-grid" onsubmit="saveRollFromForm(event, '${escapeHtml(rollId || '')}', '${escapeHtml(filmId || '')}')">
+                        <div class="form-field">
+                            <label for="rollFilmName">Film</label>
+                            <input id="rollFilmName" type="text" value="${escapeHtml(filmName)}" ${film ? 'readonly' : ''} oninput="syncRollNameDefault()" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="rollCamera">Kamera</label>
+                            <input id="rollCamera" type="text" value="${escapeHtml(camera)}" placeholder="z.B. Leica M6" oninput="syncRollNameDefault()" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="rollLoadedAt">Datum eingelegt</label>
+                            <input id="rollLoadedAt" type="date" value="${escapeHtml(loadedAt)}" onchange="syncRollNameDefault()" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="rollName">Roll-Name</label>
+                            <input id="rollName" type="text" value="${escapeHtml(rollName)}" oninput="rollNameWasEdited = true" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="rollStatus">Status</label>
+                            <select id="rollStatus">
+                                <option ${(!existingRoll || existingRoll.status === 'In Kamera') ? 'selected' : ''}>In Kamera</option>
+                                <option ${(existingRoll && existingRoll.status === 'Belichtet') ? 'selected' : ''}>Belichtet</option>
+                                <option ${(existingRoll && existingRoll.status === 'Entwickelt') ? 'selected' : ''}>Entwickelt</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="primary-btn">Speichern</button>
+                    </form>
+                </div>
+            `;
+
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function syncRollNameDefault() {
+            const rollNameInput = document.getElementById('rollName');
+            const filmNameInput = document.getElementById('rollFilmName');
+            const cameraInput = document.getElementById('rollCamera');
+            const dateInput = document.getElementById('rollLoadedAt');
+            if (!rollNameInput || !filmNameInput || !cameraInput || !dateInput) return;
+
+            if (rollNameInput.value !== lastGeneratedRollName) {
+                rollNameWasEdited = true;
+            }
+
+            const nextName = buildRollName(dateInput.value, filmNameInput.value, cameraInput.value);
+            if (!rollNameWasEdited || rollNameInput.value === lastGeneratedRollName) {
+                rollNameInput.value = nextName;
+                rollNameWasEdited = false;
+            }
+            lastGeneratedRollName = nextName;
+        }
+
+        function saveRollFromForm(event, rollId, filmId) {
+            event.preventDefault();
+
+            const film = getFilmById(filmId);
+            const name = document.getElementById('rollName').value.trim();
+            const camera = document.getElementById('rollCamera').value.trim();
+            const loadedAt = document.getElementById('rollLoadedAt').value;
+            const filmName = document.getElementById('rollFilmName').value.trim();
+            const status = document.getElementById('rollStatus').value;
+            const roll = {
+                id: rollId || `roll_${Date.now()}`,
+                filmId: film ? film.id : '',
+                filmName: film ? film.name : filmName,
+                name: name || buildRollName(loadedAt, filmName, camera),
+                camera,
+                loadedAt,
+                status
+            };
+
+            if (rollId) {
+                rollsData = rollsData.map(item => item.id === rollId ? roll : item);
+            } else {
+                rollsData.unshift(roll);
+            }
+
+            saveRolls();
+            closeModal(null);
+            switchView('rolls');
+        }
+
+        function deleteRoll(rollId) {
+            const roll = rollsData.find(item => item.id === rollId);
+            if (!roll) return;
+            if (!window.confirm(`Rolle "${roll.name}" löschen?`)) return;
+            rollsData = rollsData.filter(item => item.id !== rollId);
+            saveRolls();
+        }
+
         function openModal(film) {
+            if (!film) return;
             const overlay = document.getElementById('modalOverlay');
             const contentBlock = document.querySelector('.modal-content');
 
@@ -746,6 +1170,7 @@
                             <span class="badge badge-iso" style="font-size:1rem; padding: 6px 12px; border-radius:8px;">ISO ${film.iso}</span>
                             <span class="badge ${badgeClass}" style="font-size:1rem; padding: 6px 12px; border-radius:8px;">${film.process}</span>
                         </div>
+                        <button type="button" class="primary-btn" style="margin-top:18px;" onclick="openRollForm('${escapeHtml(film.id)}')">Rolle anlegen</button>
                     </div>
                 </div>
 
@@ -848,6 +1273,7 @@
         }
 
         // Direkt starten
+        loadRolls();
         loadFilmsFromGoogleSheet();
     </script>
 
