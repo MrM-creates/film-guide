@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "add-packshot": "node tools/add-packshot.js"
+  }
+}
