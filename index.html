@@ -921,6 +921,15 @@
             return Boolean(ROLLS_API_URL && ROLLS_API_URL.trim());
         }
 
+        function withCacheBuster(url) {
+            const separator = url.includes('?') ? '&' : '?';
+            return `${url}${separator}_=${Date.now()}`;
+        }
+
+        function getCsvValue(row, key) {
+            return String(row[key] || '').trim();
+        }
+
         function setRollsSyncStatus(message) {
             const status = document.getElementById('rollsSyncStatus');
             if (status) status.textContent = message;
@@ -1817,7 +1826,7 @@
             // Erstmal Lade-Text anzeigen
             prepareData();
 
-            Papa.parse(SHEET_CSV_URL, {
+            Papa.parse(withCacheBuster(SHEET_CSV_URL), {
                 download: true,
                 header: true,
                 skipEmptyLines: true,
@@ -1827,31 +1836,31 @@
 
                     filmsData = data.map(row => {
                         return {
-                            id: row["ID"] || row["Name"]?.toLowerCase().replace(/\s+/g, '-'),
-                            brand: row["Marke"] || "",
-                            name: row["Name"] || "",
-                            img: row["Bilder"] ? 'img/' + row["Bilder"] : "", // Wir bauen weiter auf dem img/ Ordner
-                            iso: parseInt(row["ISO"]) || 0,
-                            type: row["Typ"] || "",
+                            id: getCsvValue(row, "ID") || getCsvValue(row, "Name").toLowerCase().replace(/\s+/g, '-'),
+                            brand: getCsvValue(row, "Marke"),
+                            name: getCsvValue(row, "Name"),
+                            img: getCsvValue(row, "Bilder") ? 'img/' + getCsvValue(row, "Bilder") : "", // Wir bauen weiter auf dem img/ Ordner
+                            iso: parseInt(getCsvValue(row, "ISO")) || 0,
+                            type: getCsvValue(row, "Typ"),
                             // Formate & Einsatz als Array trennen und normalisieren, z.B. "35mm" -> "135"
-                            formats: row["Formate"] ? row["Formate"].split(",").map(s => normalizeRollFormat(s)).filter(Boolean) : [],
-                            process: row["Typ"] === "B&W" ? "B&W" : (row["Typ"] === "Slide" ? "E-6" : "C-41"),
-                            shortDesc: row["Kurzbeschreibung"] || "",
+                            formats: getCsvValue(row, "Formate") ? getCsvValue(row, "Formate").split(",").map(s => normalizeRollFormat(s)).filter(Boolean) : [],
+                            process: getCsvValue(row, "Typ") === "B&W" ? "B&W" : (getCsvValue(row, "Typ") === "Slide" ? "E-6" : "C-41"),
+                            shortDesc: getCsvValue(row, "Kurzbeschreibung"),
                             specs: {
-                                grain: row["Grain"] || "",
-                                handling: row["Handling"] || "",
-                                saturation: row["Sättigung"] || "",
-                                budget: row["Budget"] || ""
+                                grain: getCsvValue(row, "Grain"),
+                                handling: getCsvValue(row, "Handling"),
+                                saturation: getCsvValue(row, "Sättigung"),
+                                budget: getCsvValue(row, "Budget")
                             },
-                            uses: row["Einsatz"] ? row["Einsatz"].split(",").map(s => s.trim()) : [],
+                            uses: getCsvValue(row, "Einsatz") ? getCsvValue(row, "Einsatz").split(",").map(s => s.trim()) : [],
                             keywords: [],
                             look: {
-                                desc: row["Look Beschreibung"] || ""
+                                desc: getCsvValue(row, "Look Beschreibung")
                             },
                             tips: {
-                                exposure: row["Tipp: Belichtung"] || "",
-                                scanning: row["Tipp: Scan"] || "",
-                                dev: row["Tipp: Dev"] || ""
+                                exposure: getCsvValue(row, "Tipp: Belichtung"),
+                                scanning: getCsvValue(row, "Tipp: Scan"),
+                                dev: getCsvValue(row, "Tipp: Dev")
                             }
                         };
                     });
