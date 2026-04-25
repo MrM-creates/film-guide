@@ -134,6 +134,10 @@ function normalizeCell(value) {
   if (value instanceof Date) {
     return Utilities.formatDate(value, Session.getScriptTimeZone(), 'yyyy-MM-dd');
   }
+  if (typeof value === 'number' && value >= 20000 && value <= 80000) {
+    const date = new Date(Date.UTC(1899, 11, 30) + Math.floor(value) * 86400000);
+    return Utilities.formatDate(date, Session.getScriptTimeZone(), 'yyyy-MM-dd');
+  }
   return value === null || value === undefined ? '' : String(value);
 }
 

@@ -1168,66 +1168,98 @@
             return `${year}-${month}-${day}`;
         }
 
+        function isValidDatePart(year, month, day) {
+            const fullYear = Number(year);
+            const monthNumber = Number(month);
+            const dayNumber = Number(day);
+            return fullYear >= 1900 &&
+                fullYear <= 2100 &&
+                monthNumber >= 1 &&
+                monthNumber <= 12 &&
+                dayNumber >= 1 &&
+                dayNumber <= 31;
+        }
+
+        function parseGoogleSheetsDateSerial(value) {
+            const serial = Number(value);
+            if (!Number.isFinite(serial) || serial < 20000 || serial > 80000) return null;
+
+            const date = new Date(Date.UTC(1899, 11, 30) + Math.floor(serial) * 86400000);
+            return {
+                year: date.getUTCFullYear(),
+                month: date.getUTCMonth() + 1,
+                day: date.getUTCDate()
+            };
+        }
+
+        function parseRollDateParts(dateValue) {
+            if (!dateValue) return null;
+            const rawDate = String(dateValue).trim();
+
+            if (/^\d+(\.\d+)?$/.test(rawDate)) {
+                return parseGoogleSheetsDateSerial(rawDate);
+            }
+
+            const isoMatch = rawDate.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+            if (isoMatch && isValidDatePart(isoMatch[1], isoMatch[2], isoMatch[3])) {
+                return {
+                    year: Number(isoMatch[1]),
+                    month: Number(isoMatch[2]),
+                    day: Number(isoMatch[3])
+                };
+            }
+
+            const shortIsoMatch = rawDate.match(/^(\d{2})-(\d{1,2})-(\d{1,2})$/);
+            if (shortIsoMatch && isValidDatePart(`20${shortIsoMatch[1]}`, shortIsoMatch[2], shortIsoMatch[3])) {
+                return {
+                    year: Number(`20${shortIsoMatch[1]}`),
+                    month: Number(shortIsoMatch[2]),
+                    day: Number(shortIsoMatch[3])
+                };
+            }
+
+            const swissMatch = rawDate.match(/^(\d{1,2})[./](\d{1,2})[./](\d{2,4})/);
+            if (swissMatch) {
+                const year = swissMatch[3].length === 2 ? `20${swissMatch[3]}` : swissMatch[3];
+                if (isValidDatePart(year, swissMatch[2], swissMatch[1])) {
+                    return {
+                        year: Number(year),
+                        month: Number(swissMatch[2]),
+                        day: Number(swissMatch[1])
+                    };
+                }
+            }
+
+            const parsedDate = new Date(rawDate);
+            if (!Number.isNaN(parsedDate.getTime()) && isValidDatePart(parsedDate.getFullYear(), parsedDate.getMonth() + 1, parsedDate.getDate())) {
+                return {
+                    year: parsedDate.getFullYear(),
+                    month: parsedDate.getMonth() + 1,
+                    day: parsedDate.getDate()
+                };
+            }
+
+            return null;
+        }
+
+        function formatRollDateParts(parts, yearMode = 'short') {
+            if (!parts) return '';
+            const year = yearMode === 'full' ? String(parts.year) : String(parts.year).slice(-2);
+            const month = String(parts.month).padStart(2, '0');
+            const day = String(parts.day).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
         function formatDateForRollName(dateValue) {
-            const parts = (dateValue || '').split('-');
-            if (parts.length !== 3) return '';
-            return `${parts[0].slice(-2)}-${parts[1]}-${parts[2]}`;
+            return formatRollDateParts(parseRollDateParts(dateValue), 'short');
         }
 
         function formatDateForDisplay(dateValue) {
-            if (!dateValue) return 'Kein Datum';
-            const rawDate = String(dateValue).trim();
-            const isoMatch = rawDate.match(/^(\d{4})-(\d{2})-(\d{2})/);
-            if (isoMatch) return `${isoMatch[1].slice(-2)}-${isoMatch[2]}-${isoMatch[3]}`;
-
-            const shortIsoMatch = rawDate.match(/^(\d{2})-(\d{2})-(\d{2})$/);
-            if (shortIsoMatch) return rawDate;
-
-            const swissMatch = rawDate.match(/^(\d{1,2})[./](\d{1,2})[./](\d{2,4})/);
-            if (swissMatch) {
-                const day = swissMatch[1].padStart(2, '0');
-                const month = swissMatch[2].padStart(2, '0');
-                const year = swissMatch[3].slice(-2);
-                return `${year}-${month}-${day}`;
-            }
-
-            const parsedDate = new Date(rawDate);
-            if (!Number.isNaN(parsedDate.getTime())) {
-                const year = String(parsedDate.getFullYear()).slice(-2);
-                const month = String(parsedDate.getMonth() + 1).padStart(2, '0');
-                const day = String(parsedDate.getDate()).padStart(2, '0');
-                return `${year}-${month}-${day}`;
-            }
-
-            return 'Kein Datum';
+            return formatRollDateParts(parseRollDateParts(dateValue), 'short') || 'Kein Datum';
         }
 
         function formatDateForInputValue(dateValue) {
-            if (!dateValue) return formatTodayForInput();
-            const rawDate = String(dateValue).trim();
-            const isoMatch = rawDate.match(/^(\d{4})-(\d{2})-(\d{2})/);
-            if (isoMatch) return `${isoMatch[1]}-${isoMatch[2]}-${isoMatch[3]}`;
-
-            const shortIsoMatch = rawDate.match(/^(\d{2})-(\d{2})-(\d{2})$/);
-            if (shortIsoMatch) return `20${shortIsoMatch[1]}-${shortIsoMatch[2]}-${shortIsoMatch[3]}`;
-
-            const swissMatch = rawDate.match(/^(\d{1,2})[./](\d{1,2})[./](\d{2,4})/);
-            if (swissMatch) {
-                const day = swissMatch[1].padStart(2, '0');
-                const month = swissMatch[2].padStart(2, '0');
-                const year = swissMatch[3].length === 2 ? `20${swissMatch[3]}` : swissMatch[3];
-                return `${year}-${month}-${day}`;
-            }
-
-            const parsedDate = new Date(rawDate);
-            if (!Number.isNaN(parsedDate.getTime())) {
-                const year = parsedDate.getFullYear();
-                const month = String(parsedDate.getMonth() + 1).padStart(2, '0');
-                const day = String(parsedDate.getDate()).padStart(2, '0');
-                return `${year}-${month}-${day}`;
-            }
-
-            return formatTodayForInput();
+            return formatRollDateParts(parseRollDateParts(dateValue), 'full') || formatTodayForInput();
         }
 
         function getRollDateValue(roll) {
