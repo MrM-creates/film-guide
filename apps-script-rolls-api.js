@@ -13,33 +13,37 @@ const HEADERS = [
   'format',
   'ratedIso',
   'note',
-  'process'
+  'process',
+  'userEmail',
+  'userName'
 ];
 
 function doGet(event) {
   const action = event && event.parameter && event.parameter.action;
+  const userEmail = event && event.parameter && event.parameter.userEmail;
   if (action === 'list') {
-    return jsonResponse({ rolls: listRolls() });
+    return jsonResponse({ rolls: listRolls(userEmail) });
   }
 
-  return jsonResponse({ ok: true, rolls: listRolls() });
+  return jsonResponse({ ok: true, rolls: listRolls(userEmail) });
 }
 
 function doPost(event) {
   const payload = JSON.parse((event.postData && event.postData.contents) || '{}');
+  const userEmail = normalizeEmail(payload.userEmail || (payload.roll && payload.roll.userEmail));
   const lock = LockService.getScriptLock();
   lock.waitLock(10000);
 
   try {
     if (payload.action === 'delete') {
-      deleteRoll(payload.id || (payload.roll && payload.roll.id));
+      deleteRoll(payload.id || (payload.roll && payload.roll.id), userEmail);
     } else if (payload.action === 'upsert') {
-      upsertRoll(payload.roll || {});
+      upsertRoll(payload.roll || {}, userEmail);
     } else {
       throw new Error('Unknown action');
     }
 
-    return jsonResponse({ ok: true, rolls: listRolls() });
+    return jsonResponse({ ok: true, rolls: listRolls(userEmail) });
   } catch (error) {
     return jsonResponse({ ok: false, error: String(error) });
   } finally {
@@ -47,7 +51,7 @@ function doPost(event) {
   }
 }
 
-function listRolls() {
+function listRolls(userEmail) {
   const sheet = getRollsSheet();
   const values = sheet.getDataRange().getValues();
   if (values.length <= 1) return [];
@@ -61,11 +65,13 @@ function listRolls() {
         roll[header] = normalizeCell(row[index]);
       });
       return roll;
-    });
+    })
+    .filter(roll => !userEmail || normalizeEmail(roll.userEmail) === normalizeEmail(userEmail));
 }
 
-function upsertRoll(roll) {
+function upsertRoll(roll, userEmail) {
   if (!roll.id) roll.id = Utilities.getUuid();
+  if (userEmail) roll.userEmail = normalizeEmail(userEmail);
 
   const sheet = getRollsSheet();
   const values = sheet.getDataRange().getValues();
@@ -80,15 +86,21 @@ function upsertRoll(roll) {
   }
 }
 
-function deleteRoll(id) {
+function deleteRoll(id, userEmail) {
   if (!id) return;
 
   const sheet = getRollsSheet();
   const values = sheet.getDataRange().getValues();
+  const headers = values[0];
+  const emailIndex = headers.indexOf('userEmail');
   const ids = values.slice(1).map(row => String(row[0] || ''));
   const existingIndex = ids.indexOf(String(id));
 
   if (existingIndex !== -1) {
+    if (userEmail && emailIndex !== -1) {
+      const rowEmail = normalizeEmail(values[existingIndex + 1][emailIndex]);
+      if (rowEmail !== normalizeEmail(userEmail)) return;
+    }
     sheet.deleteRow(existingIndex + 2);
   }
 }
@@ -123,6 +135,10 @@ function normalizeCell(value) {
     return Utilities.formatDate(value, Session.getScriptTimeZone(), 'yyyy-MM-dd');
   }
   return value === null || value === undefined ? '' : String(value);
+}
+
+function normalizeEmail(value) {
+  return String(value || '').trim().toLowerCase();
 }
 
 function jsonResponse(payload) {

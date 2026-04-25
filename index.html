@@ -362,6 +362,8 @@
 
         .roll-card {
             cursor: default;
+            padding: 0;
+            overflow: hidden;
         }
 
         .roll-card:hover {
@@ -374,6 +376,35 @@
             font-weight: 700;
             line-height: 1.25;
             overflow-wrap: anywhere;
+        }
+
+        .roll-summary {
+            cursor: pointer;
+            display: grid;
+            gap: 8px;
+            list-style: none;
+            padding: 15px;
+        }
+
+        .roll-summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .roll-summary-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .roll-summary-hint {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .roll-details-body {
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 15px;
         }
 
         .roll-meta {
@@ -453,6 +484,12 @@
             font-size: 0.8rem;
             width: 100%;
             text-align: right;
+        }
+
+        .profile-line {
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            margin-top: 6px;
         }
 
         .form-grid {
@@ -736,7 +773,10 @@
                 text-align: left;
             }
 
-            .roll-meta,
+            .roll-card .roll-meta {
+                grid-template-columns: 1fr 1fr;
+            }
+
             .info-grid {
                 grid-template-columns: 1fr;
             }
@@ -808,9 +848,11 @@
                 <div>
                     <h2>Rollen</h2>
                     <p>Welche Filme gerade in welchen Kameras stecken.</p>
+                    <div class="profile-line" id="profileSummary">Kein Profil gesetzt</div>
                 </div>
                 <div class="rolls-tools">
                     <button type="button" class="secondary-btn" onclick="fetchRollsFromSync()">Sync</button>
+                    <button type="button" class="secondary-btn" onclick="openProfileForm()">Profil</button>
                     <button type="button" class="primary-btn" onclick="openEmptyRollForm()">Rolle anlegen</button>
                     <span class="sync-status" id="rollsSyncStatus">Lokal gespeichert</span>
                 </div>
@@ -864,10 +906,12 @@
         // Diese URL erhältst du aus Google Sheets -> Datei -> Freigeben -> Im Web veröffentlichen -> als CSV
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQM0mtgFQ8vdcCsFCQPWBrcg0d-kNgUgJO1Sf_gH2qpCbGpDtsIJaPysqqXUBB1_-C5_4FhbUymRkBB/pub?output=csv&gid=0";
         const ROLLS_KEY = 'filmGuideRolls_v1';
+        const USER_PROFILE_KEY = 'filmGuideUserProfile_v1';
         // Nach dem Deploy des Apps Scripts hier die Web-App-URL eintragen.
         const ROLLS_API_URL = 'https://script.google.com/macros/s/AKfycbxsLf8iWuDigpgdL8RBreuFp7CfMGq_CQVWL5UdHC_sv9BUADBJb4V7pUHKyBVWwpej7Q/exec';
         let filmsData = [];
         let rollsData = [];
+        let userProfile = null;
         let rollStatusFilter = 'all';
         let rollSortMode = 'status';
         let rollNameWasEdited = false;
@@ -886,6 +930,77 @@
             localStorage.setItem(ROLLS_KEY, JSON.stringify(rollsData));
         }
 
+        function normalizeEmail(value) {
+            return String(value || '').trim().toLowerCase();
+        }
+
+        function loadUserProfile() {
+            const savedProfile = localStorage.getItem(USER_PROFILE_KEY);
+            if (!savedProfile) {
+                userProfile = null;
+                updateProfileSummary();
+                return;
+            }
+
+            try {
+                const parsedProfile = JSON.parse(savedProfile);
+                userProfile = {
+                    name: String(parsedProfile.name || '').trim(),
+                    email: normalizeEmail(parsedProfile.email)
+                };
+            } catch (error) {
+                console.error("Fehler beim Lesen des Profils", error);
+                userProfile = null;
+            }
+
+            updateProfileSummary();
+        }
+
+        function saveUserProfile(profile) {
+            userProfile = {
+                name: String(profile.name || '').trim(),
+                email: normalizeEmail(profile.email)
+            };
+            localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(userProfile));
+            updateProfileSummary();
+        }
+
+        function hasUserProfile() {
+            return Boolean(userProfile && userProfile.email);
+        }
+
+        function updateProfileSummary() {
+            const profileSummary = document.getElementById('profileSummary');
+            if (!profileSummary) return;
+
+            if (hasUserProfile()) {
+                profileSummary.textContent = `${userProfile.name || 'Profil'} · ${userProfile.email}`;
+            } else {
+                profileSummary.textContent = 'Kein Profil gesetzt';
+            }
+        }
+
+        function requireUserProfile() {
+            if (hasUserProfile()) return true;
+            openProfileForm();
+            return false;
+        }
+
+        function attachCurrentUser(roll) {
+            if (!hasUserProfile()) return roll;
+            return {
+                ...roll,
+                userEmail: normalizeEmail(roll.userEmail || roll['User Email'] || userProfile.email),
+                userName: roll.userName || roll['User Name'] || userProfile.name || ''
+            };
+        }
+
+        function isCurrentUserRoll(roll) {
+            if (!hasUserProfile()) return true;
+            const rollEmail = normalizeEmail(roll.userEmail || roll['User Email'] || roll.email || roll.Mail);
+            return !rollEmail || rollEmail === userProfile.email;
+        }
+
         function normalizeRollFormat(value) {
             const rawFormat = String(value || '').trim();
             const compactFormat = rawFormat.toLowerCase().replace(/\s+/g, '');
@@ -901,9 +1016,10 @@
         function mergeSyncedRolls(syncedRolls) {
             return syncedRolls
                 .filter(roll => roll && roll.id)
+                .filter(isCurrentUserRoll)
                 .map(serverRoll => {
                     const localRoll = rollsData.find(item => item.id === serverRoll.id) || {};
-                    const mergedRoll = { ...localRoll, ...serverRoll };
+                    const mergedRoll = attachCurrentUser({ ...localRoll, ...serverRoll });
 
                     ['format', 'ratedIso', 'note', 'process'].forEach(key => {
                         if (!serverRoll[key] && localRoll[key]) {
@@ -926,7 +1042,10 @@
                 renderRolls();
             } else {
                 try {
-                    rollsData = JSON.parse(savedRolls);
+                    rollsData = JSON.parse(savedRolls)
+                        .filter(isCurrentUserRoll)
+                        .map(attachCurrentUser);
+                    cacheRolls();
                 } catch (e) {
                     console.error("Fehler beim Lesen der Rollen", e);
                     rollsData = [];
@@ -944,6 +1063,11 @@
         }
 
         async function fetchRollsFromSync(options = {}) {
+            if (!requireUserProfile()) {
+                setRollsSyncStatus('Profil fehlt');
+                return;
+            }
+
             if (!hasRollsApi()) {
                 setRollsSyncStatus('Lokal gespeichert');
                 return;
@@ -952,7 +1076,7 @@
             if (!options.silent) setRollsSyncStatus('Synchronisiere...');
 
             try {
-                const response = await fetch(`${ROLLS_API_URL}?action=list&ts=${Date.now()}`);
+                const response = await fetch(`${ROLLS_API_URL}?action=list&userEmail=${encodeURIComponent(userProfile.email)}&ts=${Date.now()}`);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
                 const payload = await response.json();
@@ -968,6 +1092,11 @@
         }
 
         async function syncRollMutation(action, roll) {
+            if (!requireUserProfile()) {
+                setRollsSyncStatus('Profil fehlt');
+                return;
+            }
+
             if (!hasRollsApi()) {
                 setRollsSyncStatus('Lokal gespeichert');
                 return;
@@ -978,7 +1107,12 @@
             try {
                 const response = await fetch(ROLLS_API_URL, {
                     method: 'POST',
-                    body: JSON.stringify({ action, roll, id: roll ? roll.id : '' })
+                    body: JSON.stringify({
+                        action,
+                        roll: roll ? attachCurrentUser(roll) : null,
+                        id: roll ? roll.id : '',
+                        userEmail: userProfile.email
+                    })
                 });
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
@@ -1115,7 +1249,7 @@
         }
 
         function getRollRatedIso(roll) {
-            return getRollValue(roll, ['ratedIso', 'ratedISO', 'ISO geratet', 'Rated ISO']);
+            return getRollValue(roll, ['ratedIso', 'ratedISO', 'ISO eingestellt', 'ISO geratet', 'Rated ISO']);
         }
 
         function getRollNote(roll) {
@@ -1315,6 +1449,17 @@
 
             grid.innerHTML = '';
 
+            if (!hasUserProfile()) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <strong>Profil fehlt.</strong><br>
+                        Lege ein Profil mit Name und Mail an, damit nur deine Rollen angezeigt werden.<br><br>
+                        <button type="button" class="primary-btn" onclick="openProfileForm()">Profil anlegen</button>
+                    </div>
+                `;
+                return;
+            }
+
             if (rollsData.length === 0) {
                 grid.innerHTML = `
                     <div class="empty-state">
@@ -1367,24 +1512,31 @@
                 const card = document.createElement('div');
                 card.className = 'card roll-card';
                 card.innerHTML = `
-                    <div class="card-top">
-                        <span class="card-brand">${escapeHtml(roll.status || 'In Kamera')}</span>
-                        <span class="badge badge-iso">${escapeHtml(formatDateForDisplay(rollDate))}</span>
-                    </div>
-                    <h3 class="card-name">${escapeHtml(roll.name)}</h3>
-                    <p class="card-short-desc">${escapeHtml(film ? `${film.brand} ${film.name}` : roll.filmName)}</p>
-                    <div class="roll-meta">
-                        <div class="info-card"><div class="info-item"><label>Kamera</label><span>${escapeHtml(roll.camera || 'Nicht gesetzt')}</span></div></div>
-                        <div class="info-card"><div class="info-item"><label>Format</label><span>${escapeHtml(format || 'Nicht gesetzt')}</span></div></div>
-                        <div class="info-card"><div class="info-item"><label>ISO geratet</label><span>${escapeHtml(ratedIso || 'Nicht gesetzt')}</span></div></div>
-                        <div class="info-card"><div class="info-item"><label>Entwicklung</label><span>${escapeHtml(process || (film ? film.process : '') || 'Nicht gesetzt')}</span></div></div>
-                    </div>
-                    ${note ? `<p class="card-short-desc" style="margin-bottom:14px;">${escapeHtml(note)}</p>` : ''}
-                    <div class="roll-actions">
-                        ${film ? `<button type="button" class="secondary-btn" onclick="openModal(getFilmById('${escapeHtml(roll.filmId)}'))">Guide öffnen</button>` : ''}
-                        <button type="button" class="secondary-btn" onclick="openRollForm('${escapeHtml(roll.filmId)}', '${escapeHtml(roll.id)}')">Bearbeiten</button>
-                        <button type="button" class="danger-btn" onclick="deleteRoll('${escapeHtml(roll.id)}')">Löschen</button>
-                    </div>
+                    <details>
+                        <summary class="roll-summary">
+                            <div class="roll-summary-top">
+                                <span class="card-brand">${escapeHtml(roll.status || 'In Kamera')}</span>
+                                <span class="badge badge-iso">${escapeHtml(formatDateForDisplay(rollDate))}</span>
+                            </div>
+                            <h3 class="card-name">${escapeHtml(roll.name)}</h3>
+                            <span class="roll-summary-hint">Details anzeigen</span>
+                        </summary>
+                        <div class="roll-details-body">
+                            <p class="card-short-desc">${escapeHtml(film ? `${film.brand} ${film.name}` : roll.filmName)}</p>
+                            <div class="roll-meta">
+                                <div class="info-card"><div class="info-item"><label>Kamera</label><span>${escapeHtml(roll.camera || 'Nicht gesetzt')}</span></div></div>
+                                <div class="info-card"><div class="info-item"><label>Format</label><span>${escapeHtml(format || 'Nicht gesetzt')}</span></div></div>
+                                <div class="info-card"><div class="info-item"><label>ISO eingestellt</label><span>${escapeHtml(ratedIso || 'Nicht gesetzt')}</span></div></div>
+                                <div class="info-card"><div class="info-item"><label>Entwicklung</label><span>${escapeHtml(process || (film ? film.process : '') || 'Nicht gesetzt')}</span></div></div>
+                            </div>
+                            ${note ? `<p class="card-short-desc" style="margin-bottom:14px;">${escapeHtml(note)}</p>` : ''}
+                            <div class="roll-actions">
+                                ${film ? `<button type="button" class="secondary-btn" onclick="openModal(getFilmById('${escapeHtml(roll.filmId)}'))">Guide öffnen</button>` : ''}
+                                <button type="button" class="secondary-btn" onclick="openRollForm('${escapeHtml(roll.filmId)}', '${escapeHtml(roll.id)}')">Bearbeiten</button>
+                                <button type="button" class="danger-btn" onclick="deleteRoll('${escapeHtml(roll.id)}')">Löschen</button>
+                            </div>
+                        </div>
+                    </details>
                 `;
                 grid.appendChild(card);
             });
@@ -1394,9 +1546,50 @@
             openRollForm('');
         }
 
+        function openProfileForm() {
+            const overlay = document.getElementById('modalOverlay');
+            const contentBlock = document.querySelector('.modal-content');
+            const name = userProfile ? userProfile.name : '';
+            const email = userProfile ? userProfile.email : '';
+
+            contentBlock.innerHTML = `
+                <button class="close-btn" onclick="closeModal(null)">&times;</button>
+                <div class="modal-body">
+                    <span class="card-brand" style="color:var(--primary);">Profil</span>
+                    <h2 style="font-family: var(--font-headings); font-weight:800; margin: 5px 0 12px; font-size: 2rem; color: #fff; line-height:1.1;">Rollen zuordnen</h2>
+                    <p style="color:#a1a1aa; line-height:1.5; margin:0 0 24px;">Name und Mail trennen deine Rollen von anderen Nutzern. Es ist keine echte Anmeldung mit Passwort.</p>
+                    <form class="form-grid" onsubmit="saveProfileFromForm(event)">
+                        <div class="form-field">
+                            <label for="profileName">Name</label>
+                            <input id="profileName" type="text" value="${escapeHtml(name)}" placeholder="Dein Name" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="profileEmail">Mail</label>
+                            <input id="profileEmail" type="email" value="${escapeHtml(email)}" placeholder="name@example.com" required>
+                        </div>
+                        <button type="submit" class="primary-btn">Speichern</button>
+                    </form>
+                </div>
+            `;
+
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function saveProfileFromForm(event) {
+            event.preventDefault();
+            const name = document.getElementById('profileName').value.trim();
+            const email = document.getElementById('profileEmail').value.trim();
+            saveUserProfile({ name, email });
+            closeModal(null);
+            loadRolls();
+        }
+
         function openRollForm(filmId, rollId) {
+            if (!requireUserProfile()) return;
             const existingRoll = rollId ? rollsData.find(roll => roll.id === rollId) : null;
-            const film = getFilmById(filmId) || null;
+            const fallbackFilmName = existingRoll ? getRollValue(existingRoll, ['filmName', 'Film']) : '';
+            const film = getFilmById(filmId) || filmsData.find(item => item.name === fallbackFilmName) || null;
             const loadedAt = existingRoll ? formatDateForInputValue(getRollDateValue(existingRoll)) : formatTodayForInput();
             const camera = existingRoll ? existingRoll.camera : '';
             const filmName = existingRoll ? existingRoll.filmName : (film ? film.name : '');
@@ -1407,11 +1600,12 @@
             const rollName = existingRoll ? existingRoll.name : buildRollName(loadedAt, filmName, camera);
             const overlay = document.getElementById('modalOverlay');
             const contentBlock = document.querySelector('.modal-content');
-            const formatChoices = film ? [...new Set(film.formats.map(normalizeRollFormat).filter(Boolean))] : [];
+            const defaultFormatChoices = ['135', '120', '4x5', '8x10', 'Instax'];
+            const formatChoices = film
+                ? [...new Set(film.formats.map(normalizeRollFormat).filter(Boolean))]
+                : [...defaultFormatChoices];
             if (selectedFormat && !formatChoices.includes(selectedFormat)) formatChoices.push(selectedFormat);
-            const formatOptions = formatChoices.length > 0
-                ? formatChoices.map(format => `<option value="${escapeHtml(format)}" ${format === selectedFormat ? 'selected' : ''}>${escapeHtml(format)}</option>`).join('')
-                : '';
+            const formatOptions = formatChoices.map(format => `<option value="${escapeHtml(format)}" ${format === selectedFormat ? 'selected' : ''}>${escapeHtml(format)}</option>`).join('');
 
             rollNameWasEdited = Boolean(existingRoll);
             lastGeneratedRollName = rollName;
@@ -1436,17 +1630,13 @@
                         </div>
                         <div class="form-field">
                             <label for="rollFormat">Format</label>
-                            ${formatOptions ? `
-                                <select id="rollFormat" required>
-                                    <option value="">Format wählen</option>
-                                    ${formatOptions}
-                                </select>
-                            ` : `
-                                <input id="rollFormat" type="text" value="${escapeHtml(selectedFormat)}" placeholder="z.B. 135 oder 120" required>
-                            `}
+                            <select id="rollFormat" required>
+                                <option value="">Format wählen</option>
+                                ${formatOptions}
+                            </select>
                         </div>
                         <div class="form-field">
-                            <label for="rollRatedIso">ISO geratet</label>
+                            <label for="rollRatedIso">ISO eingestellt</label>
                             <input id="rollRatedIso" type="number" inputmode="numeric" value="${escapeHtml(ratedIso)}" placeholder="z.B. 200">
                         </div>
                         <div class="form-field">
@@ -1521,7 +1711,9 @@
                 process,
                 status,
                 createdAt: existingRoll ? getRollValue(existingRoll, ['createdAt', 'created_at', 'Created at', 'created at']) : '',
-                updatedAt: new Date().toISOString()
+                updatedAt: new Date().toISOString(),
+                userEmail: userProfile.email,
+                userName: userProfile.name || ''
             };
 
             if (rollId) {
@@ -1641,8 +1833,8 @@
                             img: row["Bilder"] ? 'img/' + row["Bilder"] : "", // Wir bauen weiter auf dem img/ Ordner
                             iso: parseInt(row["ISO"]) || 0,
                             type: row["Typ"] || "",
-                            // Formate & Einsatz als Array trennen, z.B. "120, 35mm" -> ["120", "35mm"]
-                            formats: row["Formate"] ? row["Formate"].split(",").map(s => s.trim()) : [],
+                            // Formate & Einsatz als Array trennen und normalisieren, z.B. "35mm" -> "135"
+                            formats: row["Formate"] ? row["Formate"].split(",").map(s => normalizeRollFormat(s)).filter(Boolean) : [],
                             process: row["Typ"] === "B&W" ? "B&W" : (row["Typ"] === "Slide" ? "E-6" : "C-41"),
                             shortDesc: row["Kurzbeschreibung"] || "",
                             specs: {
@@ -1675,6 +1867,7 @@
         }
 
         // Direkt starten
+        loadUserProfile();
         loadRolls();
         loadFilmsFromGoogleSheet();
     </script>
