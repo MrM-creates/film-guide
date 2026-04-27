@@ -441,6 +441,30 @@
             width: 100%;
         }
 
+        .rolls-search {
+            max-width: 1200px;
+            margin: 0 auto 12px;
+            padding: 0 20px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .roll-search-box {
+            width: 100%;
+            box-sizing: border-box;
+            background: #171717;
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: #fff;
+            padding: 12px 14px;
+            font-size: 16px;
+        }
+
+        .roll-search-box:focus {
+            outline: 2px solid var(--primary);
+            border-color: transparent;
+        }
+
         .roll-filter-row {
             display: flex;
             gap: 8px;
@@ -484,6 +508,42 @@
             font-size: 0.8rem;
             width: 100%;
             text-align: right;
+        }
+
+        .roll-result-section {
+            grid-column: 1/-1;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .roll-result-heading {
+            grid-column: 1/-1;
+            margin: 8px 0 -4px;
+            color: #fff;
+            font-family: var(--font-headings);
+            font-size: 1rem;
+            font-weight: 800;
+        }
+
+        .roll-result-heading span {
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-left: 6px;
+        }
+
+        .roll-code {
+            background: rgba(245, 197, 24, 0.12);
+            border: 1px solid rgba(245, 197, 24, 0.35);
+            border-radius: 8px;
+            color: var(--primary);
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            padding: 5px 9px;
+            white-space: nowrap;
         }
 
         .profile-line {
@@ -872,6 +932,11 @@
                     <option value="format">Format</option>
                 </select>
             </div>
+            <div class="rolls-search">
+                <input type="search" id="rollSearchInput" class="roll-search-box"
+                    placeholder="Archiv suchen: Film, Kamera, Datum oder Notiz"
+                    aria-label="Rollen suchen" oninput="setRollSearchQuery(this.value)">
+            </div>
             <div class="grid" id="rollsGrid"></div>
         </section>
     </main>
@@ -914,6 +979,7 @@
         let userProfile = null;
         let rollStatusFilter = 'all';
         let rollSortMode = 'status';
+        let rollSearchQuery = '';
         let rollNameWasEdited = false;
         let lastGeneratedRollName = '';
 
@@ -1010,6 +1076,51 @@
             return !rollEmail || rollEmail === userProfile.email;
         }
 
+        function getRollCode(roll) {
+            return getRollValue(roll, ['rollCode', 'Roll ID', 'Roll-ID', 'Rollen-ID']);
+        }
+
+        function getRollCodeNumber(roll) {
+            const match = String(getRollCode(roll) || '').match(/^R(\d+)$/i);
+            return match ? Number(match[1]) : 0;
+        }
+
+        function formatRollCode(number) {
+            return `R${String(number).padStart(3, '0')}`;
+        }
+
+        function generateNextRollCode(existingRolls) {
+            const highestNumber = existingRolls.reduce((highest, roll) => Math.max(highest, getRollCodeNumber(roll)), 0);
+            return formatRollCode(highestNumber + 1);
+        }
+
+        function ensureUserRollCodes(rolls) {
+            const usedCodes = new Set();
+            const nextRolls = [...rolls]
+                .sort((a, b) => getRollSortDateValue(a).localeCompare(getRollSortDateValue(b)) || String(a.id || '').localeCompare(String(b.id || '')));
+            let nextNumber = nextRolls.reduce((highest, roll) => Math.max(highest, getRollCodeNumber(roll)), 0) + 1;
+
+            nextRolls.forEach(roll => {
+                const currentCode = getRollCode(roll);
+                if (currentCode && !usedCodes.has(currentCode)) {
+                    roll.rollCode = currentCode;
+                    usedCodes.add(currentCode);
+                    return;
+                }
+
+                let nextCode = formatRollCode(nextNumber);
+                while (usedCodes.has(nextCode)) {
+                    nextNumber += 1;
+                    nextCode = formatRollCode(nextNumber);
+                }
+                roll.rollCode = nextCode;
+                usedCodes.add(nextCode);
+                nextNumber += 1;
+            });
+
+            return rolls;
+        }
+
         function normalizeRollFormat(value) {
             const rawFormat = String(value || '').trim();
             const compactFormat = rawFormat.toLowerCase().replace(/\s+/g, '');
@@ -1023,14 +1134,14 @@
         }
 
         function mergeSyncedRolls(syncedRolls) {
-            return syncedRolls
+            const mergedRolls = syncedRolls
                 .filter(roll => roll && roll.id)
                 .filter(isCurrentUserRoll)
                 .map(serverRoll => {
                     const localRoll = rollsData.find(item => item.id === serverRoll.id) || {};
                     const mergedRoll = attachCurrentUser({ ...localRoll, ...serverRoll });
 
-                    ['format', 'ratedIso', 'note', 'process'].forEach(key => {
+                    ['format', 'ratedIso', 'note', 'process', 'rollCode'].forEach(key => {
                         if (!serverRoll[key] && localRoll[key]) {
                             mergedRoll[key] = localRoll[key];
                         }
@@ -1042,6 +1153,7 @@
                     mergedRoll.format = normalizeRollFormat(mergedRoll.format);
                     return mergedRoll;
                 });
+            return ensureUserRollCodes(mergedRolls);
         }
 
         function loadRolls() {
@@ -1054,6 +1166,7 @@
                     rollsData = JSON.parse(savedRolls)
                         .filter(isCurrentUserRoll)
                         .map(attachCurrentUser);
+                    ensureUserRollCodes(rollsData);
                     cacheRolls();
                 } catch (e) {
                     console.error("Fehler beim Lesen der Rollen", e);
@@ -1484,6 +1597,101 @@
             renderRolls();
         }
 
+        function setRollSearchQuery(value) {
+            rollSearchQuery = String(value || '').trim().toLowerCase();
+            renderRolls();
+        }
+
+        function getRollSearchText(roll) {
+            const film = getFilmById(roll.filmId);
+            return [
+                getRollCode(roll),
+                roll.name,
+                roll.status,
+                roll.camera,
+                roll.filmName,
+                film ? film.brand : '',
+                film ? film.name : '',
+                film ? film.process : '',
+                getRollDateValue(roll),
+                formatDateForDisplay(getRollDateValue(roll)),
+                formatRollDateParts(parseRollDateParts(getRollDateValue(roll)), 'full'),
+                getRollFormat(roll),
+                getRollRatedIso(roll),
+                getRollProcess(roll),
+                getRollNote(roll)
+            ].join(' ').toLowerCase();
+        }
+
+        function rollMatchesSearch(roll) {
+            if (!rollSearchQuery) return true;
+            return getRollSearchText(roll).includes(rollSearchQuery);
+        }
+
+        function getRollSortDateValue(roll) {
+            return formatRollDateParts(parseRollDateParts(getRollDateValue(roll)), 'full') || String(getRollDateValue(roll) || '');
+        }
+
+        function compareRollDateDesc(a, b) {
+            return getRollSortDateValue(b).localeCompare(getRollSortDateValue(a));
+        }
+
+        function compareRollDateAsc(a, b) {
+            return getRollSortDateValue(a).localeCompare(getRollSortDateValue(b));
+        }
+
+        function sortRollsForSearchGroup(status, rolls) {
+            const sortedRolls = [...rolls];
+            if (status === 'Belichtet') {
+                return sortedRolls.sort(compareRollDateAsc);
+            }
+            if (status === 'Entwickelt') {
+                return sortedRolls.sort(compareRollDateDesc);
+            }
+            return sortedRolls.sort((a, b) => String(a.camera || '').localeCompare(String(b.camera || '')) || compareRollDateDesc(a, b));
+        }
+
+        function renderRollCard(roll) {
+            const film = getFilmById(roll.filmId);
+            const rollDate = getRollDateValue(roll);
+            const format = getRollFormat(roll);
+            const ratedIso = getRollRatedIso(roll);
+            const note = getRollNote(roll);
+            const process = getRollProcess(roll);
+            const rollCode = getRollCode(roll);
+            const card = document.createElement('div');
+            card.className = 'card roll-card';
+            card.innerHTML = `
+                <details>
+                    <summary class="roll-summary">
+                        <div class="roll-summary-top">
+                            <span class="card-brand">${escapeHtml(roll.status || 'In Kamera')}</span>
+                            <span class="roll-code">${escapeHtml(rollCode)}</span>
+                        </div>
+                        <h3 class="card-name">${escapeHtml(roll.name)}</h3>
+                        <span class="roll-summary-hint">${escapeHtml(formatDateForDisplay(rollDate))} · Details anzeigen</span>
+                    </summary>
+                    <div class="roll-details-body">
+                        <p class="card-short-desc">${escapeHtml(film ? `${film.brand} ${film.name}` : roll.filmName)}</p>
+                        <div class="roll-meta">
+                            <div class="info-card"><div class="info-item"><label>Roll-ID</label><span>${escapeHtml(rollCode)}</span></div></div>
+                            <div class="info-card"><div class="info-item"><label>Kamera</label><span>${escapeHtml(roll.camera || 'Nicht gesetzt')}</span></div></div>
+                            <div class="info-card"><div class="info-item"><label>Format</label><span>${escapeHtml(format || 'Nicht gesetzt')}</span></div></div>
+                            <div class="info-card"><div class="info-item"><label>ISO eingestellt</label><span>${escapeHtml(ratedIso || 'Nicht gesetzt')}</span></div></div>
+                            <div class="info-card"><div class="info-item"><label>Entwicklung</label><span>${escapeHtml(process || (film ? film.process : '') || 'Nicht gesetzt')}</span></div></div>
+                        </div>
+                        ${note ? `<p class="card-short-desc" style="margin-bottom:14px;">${escapeHtml(note)}</p>` : ''}
+                        <div class="roll-actions">
+                            ${film ? `<button type="button" class="secondary-btn" onclick="openModal(getFilmById('${escapeHtml(roll.filmId)}'))">Guide öffnen</button>` : ''}
+                            <button type="button" class="secondary-btn" onclick="openRollForm('${escapeHtml(roll.filmId)}', '${escapeHtml(roll.id)}')">Bearbeiten</button>
+                            <button type="button" class="danger-btn" onclick="deleteRoll('${escapeHtml(roll.id)}')">Löschen</button>
+                        </div>
+                    </div>
+                </details>
+            `;
+            return card;
+        }
+
         function renderRolls() {
             const grid = document.getElementById('rollsGrid');
             if (!grid) return;
@@ -1512,21 +1720,37 @@
             }
 
             const statusRank = { "In Kamera": 1, "Belichtet": 2, "Entwickelt": 3 };
-            const visibleRolls = rollsData.filter(roll => rollStatusFilter === 'all' || roll.status === rollStatusFilter);
+            const visibleRolls = rollsData
+                .filter(roll => rollStatusFilter === 'all' || roll.status === rollStatusFilter)
+                .filter(rollMatchesSearch);
 
             if (visibleRolls.length === 0) {
                 grid.innerHTML = `
                     <div class="empty-state">
                         <strong>Keine Rollen gefunden.</strong><br>
-                        Passe den Filter an oder lege eine neue Rolle an.
+                        Passe Suche oder Filter an.
                     </div>
                 `;
                 return;
             }
 
+            if (rollSearchQuery) {
+                ['In Kamera', 'Belichtet', 'Entwickelt'].forEach(status => {
+                    const groupRolls = sortRollsForSearchGroup(status, visibleRolls.filter(roll => (roll.status || 'In Kamera') === status));
+                    if (groupRolls.length === 0) return;
+
+                    const section = document.createElement('section');
+                    section.className = 'roll-result-section';
+                    section.innerHTML = `<h3 class="roll-result-heading">${escapeHtml(status)} <span>${groupRolls.length}</span></h3>`;
+                    groupRolls.forEach(roll => section.appendChild(renderRollCard(roll)));
+                    grid.appendChild(section);
+                });
+                return;
+            }
+
             const sortedRolls = [...visibleRolls].sort((a, b) => {
                 if (rollSortMode === 'date') {
-                    return String(getRollDateValue(b) || '').localeCompare(String(getRollDateValue(a) || ''));
+                    return compareRollDateDesc(a, b);
                 }
                 if (rollSortMode === 'camera') {
                     return String(a.camera || '').localeCompare(String(b.camera || ''));
@@ -1540,46 +1764,11 @@
 
                 const byStatus = (statusRank[a.status] || 9) - (statusRank[b.status] || 9);
                 if (byStatus !== 0) return byStatus;
-                return String(getRollDateValue(b) || '').localeCompare(String(getRollDateValue(a) || ''));
+                return compareRollDateDesc(a, b);
             });
 
             sortedRolls.forEach(roll => {
-                const film = getFilmById(roll.filmId);
-                const rollDate = getRollDateValue(roll);
-                const format = getRollFormat(roll);
-                const ratedIso = getRollRatedIso(roll);
-                const note = getRollNote(roll);
-                const process = getRollProcess(roll);
-                const card = document.createElement('div');
-                card.className = 'card roll-card';
-                card.innerHTML = `
-                    <details>
-                        <summary class="roll-summary">
-                            <div class="roll-summary-top">
-                                <span class="card-brand">${escapeHtml(roll.status || 'In Kamera')}</span>
-                                <span class="badge badge-iso">${escapeHtml(formatDateForDisplay(rollDate))}</span>
-                            </div>
-                            <h3 class="card-name">${escapeHtml(roll.name)}</h3>
-                            <span class="roll-summary-hint">Details anzeigen</span>
-                        </summary>
-                        <div class="roll-details-body">
-                            <p class="card-short-desc">${escapeHtml(film ? `${film.brand} ${film.name}` : roll.filmName)}</p>
-                            <div class="roll-meta">
-                                <div class="info-card"><div class="info-item"><label>Kamera</label><span>${escapeHtml(roll.camera || 'Nicht gesetzt')}</span></div></div>
-                                <div class="info-card"><div class="info-item"><label>Format</label><span>${escapeHtml(format || 'Nicht gesetzt')}</span></div></div>
-                                <div class="info-card"><div class="info-item"><label>ISO eingestellt</label><span>${escapeHtml(ratedIso || 'Nicht gesetzt')}</span></div></div>
-                                <div class="info-card"><div class="info-item"><label>Entwicklung</label><span>${escapeHtml(process || (film ? film.process : '') || 'Nicht gesetzt')}</span></div></div>
-                            </div>
-                            ${note ? `<p class="card-short-desc" style="margin-bottom:14px;">${escapeHtml(note)}</p>` : ''}
-                            <div class="roll-actions">
-                                ${film ? `<button type="button" class="secondary-btn" onclick="openModal(getFilmById('${escapeHtml(roll.filmId)}'))">Guide öffnen</button>` : ''}
-                                <button type="button" class="secondary-btn" onclick="openRollForm('${escapeHtml(roll.filmId)}', '${escapeHtml(roll.id)}')">Bearbeiten</button>
-                                <button type="button" class="danger-btn" onclick="deleteRoll('${escapeHtml(roll.id)}')">Löschen</button>
-                            </div>
-                        </div>
-                    </details>
-                `;
-                grid.appendChild(card);
+                grid.appendChild(renderRollCard(roll));
             });
         }
 
@@ -1639,6 +1828,7 @@
             const note = existingRoll ? getRollNote(existingRoll) : '';
             const process = existingRoll ? getRollProcess(existingRoll) : (film ? film.process : '');
             const rollName = existingRoll ? existingRoll.name : buildRollName(loadedAt, filmName, camera);
+            const rollCode = existingRoll ? getRollCode(existingRoll) : generateNextRollCode(rollsData);
             const overlay = document.getElementById('modalOverlay');
             const contentBlock = document.querySelector('.modal-content');
             const defaultFormatChoices = ['135', '120', '4x5', '8x10', 'Instax'];
@@ -1657,6 +1847,10 @@
                     <span class="card-brand" style="color:var(--primary);">${existingRoll ? 'Rolle bearbeiten' : 'Neue Rolle'}</span>
                     <h2 style="font-family: var(--font-headings); font-weight:800; margin: 5px 0 24px; font-size: 2rem; color: #fff; line-height:1.1;">${escapeHtml(filmName || 'Film wählen')}</h2>
                     <form class="form-grid" onsubmit="saveRollFromForm(event, '${escapeHtml(rollId || '')}', '${escapeHtml(filmId || '')}')">
+                        <div class="form-field">
+                            <label for="rollCode">Roll-ID</label>
+                            <input id="rollCode" type="text" value="${escapeHtml(rollCode)}" readonly>
+                        </div>
                         <div class="form-field">
                             <label for="rollFilmName">Film</label>
                             <input id="rollFilmName" type="text" value="${escapeHtml(filmName)}" ${film ? 'readonly' : ''} oninput="syncRollNameDefault()" required>
@@ -1739,8 +1933,10 @@
             const process = document.getElementById('rollProcess').value.trim();
             const status = document.getElementById('rollStatus').value;
             const existingRoll = rollId ? rollsData.find(item => item.id === rollId) : null;
+            const rollCode = existingRoll ? getRollCode(existingRoll) : (document.getElementById('rollCode').value.trim() || generateNextRollCode(rollsData));
             const roll = {
                 id: rollId || `roll_${Date.now()}`,
+                rollCode,
                 filmId: film ? film.id : '',
                 filmName: film ? film.name : filmName,
                 name: name || buildRollName(loadedAt, filmName, camera),

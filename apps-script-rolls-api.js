@@ -15,7 +15,8 @@ const HEADERS = [
   'note',
   'process',
   'userEmail',
-  'userName'
+  'userName',
+  'rollCode'
 ];
 
 function doGet(event) {
@@ -74,6 +75,9 @@ function upsertRoll(roll, userEmail) {
   if (userEmail) roll.userEmail = normalizeEmail(userEmail);
 
   const sheet = getRollsSheet();
+  if (!roll.rollCode) {
+    roll.rollCode = generateNextRollCode(sheet, roll.userEmail, roll.id);
+  }
   const values = sheet.getDataRange().getValues();
   const ids = values.slice(1).map(row => String(row[0] || ''));
   const existingIndex = ids.indexOf(String(roll.id));
@@ -84,6 +88,28 @@ function upsertRoll(roll, userEmail) {
   } else {
     sheet.getRange(existingIndex + 2, 1, 1, HEADERS.length).setValues([rowValues]);
   }
+}
+
+function generateNextRollCode(sheet, userEmail, currentRollId) {
+  const values = sheet.getDataRange().getValues();
+  if (values.length <= 1) return 'R001';
+
+  const headers = values[0];
+  const idIndex = headers.indexOf('id');
+  const codeIndex = headers.indexOf('rollCode');
+  const emailIndex = headers.indexOf('userEmail');
+  const normalizedEmail = normalizeEmail(userEmail);
+  let highestNumber = 0;
+
+  values.slice(1).forEach(row => {
+    if (idIndex !== -1 && String(row[idIndex] || '') === String(currentRollId || '')) return;
+    if (emailIndex !== -1 && normalizedEmail && normalizeEmail(row[emailIndex]) !== normalizedEmail) return;
+
+    const match = String(codeIndex !== -1 ? row[codeIndex] : '').match(/^R(\d+)$/i);
+    if (match) highestNumber = Math.max(highestNumber, Number(match[1]));
+  });
+
+  return `R${String(highestNumber + 1).padStart(3, '0')}`;
 }
 
 function deleteRoll(id, userEmail) {
