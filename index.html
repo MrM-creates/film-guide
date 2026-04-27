@@ -1464,6 +1464,14 @@
             return `${datePart}_${filmPart}_${cameraPart}`;
         }
 
+        function getFilmImagePath(imageValue) {
+            const imageName = String(imageValue || '').trim();
+            if (!imageName) return '';
+            if (/^https?:\/\//i.test(imageName) || imageName.startsWith('img/')) return imageName;
+            if (imageName.includes('/')) return `img/${imageName}`;
+            return `img/packshots-vintage/${imageName}`;
+        }
+
         function prepareData() {
             if (!filmsData || filmsData.length === 0) {
                 document.getElementById('grid').innerHTML =
@@ -2122,7 +2130,7 @@
                             id: getCsvValue(row, "ID") || getCsvValue(row, "Name").toLowerCase().replace(/\s+/g, '-'),
                             brand: getCsvValue(row, "Marke"),
                             name: getCsvValue(row, "Name"),
-                            img: getCsvValue(row, "Bilder") ? 'img/' + getCsvValue(row, "Bilder") : "", // Wir bauen weiter auf dem img/ Ordner
+                            img: getFilmImagePath(getCsvValue(row, "Bilder")),
                             iso: parseInt(getCsvValue(row, "ISO")) || 0,
                             type: getCsvValue(row, "Typ"),
                             // Formate & Einsatz als Array trennen und normalisieren, z.B. "35mm" -> "135"
