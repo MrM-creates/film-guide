@@ -1469,7 +1469,10 @@
             if (!imageName) return '';
             if (/^https?:\/\//i.test(imageName) || imageName.startsWith('img/')) return imageName;
             if (imageName.includes('/')) return `img/${imageName}`;
-            return `img/packshots-vintage/${imageName}`;
+            const vintageImageName = imageName
+                .replace(/\.[^.]+$/, '')
+                .toLowerCase() + '.webp';
+            return `img/packshots-vintage/${vintageImageName}`;
         }
 
         function prepareData() {
