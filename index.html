@@ -397,6 +397,46 @@
             gap: 10px;
         }
 
+        .roll-summary-main {
+            align-items: center;
+            display: grid;
+            gap: 12px;
+            grid-template-columns: 58px minmax(0, 1fr);
+        }
+
+        .roll-packshot {
+            align-items: center;
+            align-self: stretch;
+            background: radial-gradient(circle at 45% 30%, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.04) 55%, rgba(0, 0, 0, 0.16));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            display: flex;
+            height: 58px;
+            justify-content: center;
+            overflow: hidden;
+            padding: 6px;
+        }
+
+        .roll-packshot img {
+            display: block;
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.45));
+        }
+
+        .roll-packshot-placeholder {
+            color: var(--text-secondary);
+            font-family: var(--font-headings);
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .roll-summary-copy {
+            min-width: 0;
+        }
+
         .roll-summary-hint {
             color: var(--text-secondary);
             font-size: 0.8rem;
@@ -865,6 +905,15 @@
 
             .roll-card .roll-meta {
                 grid-template-columns: 1fr 1fr;
+            }
+
+            .roll-summary-main {
+                grid-template-columns: 50px minmax(0, 1fr);
+            }
+
+            .roll-packshot {
+                height: 50px;
+                padding: 5px;
             }
 
             .info-grid {
@@ -1725,6 +1774,10 @@
             const note = getRollNote(roll);
             const process = getRollProcess(roll);
             const rollCode = getRollCode(roll);
+            const filmName = film ? `${film.brand} ${film.name}` : roll.filmName;
+            const packshotMarkup = film && film.img
+                ? `<img src="${escapeHtml(film.img)}" alt="${escapeHtml(filmName)} Packshot" loading="lazy">`
+                : `<span class="roll-packshot-placeholder" aria-hidden="true">${escapeHtml(String(filmName || 'Film').slice(0, 2).toUpperCase())}</span>`;
             const card = document.createElement('div');
             card.className = 'card roll-card';
             card.innerHTML = `
@@ -1734,11 +1787,16 @@
                             <span class="card-brand">${formatStatusLabel(roll.status || 'In Kamera')}</span>
                             <span class="roll-code">${escapeHtml(rollCode)}</span>
                         </div>
-                        <h3 class="card-name">${escapeHtml(roll.name)}</h3>
-                        <span class="roll-summary-hint">${escapeHtml(formatDateForDisplay(rollDate))} · Details anzeigen</span>
+                        <div class="roll-summary-main">
+                            <div class="roll-packshot">${packshotMarkup}</div>
+                            <div class="roll-summary-copy">
+                                <h3 class="card-name">${escapeHtml(roll.name)}</h3>
+                                <span class="roll-summary-hint">${escapeHtml(formatDateForDisplay(rollDate))} · Details anzeigen</span>
+                            </div>
+                        </div>
                     </summary>
                     <div class="roll-details-body">
-                        <p class="card-short-desc">${escapeHtml(film ? `${film.brand} ${film.name}` : roll.filmName)}</p>
+                        <p class="card-short-desc">${escapeHtml(filmName)}</p>
                         <div class="roll-meta">
                             <div class="info-card"><div class="info-item"><label>Roll-ID</label><span>${escapeHtml(rollCode)}</span></div></div>
                             <div class="info-card"><div class="info-item"><label>Kamera</label><span>${escapeHtml(roll.camera || 'Nicht gesetzt')}</span></div></div>
