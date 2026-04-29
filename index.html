@@ -634,6 +634,10 @@
             margin-bottom: 6px;
         }
 
+        .form-field.hidden {
+            display: none;
+        }
+
         .form-field input,
         .form-field select,
         .form-field textarea {
@@ -1358,6 +1362,26 @@
             return filmsData.find(film => film.id === filmId);
         }
 
+        function normalizeFilmName(value) {
+            return String(value || '')
+                .trim()
+                .toLowerCase()
+                .replace(/\s+/g, ' ');
+        }
+
+        function getFilmLabel(film) {
+            return film ? `${film.brand} ${film.name}`.trim() : '';
+        }
+
+        function getFilmByName(filmName) {
+            const normalizedName = normalizeFilmName(filmName);
+            if (!normalizedName) return null;
+            return filmsData.find(film => {
+                return normalizeFilmName(film.name) === normalizedName ||
+                    normalizeFilmName(getFilmLabel(film)) === normalizedName;
+            }) || null;
+        }
+
         function formatTodayForInput() {
             const today = new Date();
             const year = today.getFullYear();
@@ -1718,7 +1742,7 @@
         }
 
         function getRollSearchText(roll) {
-            const film = getFilmById(roll.filmId);
+            const film = getFilmById(roll.filmId) || getFilmByName(roll.filmName);
             return [
                 getRollCode(roll),
                 roll.name,
@@ -1767,7 +1791,7 @@
         }
 
         function renderRollCard(roll) {
-            const film = getFilmById(roll.filmId);
+            const film = getFilmById(roll.filmId) || getFilmByName(roll.filmName);
             const rollDate = getRollDateValue(roll);
             const format = getRollFormat(roll);
             const ratedIso = getRollRatedIso(roll);
@@ -1806,8 +1830,8 @@
                         </div>
                         ${note ? `<p class="card-short-desc" style="margin-bottom:14px;">${escapeHtml(note)}</p>` : ''}
                         <div class="roll-actions">
-                            ${film ? `<button type="button" class="secondary-btn" onclick="openModal(getFilmById('${escapeHtml(roll.filmId)}'))">Guide öffnen</button>` : ''}
-                            <button type="button" class="secondary-btn" onclick="openRollForm('${escapeHtml(roll.filmId)}', '${escapeHtml(roll.id)}')">Bearbeiten</button>
+                            ${film ? `<button type="button" class="secondary-btn" onclick="openModal(getFilmById('${escapeHtml(film.id)}'))">Guide öffnen</button>` : ''}
+                            <button type="button" class="secondary-btn" onclick="openRollForm('${escapeHtml(film ? film.id : roll.filmId)}', '${escapeHtml(roll.id)}')">Bearbeiten</button>
                             <button type="button" class="danger-btn" onclick="deleteRoll('${escapeHtml(roll.id)}')">Löschen</button>
                         </div>
                     </div>
@@ -1900,6 +1924,60 @@
             openRollForm('');
         }
 
+        function buildRollFormatOptions(formatChoices, selectedFormat) {
+            return formatChoices
+                .map(format => `<option value="${escapeHtml(format)}" ${format === selectedFormat ? 'selected' : ''}>${escapeHtml(format)}</option>`)
+                .join('');
+        }
+
+        function setRollFormatChoices(formatChoices, selectedFormat = '') {
+            const formatSelect = document.getElementById('rollFormat');
+            if (!formatSelect) return;
+            formatSelect.innerHTML = `
+                <option value="">Format wählen</option>
+                ${buildRollFormatOptions(formatChoices, selectedFormat)}
+            `;
+        }
+
+        function handleRollFilmChoiceChange() {
+            const filmSelect = document.getElementById('rollFilmSelect');
+            const customField = document.getElementById('rollCustomFilmField');
+            const filmNameInput = document.getElementById('rollFilmName');
+            const isoInput = document.getElementById('rollRatedIso');
+            const processInput = document.getElementById('rollProcess');
+            const title = document.getElementById('rollFormTitle');
+            if (!filmSelect || !customField || !filmNameInput) return;
+
+            const defaultFormatChoices = ['135', '120', '4x5', '8x10', 'Instax'];
+            const isCustomFilm = filmSelect.value === '__custom__';
+            const film = getFilmById(filmSelect.value);
+            const customFieldWasHidden = customField.classList.contains('hidden');
+
+            customField.classList.toggle('hidden', !isCustomFilm);
+            filmNameInput.required = isCustomFilm;
+
+            if (film) {
+                filmNameInput.value = film.name;
+                if (isoInput) isoInput.value = film.iso ? String(film.iso) : '';
+                if (processInput) processInput.value = film.process || '';
+                const filmFormatChoices = [...new Set(film.formats.map(normalizeRollFormat).filter(Boolean))];
+                setRollFormatChoices(filmFormatChoices.length ? filmFormatChoices : defaultFormatChoices, filmFormatChoices.length === 1 ? filmFormatChoices[0] : '');
+                if (title) title.textContent = film.name;
+            } else {
+                if (isCustomFilm && customFieldWasHidden) {
+                    filmNameInput.value = '';
+                    if (isoInput) isoInput.value = '';
+                }
+                if (!isCustomFilm) filmNameInput.value = '';
+                if (!isCustomFilm && isoInput) isoInput.value = '';
+                if (processInput) processInput.value = '';
+                setRollFormatChoices(defaultFormatChoices);
+                if (title) title.textContent = isCustomFilm ? 'Anderen Film eintragen' : 'Film wählen';
+            }
+
+            syncRollNameDefault();
+        }
+
         function openProfileForm() {
             const overlay = document.getElementById('modalOverlay');
             const contentBlock = document.querySelector('.modal-content');
@@ -1943,7 +2021,7 @@
             if (!requireUserProfile()) return;
             const existingRoll = rollId ? rollsData.find(roll => roll.id === rollId) : null;
             const fallbackFilmName = existingRoll ? getRollValue(existingRoll, ['filmName', 'Film']) : '';
-            const film = getFilmById(filmId) || filmsData.find(item => item.name === fallbackFilmName) || null;
+            const film = getFilmById(filmId) || getFilmByName(fallbackFilmName) || null;
             const loadedAt = existingRoll ? formatDateForInputValue(getRollDateValue(existingRoll)) : formatTodayForInput();
             const camera = existingRoll ? existingRoll.camera : '';
             const filmName = existingRoll ? existingRoll.filmName : (film ? film.name : '');
@@ -1960,7 +2038,13 @@
                 ? [...new Set(film.formats.map(normalizeRollFormat).filter(Boolean))]
                 : [...defaultFormatChoices];
             if (selectedFormat && !formatChoices.includes(selectedFormat)) formatChoices.push(selectedFormat);
-            const formatOptions = formatChoices.map(format => `<option value="${escapeHtml(format)}" ${format === selectedFormat ? 'selected' : ''}>${escapeHtml(format)}</option>`).join('');
+            const formatOptions = buildRollFormatOptions(formatChoices.length ? formatChoices : defaultFormatChoices, selectedFormat);
+            const selectedFilmValue = film ? film.id : (filmName ? '__custom__' : '');
+            const filmOptions = [...filmsData]
+                .sort((a, b) => getFilmLabel(a).localeCompare(getFilmLabel(b)))
+                .map(item => `<option value="${escapeHtml(item.id)}" ${item.id === selectedFilmValue ? 'selected' : ''}>${escapeHtml(getFilmLabel(item))}</option>`)
+                .join('');
+            const customFilmHiddenClass = selectedFilmValue === '__custom__' ? '' : ' hidden';
 
             rollNameWasEdited = Boolean(existingRoll);
             lastGeneratedRollName = rollName;
@@ -1969,15 +2053,23 @@
                 <button class="close-btn" onclick="closeModal(null)">&times;</button>
                 <div class="modal-body">
                     <span class="card-brand" style="color:var(--primary);">${existingRoll ? 'Rolle bearbeiten' : 'Neue Rolle'}</span>
-                    <h2 style="font-family: var(--font-headings); font-weight:800; margin: 5px 0 24px; font-size: 2rem; color: #fff; line-height:1.1;">${escapeHtml(filmName || 'Film wählen')}</h2>
-                    <form class="form-grid" onsubmit="saveRollFromForm(event, '${escapeHtml(rollId || '')}', '${escapeHtml(filmId || '')}')">
+                    <h2 id="rollFormTitle" style="font-family: var(--font-headings); font-weight:800; margin: 5px 0 24px; font-size: 2rem; color: #fff; line-height:1.1;">${escapeHtml(filmName || 'Film wählen')}</h2>
+                    <form class="form-grid" onsubmit="saveRollFromForm(event, '${escapeHtml(rollId || '')}')">
                         <div class="form-field">
                             <label for="rollCode">Roll-ID</label>
                             <input id="rollCode" type="text" value="${escapeHtml(rollCode)}" readonly>
                         </div>
                         <div class="form-field">
-                            <label for="rollFilmName">Film</label>
-                            <input id="rollFilmName" type="text" value="${escapeHtml(filmName)}" ${film ? 'readonly' : ''} oninput="syncRollNameDefault()" required>
+                            <label for="rollFilmSelect">Film</label>
+                            <select id="rollFilmSelect" onchange="handleRollFilmChoiceChange()" required>
+                                <option value="">Film wählen</option>
+                                ${filmOptions}
+                                <option value="__custom__" ${selectedFilmValue === '__custom__' ? 'selected' : ''}>Anderen Film eintragen</option>
+                            </select>
+                        </div>
+                        <div class="form-field${customFilmHiddenClass}" id="rollCustomFilmField">
+                            <label for="rollFilmName">Neuer Film</label>
+                            <input id="rollFilmName" type="text" value="${escapeHtml(filmName)}" placeholder="z.B. Kodak ColorPlus 200" oninput="syncRollNameDefault()" ${selectedFilmValue === '__custom__' ? 'required' : ''}>
                         </div>
                         <div class="form-field">
                             <label for="rollCamera">Kamera</label>
@@ -2043,10 +2135,11 @@
             lastGeneratedRollName = nextName;
         }
 
-        async function saveRollFromForm(event, rollId, filmId) {
+        async function saveRollFromForm(event, rollId) {
             event.preventDefault();
 
-            const film = getFilmById(filmId);
+            const selectedFilmId = document.getElementById('rollFilmSelect').value;
+            const selectedFilm = selectedFilmId && selectedFilmId !== '__custom__' ? getFilmById(selectedFilmId) : null;
             const name = document.getElementById('rollName').value.trim();
             const camera = document.getElementById('rollCamera').value.trim();
             const loadedAt = document.getElementById('rollLoadedAt').value;
@@ -2061,8 +2154,8 @@
             const roll = {
                 id: rollId || `roll_${Date.now()}`,
                 rollCode,
-                filmId: film ? film.id : '',
-                filmName: film ? film.name : filmName,
+                filmId: selectedFilm ? selectedFilm.id : '',
+                filmName: selectedFilm ? selectedFilm.name : filmName,
                 name: name || buildRollName(loadedAt, filmName, camera),
                 camera,
                 loadedAt,
@@ -2219,6 +2312,7 @@
 
                     // Nach dem Mapping bereiten wir die Daten für das Frontend vor
                     prepareData();
+                    renderRolls();
                 },
                 error: function (error) {
                     console.error("Fehler beim Laden:", error);
