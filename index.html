@@ -973,42 +973,40 @@
                 <!-- Suche + Reset -->
                 <div style="display:flex; gap:8px; align-items:center; margin-bottom:10px;">
                     <input type="text" id="searchInput" class="search-box"
-                        placeholder="Suche... (z.B. 'Farbe', 'Korn', 'Portrait')">
+                        placeholder="Suche... (z.B. 'warm', 'C-41', 'feines Korn')">
                     <button type="button" class="chip" onclick="resetFilters()">Reset</button>
                 </div>
 
-                <!-- Filter Gruppe 1: Einsatz -->
+                <!-- Filter Gruppe 1: Filmtyp -->
                 <div class="filter-section">
-                    <span class="filter-label">Einsatz / Motiv</span>
+                    <span class="filter-label">Filmtyp</span>
                     <div class="filter-row">
-                        <button id="useAllChip" class="chip active" onclick="setFilter('all', this, 'use')">Alle</button>
-                        <button class="chip" onclick="setFilter('Portrait', this, 'use')">Portrait</button>
-                        <button class="chip" onclick="setFilter('Travel', this, 'use')">Travel</button>
-                        <button class="chip" onclick="setFilter('Street', this, 'use')">Street</button>
-                        <button class="chip" onclick="setFilter('Landscape', this, 'use')">Landscape</button>
-                        <button class="chip" onclick="setFilter('Low Light', this, 'use')">Low Light</button>
+                        <button id="allFilterChip" class="chip active" onclick="setFilter('all', this, 'all')">Alle</button>
+                        <button class="chip" onclick="setFilter('Color Negative', this, 'type')">Farbnegativ</button>
+                        <button class="chip" onclick="setFilter('B&W', this, 'type')">Schwarzweiß</button>
+                        <button class="chip" onclick="setFilter('Slide', this, 'type')">Diafilm</button>
                     </div>
                 </div>
 
-                <!-- Filter Gruppe 2: Eigenschaften (Exakt wie in Notion) -->
+                <!-- Filter Gruppe 2: Eigenschaften -->
                 <div class="filter-section">
-                    <span class="filter-label">Eigenschaften</span>
+                    <span class="filter-label">Look & Eigenschaften</span>
                     <div class="filter-row">
-                        <button class="chip" onclick="setFilter('all', this, 'spec')">Alle</button>
-
-                        <!-- Korn -->
-                        <button class="chip" onclick="setFilter('Feinkorn', this, 'spec')">Feinkorn</button>
-                        <button class="chip" onclick="setFilter('Mittel', this, 'spec')">Korn: Mittel</button>
-                        <button class="chip" onclick="setFilter('Klassisch', this, 'spec')">Klassisch</button>
-                        <button class="chip" onclick="setFilter('Grob', this, 'spec')">Grob</button>
-
-                        <!-- Trenner -->
+                        <button class="chip" onclick="setFilter('Fein', this, 'spec', 'grain')">Korn: fein</button>
+                        <button class="chip" onclick="setFilter('Sichtbar', this, 'spec', 'grain')">Korn: sichtbar</button>
+                        <button class="chip" onclick="setFilter('Grob', this, 'spec', 'grain')">Korn: grob</button>
                         <div style="width:1px; background:#333; margin:0 5px;"></div>
-
-                        <!-- Budget -->
-                        <button class="chip" onclick="setFilter('Budget', this, 'spec')">Budget</button>
-                        <button class="chip" onclick="setFilter('Medium', this, 'spec')">Preis: Mittel</button>
-                        <button class="chip" onclick="setFilter('Premium', this, 'spec')">Premium</button>
+                        <button class="chip" onclick="setFilter('Hoch', this, 'spec', 'saturation')">Sättigung: hoch</button>
+                        <button class="chip" onclick="setFilter('Natürlich', this, 'spec', 'saturation')">Sättigung: natürlich</button>
+                        <button class="chip" onclick="setFilter('Monochrom', this, 'spec', 'saturation')">Monochrom</button>
+                        <div style="width:1px; background:#333; margin:0 5px;"></div>
+                        <button class="chip" onclick="setFilter('Gering', this, 'spec', 'exposure')">Spielraum: gering</button>
+                        <button class="chip" onclick="setFilter('Hoch', this, 'spec', 'exposure')">Spielraum: hoch</button>
+                        <button class="chip" onclick="setFilter('Sehr hoch', this, 'spec', 'exposure')">Spielraum: sehr hoch</button>
+                        <div style="width:1px; background:#333; margin:0 5px;"></div>
+                        <button class="chip" onclick="setFilter('Budget', this, 'spec', 'budget')">Preis: Budget</button>
+                        <button class="chip" onclick="setFilter('Mittel', this, 'spec', 'budget')">Preis: Mittel</button>
+                        <button class="chip" onclick="setFilter('Premium', this, 'spec', 'budget')">Preis: Premium</button>
                     </div>
                 </div>
             </div>
@@ -1086,7 +1084,8 @@
 
     <script>
         let activeFilter = 'all';
-        let filterMode = 'use';
+        let filterMode = 'all';
+        let activeFilterKey = '';
 
         // Diese URL erhältst du aus Google Sheets -> Datei -> Freigeben -> Im Web veröffentlichen -> als CSV
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/13lPATFa6AumQkerDv_6CXJ68tp7QXoMfeP5GUFsekY0/export?format=csv&gid=158929564";
@@ -1773,7 +1772,7 @@
                 // 2. Intelligente Synonyme (Mapping)
 
                 // Korn Synonyme
-                if (film.specs.grain === "Klassisch" || film.specs.grain === "Grob") {
+                if (film.specs.grain === "Sichtbar" || film.specs.grain === "Grob") {
                     film.keywords.push("Grain", "Korn", "Stark");
                 }
 
@@ -1836,18 +1835,19 @@
                 </h3>
                 <p class="card-short-desc">${film.shortDesc}</p>
                 <div class="spec-tags">
-                    <span class="spec-tag ${highlightClass(film.specs.grain)}">${film.specs.grain}</span>
-                    <span class="spec-tag ${highlightClass(film.specs.exposure)}">${film.specs.exposure}</span>
-                    <span class="spec-tag ${highlightClass(film.specs.budget)}">${film.specs.budget}</span>
+                    <span class="spec-tag ${highlightClass(film.specs.grain)}">Korn: ${film.specs.grain}</span>
+                    <span class="spec-tag ${highlightClass(film.specs.exposure)}">Spielraum: ${film.specs.exposure}</span>
+                    <span class="spec-tag ${highlightClass(film.specs.budget)}">Preis: ${film.specs.budget}</span>
                 </div>
             `;
                 grid.appendChild(card);
             });
         }
 
-        function setFilter(filterValue, btnElement, mode) {
+        function setFilter(filterValue, btnElement, mode, specKey = '') {
             activeFilter = filterValue;
             filterMode = mode;
+            activeFilterKey = specKey;
 
             document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
             btnElement.classList.add('active');
@@ -1874,13 +1874,12 @@
 
                 let catMatch = true;
                 if (activeFilter !== 'all') {
-                    if (filterMode === 'use') {
-                        // Prüfen ob einer der Uses matcht
-                        catMatch = film.uses.some(u => u === activeFilter || u.includes(activeFilter));
+                    if (filterMode === 'type') {
+                        catMatch = film.type === activeFilter;
                     } else if (filterMode === 'spec') {
-                        // Prüfen ob eine der Specs matcht
-                        const specsValues = Object.values(film.specs);
-                        catMatch = specsValues.includes(activeFilter);
+                        catMatch = activeFilterKey
+                            ? film.specs[activeFilterKey] === activeFilter
+                            : Object.values(film.specs).includes(activeFilter);
                     }
                 }
 
@@ -1897,13 +1896,14 @@
             search.value = '';
 
             activeFilter = 'all';
-            filterMode = 'use';
+            filterMode = 'all';
+            activeFilterKey = '';
 
             document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
 
-            const allUseChip = document.getElementById('useAllChip');
-            if (allUseChip) {
-                allUseChip.classList.add('active');
+            const allFilterChip = document.getElementById('allFilterChip');
+            if (allFilterChip) {
+                allFilterChip.classList.add('active');
             }
 
             renderGrid(filmsData);
@@ -2646,7 +2646,7 @@
                     <div class="section-title">Specs</div>
                     <div class="info-grid">
                         <div class="info-card"><div class="info-item"><label>Korn</label><span>${film.specs.grain}</span></div></div>
-                        <div class="info-card"><div class="info-item"><label>Belichtung</label><span>${film.specs.exposure}</span></div></div>
+                        <div class="info-card"><div class="info-item"><label>Belichtungsspielraum</label><span>${film.specs.exposure}</span></div></div>
                         <div class="info-card"><div class="info-item"><label>Sättigung</label><span>${film.specs.saturation}</span></div></div>
                         <div class="info-card"><div class="info-item"><label>Preissegment</label><span>${film.specs.budget}</span></div></div>
                         ${film.specs.tone ? `<div class="info-card"><div class="info-item"><label>Farbton</label><span>${film.specs.tone}</span></div></div>` : ''}
