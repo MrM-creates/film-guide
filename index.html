@@ -12,7 +12,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <!-- Google Fonts: Outfit (Überschriften) & Inter (Fließtext) -->
+    <!-- Google Fonts: Outfit (Überschriften) & Inter (Fliesstext) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -983,7 +983,7 @@
                     <div class="filter-row">
                         <button id="allFilterChip" class="chip active" onclick="setFilter('all', this, 'all')">Alle</button>
                         <button class="chip" onclick="setFilter('Color Negative', this, 'type')">Farbnegativ</button>
-                        <button class="chip" onclick="setFilter('B&W', this, 'type')">Schwarzweiß</button>
+                        <button class="chip" onclick="setFilter('B&W', this, 'type')">Schwarzweiss</button>
                         <button class="chip" onclick="setFilter('Slide', this, 'type')">Diafilm</button>
                     </div>
                 </div>
@@ -1114,7 +1114,11 @@
         }
 
         function getCsvValue(row, key) {
-            return String(row[key] || '').trim();
+            return normalizeSwissGermanText(row[key]);
+        }
+
+        function normalizeSwissGermanText(value) {
+            return String(value || '').replace(/\u00df/g, 'ss').trim();
         }
 
         function getFirstCsvValue(row, keys) {
@@ -1730,7 +1734,7 @@
         function rollNamePart(value, fallback) {
             const source = String(value || fallback || '').trim();
             return source
-                .replace(/[^a-zA-Z0-9äöüÄÖÜß]+/g, '_')
+                .replace(/[^a-zA-Z0-9äöüÄÖÜ\u00df]+/g, '_')
                 .replace(/^_+|_+$/g, '') || fallback;
         }
 
