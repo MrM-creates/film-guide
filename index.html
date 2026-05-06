@@ -461,6 +461,36 @@
             margin-top: auto;
         }
 
+        .camera-list {
+            display: grid;
+            gap: 10px;
+            margin: 18px 0 22px;
+        }
+
+        .camera-row {
+            align-items: center;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            padding: 12px;
+        }
+
+        .camera-row strong {
+            color: #fff;
+            display: block;
+            font-size: 0.98rem;
+        }
+
+        .camera-row span {
+            color: var(--text-secondary);
+            display: block;
+            font-size: 0.82rem;
+            margin-top: 3px;
+        }
+
         .rolls-tools {
             display: flex;
             align-items: center;
@@ -994,8 +1024,9 @@
                     <div class="profile-line" id="profileSummary">Kein Profil gesetzt</div>
                 </div>
                 <div class="rolls-tools">
-                    <button type="button" class="secondary-btn" onclick="fetchRollsFromSync()">Sync</button>
+                    <button type="button" class="secondary-btn" onclick="syncAllData()">Sync</button>
                     <button type="button" class="secondary-btn" onclick="openProfileForm()">Profil</button>
+                    <button type="button" class="secondary-btn" onclick="openCamerasForm()">Kameras</button>
                     <button type="button" class="primary-btn" onclick="openEmptyRollForm()">Rolle anlegen</button>
                     <span class="sync-status" id="rollsSyncStatus">Lokal gespeichert</span>
                 </div>
@@ -1060,11 +1091,13 @@
         // Diese URL erhältst du aus Google Sheets -> Datei -> Freigeben -> Im Web veröffentlichen -> als CSV
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQWjQEwlg8l-bGPZnPcRhw3ydvCHeeOe2tuorRupbLZLrE4ZKfVO7ZdlmNfuHrcz101vFWP4mknKnZg/pub?gid=158929564&single=true&output=csv";
         const ROLLS_KEY = 'filmGuideRolls_v1';
+        const CAMERAS_KEY = 'filmGuideCameras_v1';
         const USER_PROFILE_KEY = 'filmGuideUserProfile_v1';
         // Nach dem Deploy des Apps Scripts hier die Web-App-URL eintragen.
-        const ROLLS_API_URL = 'https://script.google.com/macros/s/AKfycbyTn_dhzqT31XV2QmT_y8d1qjSyJTR5F6BKzqwtfWUU3cwqDFlsDe-QGcDm-FoovydT/exec';
+        const ROLLS_API_URL = 'https://script.google.com/macros/s/AKfycbzyL58zdiMkWL8SlbABqcebTNXhMB2Ai0PZoaeCKGNM2F2E2LImwCWDqtM9o25GziqPng/exec';
         let filmsData = [];
         let rollsData = [];
+        let camerasData = [];
         let userProfile = null;
         let rollStatusFilter = 'all';
         let rollSortMode = 'status';
@@ -1092,6 +1125,10 @@
 
         function cacheRolls() {
             localStorage.setItem(ROLLS_KEY, JSON.stringify(rollsData));
+        }
+
+        function cacheCameras() {
+            localStorage.setItem(CAMERAS_KEY, JSON.stringify(camerasData));
         }
 
         function normalizeEmail(value) {
@@ -1165,6 +1202,21 @@
             return !rollEmail || rollEmail === userProfile.email;
         }
 
+        function attachCurrentUserCamera(camera) {
+            if (!hasUserProfile()) return camera;
+            return {
+                ...camera,
+                userEmail: normalizeEmail(camera.userEmail || camera['User Email'] || userProfile.email),
+                userName: camera.userName || camera['User Name'] || userProfile.name || ''
+            };
+        }
+
+        function isCurrentUserCamera(camera) {
+            if (!hasUserProfile()) return true;
+            const cameraEmail = normalizeEmail(camera.userEmail || camera['User Email'] || camera.email || camera.Mail);
+            return !cameraEmail || cameraEmail === userProfile.email;
+        }
+
         function getRollCode(roll) {
             return getRollValue(roll, ['rollCode', 'Roll ID', 'Roll-ID', 'Rollen-ID']);
         }
@@ -1230,7 +1282,7 @@
                     const localRoll = rollsData.find(item => item.id === serverRoll.id) || {};
                     const mergedRoll = attachCurrentUser({ ...localRoll, ...serverRoll });
 
-                    ['format', 'ratedIso', 'note', 'process', 'rollCode'].forEach(key => {
+                    ['format', 'ratedIso', 'note', 'process', 'rollCode', 'cameraId'].forEach(key => {
                         if (!serverRoll[key] && localRoll[key]) {
                             mergedRoll[key] = localRoll[key];
                         }
@@ -1243,6 +1295,17 @@
                     return mergedRoll;
                 });
             return ensureUserRollCodes(mergedRolls);
+        }
+
+        function mergeSyncedCameras(syncedCameras) {
+            return syncedCameras
+                .filter(camera => camera && camera.id)
+                .filter(isCurrentUserCamera)
+                .map(serverCamera => {
+                    const localCamera = camerasData.find(item => item.id === serverCamera.id) || {};
+                    return attachCurrentUserCamera({ ...localCamera, ...serverCamera });
+                })
+                .sort((a, b) => getCameraLabel(a).localeCompare(getCameraLabel(b)));
         }
 
         function loadRolls() {
@@ -1268,8 +1331,34 @@
             fetchRollsFromSync({ silent: true });
         }
 
+        function loadCameras() {
+            const savedCameras = localStorage.getItem(CAMERAS_KEY);
+            if (!savedCameras) {
+                camerasData = [];
+            } else {
+                try {
+                    camerasData = JSON.parse(savedCameras)
+                        .filter(isCurrentUserCamera)
+                        .map(attachCurrentUserCamera)
+                        .sort((a, b) => getCameraLabel(a).localeCompare(getCameraLabel(b)));
+                    cacheCameras();
+                } catch (error) {
+                    console.error("Fehler beim Lesen der Kameras", error);
+                    camerasData = [];
+                }
+            }
+
+            fetchCamerasFromSync({ silent: true });
+        }
+
         function saveRolls() {
             cacheRolls();
+            renderRolls();
+        }
+
+        function saveCameras() {
+            camerasData = camerasData.sort((a, b) => getCameraLabel(a).localeCompare(getCameraLabel(b)));
+            cacheCameras();
             renderRolls();
         }
 
@@ -1300,6 +1389,11 @@
                 console.error("Fehler beim Synchronisieren der Rollen", error);
                 setRollsSyncStatus('Offline: lokaler Stand');
             }
+        }
+
+        async function syncAllData() {
+            await fetchCamerasFromSync();
+            await fetchRollsFromSync();
         }
 
         async function syncRollMutation(action, roll) {
@@ -1334,10 +1428,79 @@
                     cacheRolls();
                     renderRolls();
                 }
+                if (Array.isArray(payload.cameras)) {
+                    camerasData = mergeSyncedCameras(payload.cameras);
+                    cacheCameras();
+                }
                 setRollsSyncStatus('Synchronisiert');
             } catch (error) {
                 console.error("Fehler beim Speichern der Rolle", error);
                 setRollsSyncStatus('Nicht synchronisiert');
+            }
+        }
+
+        async function fetchCamerasFromSync(options = {}) {
+            if (!requireUserProfile()) {
+                setRollsSyncStatus('Profil fehlt');
+                return;
+            }
+
+            if (!hasRollsApi()) {
+                setRollsSyncStatus('Lokal gespeichert');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${ROLLS_API_URL}?action=listCameras&userEmail=${encodeURIComponent(userProfile.email)}&ts=${Date.now()}`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const payload = await response.json();
+                if (!Array.isArray(payload.cameras)) throw new Error('Camera sync not available');
+                camerasData = mergeSyncedCameras(payload.cameras);
+                cacheCameras();
+                if (!options.silent) setRollsSyncStatus('Kameras synchronisiert');
+            } catch (error) {
+                console.error("Fehler beim Synchronisieren der Kameras", error);
+                if (!options.silent) setRollsSyncStatus('Kameras lokal');
+            }
+        }
+
+        async function syncCameraMutation(action, camera) {
+            if (!requireUserProfile()) {
+                setRollsSyncStatus('Profil fehlt');
+                return;
+            }
+
+            if (!hasRollsApi()) {
+                setRollsSyncStatus('Lokal gespeichert');
+                return;
+            }
+
+            setRollsSyncStatus('Speichere Kamera...');
+
+            try {
+                const response = await fetch(ROLLS_API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action,
+                        camera: camera ? attachCurrentUserCamera(camera) : null,
+                        id: camera ? camera.id : '',
+                        userEmail: userProfile.email
+                    })
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const payload = await response.json();
+                if (payload.ok === false) throw new Error(payload.error || 'Camera sync failed');
+                if (Array.isArray(payload.cameras)) {
+                    camerasData = mergeSyncedCameras(payload.cameras);
+                    cacheCameras();
+                    renderRolls();
+                }
+                setRollsSyncStatus('Synchronisiert');
+            } catch (error) {
+                console.error("Fehler beim Speichern der Kamera", error);
+                setRollsSyncStatus('Kamera nicht synchronisiert');
             }
         }
 
@@ -1380,6 +1543,40 @@
                 return normalizeFilmName(film.name) === normalizedName ||
                     normalizeFilmName(getFilmLabel(film)) === normalizedName;
             }) || null;
+        }
+
+        function normalizeCameraName(value) {
+            return String(value || '')
+                .trim()
+                .toLowerCase()
+                .replace(/\s+/g, ' ');
+        }
+
+        function getCameraLabel(camera) {
+            if (!camera) return '';
+            return String(camera.name || [camera.brand, camera.model].filter(Boolean).join(' ') || '').trim();
+        }
+
+        function getCameraById(cameraId) {
+            return camerasData.find(camera => camera.id === cameraId) || null;
+        }
+
+        function getCameraByName(cameraName) {
+            const normalizedName = normalizeCameraName(cameraName);
+            if (!normalizedName) return null;
+            return camerasData.find(camera => normalizeCameraName(getCameraLabel(camera)) === normalizedName) || null;
+        }
+
+        function getRollCameraName(roll) {
+            const camera = getCameraById(roll.cameraId) || getCameraByName(roll.camera);
+            return camera ? getCameraLabel(camera) : String(roll.camera || '').trim();
+        }
+
+        function getCameraMeta(camera) {
+            return [
+                camera.format,
+                camera.note
+            ].filter(Boolean).join(' · ');
         }
 
         function formatTodayForInput() {
@@ -1743,11 +1940,12 @@
 
         function getRollSearchText(roll) {
             const film = getFilmById(roll.filmId) || getFilmByName(roll.filmName);
+            const cameraName = getRollCameraName(roll);
             return [
                 getRollCode(roll),
                 roll.name,
                 roll.status,
-                roll.camera,
+                cameraName,
                 roll.filmName,
                 film ? film.brand : '',
                 film ? film.name : '',
@@ -1787,7 +1985,7 @@
             if (status === 'Entwickelt') {
                 return sortedRolls.sort(compareRollDateDesc);
             }
-            return sortedRolls.sort((a, b) => String(a.camera || '').localeCompare(String(b.camera || '')) || compareRollDateDesc(a, b));
+            return sortedRolls.sort((a, b) => getRollCameraName(a).localeCompare(getRollCameraName(b)) || compareRollDateDesc(a, b));
         }
 
         function renderRollCard(roll) {
@@ -1799,6 +1997,7 @@
             const process = getRollProcess(roll);
             const rollCode = getRollCode(roll);
             const filmName = film ? `${film.brand} ${film.name}` : roll.filmName;
+            const cameraName = getRollCameraName(roll);
             const packshotMarkup = film && film.img
                 ? `<img src="${escapeHtml(film.img)}" alt="${escapeHtml(filmName)} Packshot" loading="lazy">`
                 : `<span class="roll-packshot-placeholder" aria-hidden="true">${escapeHtml(String(filmName || 'Film').slice(0, 2).toUpperCase())}</span>`;
@@ -1823,7 +2022,7 @@
                         <p class="card-short-desc">${escapeHtml(filmName)}</p>
                         <div class="roll-meta">
                             <div class="info-card"><div class="info-item"><label>Roll-ID</label><span>${escapeHtml(rollCode)}</span></div></div>
-                            <div class="info-card"><div class="info-item"><label>Kamera</label><span>${escapeHtml(roll.camera || 'Nicht gesetzt')}</span></div></div>
+                            <div class="info-card"><div class="info-item"><label>Kamera</label><span>${escapeHtml(cameraName || 'Nicht gesetzt')}</span></div></div>
                             <div class="info-card"><div class="info-item"><label>Format</label><span>${escapeHtml(format || 'Nicht gesetzt')}</span></div></div>
                             <div class="info-card"><div class="info-item"><label>ISO eingestellt</label><span>${escapeHtml(ratedIso || 'Nicht gesetzt')}</span></div></div>
                             <div class="info-card"><div class="info-item"><label>Entwicklung</label><span>${escapeHtml(process || (film ? film.process : '') || 'Nicht gesetzt')}</span></div></div>
@@ -1901,7 +2100,7 @@
                     return compareRollDateDesc(a, b);
                 }
                 if (rollSortMode === 'camera') {
-                    return String(a.camera || '').localeCompare(String(b.camera || ''));
+                    return getRollCameraName(a).localeCompare(getRollCameraName(b));
                 }
                 if (rollSortMode === 'film') {
                     return String(a.filmName || '').localeCompare(String(b.filmName || ''));
@@ -1978,6 +2177,169 @@
             syncRollNameDefault();
         }
 
+        function buildCameraOptions(selectedCameraId, selectedCameraName = '') {
+            const options = [...camerasData]
+                .sort((a, b) => getCameraLabel(a).localeCompare(getCameraLabel(b)))
+                .map(camera => `<option value="${escapeHtml(camera.id)}" ${camera.id === selectedCameraId ? 'selected' : ''}>${escapeHtml(getCameraLabel(camera))}</option>`)
+                .join('');
+            const selectedCamera = getCameraById(selectedCameraId) || getCameraByName(selectedCameraName);
+            const customSelected = selectedCameraName && !selectedCamera;
+            return `
+                <option value="">Kamera wählen</option>
+                ${options}
+                <option value="__custom__" ${customSelected ? 'selected' : ''}>Andere Kamera eintragen</option>
+            `;
+        }
+
+        function handleRollCameraChoiceChange() {
+            const cameraSelect = document.getElementById('rollCameraSelect');
+            const customField = document.getElementById('rollCustomCameraField');
+            const cameraInput = document.getElementById('rollCamera');
+            const formatSelect = document.getElementById('rollFormat');
+            if (!cameraSelect || !customField || !cameraInput) return;
+
+            const isCustomCamera = cameraSelect.value === '__custom__';
+            const selectedCamera = getCameraById(cameraSelect.value);
+            const customFieldWasHidden = customField.classList.contains('hidden');
+
+            customField.classList.toggle('hidden', !isCustomCamera);
+            cameraInput.required = isCustomCamera;
+
+            if (selectedCamera) {
+                cameraInput.value = getCameraLabel(selectedCamera);
+                if (formatSelect && selectedCamera.format && !formatSelect.value) {
+                    formatSelect.value = normalizeRollFormat(selectedCamera.format);
+                }
+            } else if (isCustomCamera && customFieldWasHidden) {
+                cameraInput.value = '';
+            } else if (!isCustomCamera) {
+                cameraInput.value = '';
+            }
+
+            syncRollNameDefault();
+        }
+
+        function openCamerasForm() {
+            if (!requireUserProfile()) return;
+            const overlay = document.getElementById('modalOverlay');
+            const contentBlock = document.querySelector('.modal-content');
+            const cameraRows = camerasData.length
+                ? camerasData.map(camera => `
+                    <div class="camera-row">
+                        <div>
+                            <strong>${escapeHtml(getCameraLabel(camera))}</strong>
+                            <span>${escapeHtml(getCameraMeta(camera) || 'Keine Details')}</span>
+                        </div>
+                        <div class="roll-actions">
+                            <button type="button" class="secondary-btn" onclick="openCameraForm('${escapeHtml(camera.id)}')">Bearbeiten</button>
+                            <button type="button" class="danger-btn" onclick="deleteCamera('${escapeHtml(camera.id)}')">Löschen</button>
+                        </div>
+                    </div>
+                `).join('')
+                : '<div class="empty-state" style="margin-top:0;">Noch keine Kameras.</div>';
+
+            contentBlock.innerHTML = `
+                <button class="close-btn" onclick="closeModal(null)">&times;</button>
+                <div class="modal-body">
+                    <span class="card-brand" style="color:var(--primary);">Kameras</span>
+                    <h2 style="font-family: var(--font-headings); font-weight:800; margin: 5px 0 12px; font-size: 2rem; color: #fff; line-height:1.1;">Deine Kameras</h2>
+                    <p style="color:#a1a1aa; line-height:1.5; margin:0 0 18px;">Diese Liste erscheint beim Anlegen einer neuen Rolle.</p>
+                    <button type="button" class="primary-btn" onclick="openCameraForm()">Kamera anlegen</button>
+                    <div class="camera-list">${cameraRows}</div>
+                </div>
+            `;
+
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function openCameraForm(cameraId = '') {
+            if (!requireUserProfile()) return;
+            const existingCamera = cameraId ? getCameraById(cameraId) : null;
+            const overlay = document.getElementById('modalOverlay');
+            const contentBlock = document.querySelector('.modal-content');
+            const cameraName = existingCamera ? getCameraLabel(existingCamera) : '';
+            const format = existingCamera ? normalizeRollFormat(existingCamera.format) : '';
+            const note = existingCamera ? existingCamera.note || '' : '';
+
+            contentBlock.innerHTML = `
+                <button class="close-btn" onclick="closeModal(null)">&times;</button>
+                <div class="modal-body">
+                    <span class="card-brand" style="color:var(--primary);">${existingCamera ? 'Kamera bearbeiten' : 'Neue Kamera'}</span>
+                    <h2 style="font-family: var(--font-headings); font-weight:800; margin: 5px 0 24px; font-size: 2rem; color: #fff; line-height:1.1;">${escapeHtml(cameraName || 'Kamera anlegen')}</h2>
+                    <form class="form-grid" onsubmit="saveCameraFromForm(event, '${escapeHtml(cameraId)}')">
+                        <div class="form-field">
+                            <label for="cameraName">Kamera</label>
+                            <input id="cameraName" type="text" value="${escapeHtml(cameraName)}" placeholder="z.B. Leica M6" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="cameraFormat">Standardformat</label>
+                            <select id="cameraFormat">
+                                <option value="">Nicht festlegen</option>
+                                <option value="135" ${format === '135' ? 'selected' : ''}>135</option>
+                                <option value="120" ${format === '120' ? 'selected' : ''}>120</option>
+                                <option value="4x5" ${format === '4x5' ? 'selected' : ''}>4x5</option>
+                                <option value="8x10" ${format === '8x10' ? 'selected' : ''}>8x10</option>
+                                <option value="Instax" ${format === 'Instax' ? 'selected' : ''}>Instax</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <label for="cameraNote">Notiz</label>
+                            <textarea id="cameraNote" placeholder="z.B. 50mm, defekter Belichtungsmesser, Lieblingskamera">${escapeHtml(note)}</textarea>
+                        </div>
+                        <button type="submit" class="primary-btn">Speichern</button>
+                    </form>
+                </div>
+            `;
+
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        async function saveCameraFromForm(event, cameraId) {
+            event.preventDefault();
+            const existingCamera = cameraId ? getCameraById(cameraId) : null;
+            const name = document.getElementById('cameraName').value.trim();
+            const format = normalizeRollFormat(document.getElementById('cameraFormat').value);
+            const note = document.getElementById('cameraNote').value.trim();
+            const camera = {
+                id: cameraId || `camera_${Date.now()}`,
+                name,
+                format,
+                note,
+                createdAt: existingCamera ? existingCamera.createdAt : '',
+                updatedAt: new Date().toISOString(),
+                userEmail: userProfile.email,
+                userName: userProfile.name || ''
+            };
+
+            if (cameraId) {
+                camerasData = camerasData.map(item => item.id === cameraId ? camera : item);
+                rollsData = rollsData.map(roll => roll.cameraId === cameraId ? { ...roll, camera: name, updatedAt: new Date().toISOString() } : roll);
+                cacheRolls();
+            } else {
+                camera.createdAt = camera.updatedAt;
+                camerasData.push(camera);
+            }
+
+            saveCameras();
+            openCamerasForm();
+            await syncCameraMutation('upsertCamera', camera);
+        }
+
+        async function deleteCamera(cameraId) {
+            const camera = getCameraById(cameraId);
+            if (!camera) return;
+            if (!window.confirm(`Kamera "${getCameraLabel(camera)}" löschen? Rollen behalten den Kameranamen.`)) return;
+
+            camerasData = camerasData.filter(item => item.id !== cameraId);
+            rollsData = rollsData.map(roll => roll.cameraId === cameraId ? { ...roll, cameraId: '' } : roll);
+            saveCameras();
+            cacheRolls();
+            openCamerasForm();
+            await syncCameraMutation('deleteCamera', { id: cameraId });
+        }
+
         function openProfileForm() {
             const overlay = document.getElementById('modalOverlay');
             const contentBlock = document.querySelector('.modal-content');
@@ -2014,6 +2376,7 @@
             const email = document.getElementById('profileEmail').value.trim();
             saveUserProfile({ name, email });
             closeModal(null);
+            loadCameras();
             loadRolls();
         }
 
@@ -2023,7 +2386,8 @@
             const fallbackFilmName = existingRoll ? getRollValue(existingRoll, ['filmName', 'Film']) : '';
             const film = getFilmById(filmId) || getFilmByName(fallbackFilmName) || null;
             const loadedAt = existingRoll ? formatDateForInputValue(getRollDateValue(existingRoll)) : formatTodayForInput();
-            const camera = existingRoll ? existingRoll.camera : '';
+            const existingCamera = existingRoll ? (getCameraById(existingRoll.cameraId) || getCameraByName(existingRoll.camera)) : null;
+            const camera = existingRoll ? getRollCameraName(existingRoll) : '';
             const filmName = existingRoll ? existingRoll.filmName : (film ? film.name : '');
             const selectedFormat = existingRoll ? getRollFormat(existingRoll) : (film && film.formats.length === 1 ? normalizeRollFormat(film.formats[0]) : '');
             const ratedIso = existingRoll ? getRollRatedIso(existingRoll) : (film && film.iso ? String(film.iso) : '');
@@ -2045,6 +2409,9 @@
                 .map(item => `<option value="${escapeHtml(item.id)}" ${item.id === selectedFilmValue ? 'selected' : ''}>${escapeHtml(getFilmLabel(item))}</option>`)
                 .join('');
             const customFilmHiddenClass = selectedFilmValue === '__custom__' ? '' : ' hidden';
+            const selectedCameraValue = existingCamera ? existingCamera.id : (camera ? '__custom__' : '');
+            const cameraOptions = buildCameraOptions(existingCamera ? existingCamera.id : '', camera);
+            const customCameraHiddenClass = selectedCameraValue === '__custom__' ? '' : ' hidden';
 
             rollNameWasEdited = Boolean(existingRoll);
             lastGeneratedRollName = rollName;
@@ -2072,8 +2439,14 @@
                             <input id="rollFilmName" type="text" value="${escapeHtml(filmName)}" placeholder="z.B. Kodak ColorPlus 200" oninput="syncRollNameDefault()" ${selectedFilmValue === '__custom__' ? 'required' : ''}>
                         </div>
                         <div class="form-field">
-                            <label for="rollCamera">Kamera</label>
-                            <input id="rollCamera" type="text" value="${escapeHtml(camera)}" placeholder="z.B. Leica M6" oninput="syncRollNameDefault()" required>
+                            <label for="rollCameraSelect">Kamera</label>
+                            <select id="rollCameraSelect" onchange="handleRollCameraChoiceChange()" required>
+                                ${cameraOptions}
+                            </select>
+                        </div>
+                        <div class="form-field${customCameraHiddenClass}" id="rollCustomCameraField">
+                            <label for="rollCamera">Neue Kamera</label>
+                            <input id="rollCamera" type="text" value="${escapeHtml(camera)}" placeholder="z.B. Leica M6" oninput="syncRollNameDefault()" ${selectedCameraValue === '__custom__' ? 'required' : ''}>
                         </div>
                         <div class="form-field">
                             <label for="rollLoadedAt">Datum eingelegt</label>
@@ -2140,8 +2513,11 @@
 
             const selectedFilmId = document.getElementById('rollFilmSelect').value;
             const selectedFilm = selectedFilmId && selectedFilmId !== '__custom__' ? getFilmById(selectedFilmId) : null;
+            const selectedCameraId = document.getElementById('rollCameraSelect').value;
+            const selectedCamera = selectedCameraId && selectedCameraId !== '__custom__' ? getCameraById(selectedCameraId) : null;
             const name = document.getElementById('rollName').value.trim();
-            const camera = document.getElementById('rollCamera').value.trim();
+            let camera = selectedCamera ? getCameraLabel(selectedCamera) : document.getElementById('rollCamera').value.trim();
+            let cameraId = selectedCamera ? selectedCamera.id : '';
             const loadedAt = document.getElementById('rollLoadedAt').value;
             const filmName = document.getElementById('rollFilmName').value.trim();
             const format = normalizeRollFormat(document.getElementById('rollFormat').value);
@@ -2151,12 +2527,37 @@
             const status = document.getElementById('rollStatus').value;
             const existingRoll = rollId ? rollsData.find(item => item.id === rollId) : null;
             const rollCode = existingRoll ? getRollCode(existingRoll) : (document.getElementById('rollCode').value.trim() || generateNextRollCode(rollsData));
+            let newCamera = null;
+
+            if (!cameraId && camera) {
+                const matchingCamera = getCameraByName(camera);
+                if (matchingCamera) {
+                    cameraId = matchingCamera.id;
+                    camera = getCameraLabel(matchingCamera);
+                } else {
+                    newCamera = {
+                        id: `camera_${Date.now()}`,
+                        name: camera,
+                        format,
+                        note: '',
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString(),
+                        userEmail: userProfile.email,
+                        userName: userProfile.name || ''
+                    };
+                    cameraId = newCamera.id;
+                    camerasData.push(newCamera);
+                    saveCameras();
+                }
+            }
+
             const roll = {
                 id: rollId || `roll_${Date.now()}`,
                 rollCode,
                 filmId: selectedFilm ? selectedFilm.id : '',
                 filmName: selectedFilm ? selectedFilm.name : filmName,
                 name: name || buildRollName(loadedAt, filmName, camera),
+                cameraId,
                 camera,
                 loadedAt,
                 format,
@@ -2180,6 +2581,7 @@
             saveRolls();
             closeModal(null);
             switchView('rolls');
+            if (newCamera) await syncCameraMutation('upsertCamera', newCamera);
             await syncRollMutation('upsert', roll);
         }
 
@@ -2323,6 +2725,7 @@
 
         // Direkt starten
         loadUserProfile();
+        loadCameras();
         loadRolls();
         loadFilmsFromGoogleSheet();
     </script>

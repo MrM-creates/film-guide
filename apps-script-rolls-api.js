@@ -1,5 +1,6 @@
 const SPREADSHEET_ID = '';
 const SHEET_NAME = 'Rolls';
+const CAMERA_SHEET_NAME = 'Cameras';
 const HEADERS = [
   'id',
   'filmId',
@@ -16,22 +17,38 @@ const HEADERS = [
   'process',
   'userEmail',
   'userName',
-  'rollCode'
+  'rollCode',
+  'cameraId'
+];
+const CAMERA_HEADERS = [
+  'id',
+  'name',
+  'format',
+  'note',
+  'createdAt',
+  'updatedAt',
+  'userEmail',
+  'userName'
 ];
 
 function doGet(event) {
   const action = event && event.parameter && event.parameter.action;
   const userEmail = event && event.parameter && event.parameter.userEmail;
+  if (action === 'listCameras') {
+    return jsonResponse({ cameras: listCameras(userEmail) });
+  }
   if (action === 'list') {
     return jsonResponse({ rolls: listRolls(userEmail) });
   }
 
-  return jsonResponse({ ok: true, rolls: listRolls(userEmail) });
+  return jsonResponse({ ok: true, rolls: listRolls(userEmail), cameras: listCameras(userEmail) });
 }
 
 function doPost(event) {
   const payload = JSON.parse((event.postData && event.postData.contents) || '{}');
-  const userEmail = normalizeEmail(payload.userEmail || (payload.roll && payload.roll.userEmail));
+  const userEmail = normalizeEmail(payload.userEmail ||
+    (payload.roll && payload.roll.userEmail) ||
+    (payload.camera && payload.camera.userEmail));
   const lock = LockService.getScriptLock();
   lock.waitLock(10000);
 
@@ -40,16 +57,38 @@ function doPost(event) {
       deleteRoll(payload.id || (payload.roll && payload.roll.id), userEmail);
     } else if (payload.action === 'upsert') {
       upsertRoll(payload.roll || {}, userEmail);
+    } else if (payload.action === 'deleteCamera') {
+      deleteCamera(payload.id || (payload.camera && payload.camera.id), userEmail);
+    } else if (payload.action === 'upsertCamera') {
+      upsertCamera(payload.camera || {}, userEmail);
     } else {
       throw new Error('Unknown action');
     }
 
-    return jsonResponse({ ok: true, rolls: listRolls(userEmail) });
+    return jsonResponse({ ok: true, rolls: listRolls(userEmail), cameras: listCameras(userEmail) });
   } catch (error) {
     return jsonResponse({ ok: false, error: String(error) });
   } finally {
     lock.releaseLock();
   }
+}
+
+function listCameras(userEmail) {
+  const sheet = getCamerasSheet();
+  const values = sheet.getDataRange().getValues();
+  if (values.length <= 1) return [];
+
+  const headers = values[0];
+  return values.slice(1)
+    .filter(row => row.some(cell => cell !== ''))
+    .map(row => {
+      const camera = {};
+      headers.forEach((header, index) => {
+        camera[header] = normalizeCell(row[index]);
+      });
+      return camera;
+    })
+    .filter(camera => !userEmail || normalizeEmail(camera.userEmail) === normalizeEmail(userEmail));
 }
 
 function listRolls(userEmail) {
@@ -87,6 +126,25 @@ function upsertRoll(roll, userEmail) {
     sheet.appendRow(rowValues);
   } else {
     sheet.getRange(existingIndex + 2, 1, 1, HEADERS.length).setValues([rowValues]);
+  }
+}
+
+function upsertCamera(camera, userEmail) {
+  if (!camera.id) camera.id = Utilities.getUuid();
+  if (userEmail) camera.userEmail = normalizeEmail(userEmail);
+
+  const sheet = getCamerasSheet();
+  const values = sheet.getDataRange().getValues();
+  const headers = values[0];
+  const idIndex = headers.indexOf('id');
+  const ids = values.slice(1).map(row => String(row[idIndex] || ''));
+  const existingIndex = ids.indexOf(String(camera.id));
+  const rowValues = headers.map(header => camera[header] || '');
+
+  if (existingIndex === -1) {
+    sheet.appendRow(rowValues);
+  } else {
+    sheet.getRange(existingIndex + 2, 1, 1, headers.length).setValues([rowValues]);
   }
 }
 
@@ -131,6 +189,26 @@ function deleteRoll(id, userEmail) {
   }
 }
 
+function deleteCamera(id, userEmail) {
+  if (!id) return;
+
+  const sheet = getCamerasSheet();
+  const values = sheet.getDataRange().getValues();
+  const headers = values[0];
+  const idIndex = headers.indexOf('id');
+  const emailIndex = headers.indexOf('userEmail');
+  const ids = values.slice(1).map(row => String(row[idIndex] || ''));
+  const existingIndex = ids.indexOf(String(id));
+
+  if (existingIndex !== -1) {
+    if (userEmail && emailIndex !== -1) {
+      const rowEmail = normalizeEmail(values[existingIndex + 1][emailIndex]);
+      if (rowEmail !== normalizeEmail(userEmail)) return;
+    }
+    sheet.deleteRow(existingIndex + 2);
+  }
+}
+
 function getRollsSheet() {
   const spreadsheet = SPREADSHEET_ID
     ? SpreadsheetApp.openById(SPREADSHEET_ID)
@@ -141,17 +219,37 @@ function getRollsSheet() {
     sheet = spreadsheet.insertSheet(SHEET_NAME);
   }
 
-  ensureHeaders(sheet);
+  ensureHeaders(sheet, HEADERS);
   return sheet;
 }
 
-function ensureHeaders(sheet) {
-  const headerRange = sheet.getRange(1, 1, 1, HEADERS.length);
-  const currentHeaders = headerRange.getValues()[0];
-  const needsHeaders = HEADERS.some((header, index) => currentHeaders[index] !== header);
+function getCamerasSheet() {
+  const spreadsheet = SPREADSHEET_ID
+    ? SpreadsheetApp.openById(SPREADSHEET_ID)
+    : SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = spreadsheet.getSheetByName(CAMERA_SHEET_NAME);
+
+  if (!sheet) {
+    sheet = spreadsheet.insertSheet(CAMERA_SHEET_NAME);
+  }
+
+  ensureHeaders(sheet, CAMERA_HEADERS);
+  return sheet;
+}
+
+function ensureHeaders(sheet, expectedHeaders) {
+  const headerRange = sheet.getRange(1, 1, 1, Math.max(expectedHeaders.length, sheet.getLastColumn() || expectedHeaders.length));
+  const currentHeaders = headerRange.getValues()[0].filter(header => String(header || '').trim());
+  const nextHeaders = currentHeaders.length ? [...currentHeaders] : [...expectedHeaders];
+  expectedHeaders.forEach(header => {
+    if (!nextHeaders.includes(header)) nextHeaders.push(header);
+  });
+
+  const needsHeaders = nextHeaders.length !== currentHeaders.length ||
+    nextHeaders.some((header, index) => currentHeaders[index] !== header);
 
   if (needsHeaders) {
-    headerRange.setValues([HEADERS]);
+    sheet.getRange(1, 1, 1, nextHeaders.length).setValues([nextHeaders]);
     sheet.setFrozenRows(1);
   }
 }
