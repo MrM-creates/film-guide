@@ -491,6 +491,26 @@
             margin-top: 3px;
         }
 
+        .checkbox-list {
+            display: grid;
+            gap: 8px;
+        }
+
+        .checkbox-row {
+            align-items: center;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            color: var(--text-primary);
+            display: flex;
+            gap: 8px;
+            padding: 10px 12px;
+        }
+
+        .checkbox-row input {
+            accent-color: var(--primary);
+        }
+
         .rolls-tools {
             display: flex;
             align-items: center;
@@ -1025,6 +1045,7 @@
                     <button type="button" class="secondary-btn" onclick="syncAllData()">Sync</button>
                     <button type="button" class="secondary-btn" onclick="openProfileForm()">Profil</button>
                     <button type="button" class="secondary-btn" onclick="openCamerasForm()">Kameras</button>
+                    <button type="button" class="secondary-btn" onclick="openLensesForm()">Objektive</button>
                     <button type="button" class="primary-btn" onclick="openEmptyRollForm()">Rolle anlegen</button>
                     <span class="sync-status" id="rollsSyncStatus">Lokal gespeichert</span>
                 </div>
@@ -1091,12 +1112,16 @@
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/13lPATFa6AumQkerDv_6CXJ68tp7QXoMfeP5GUFsekY0/export?format=csv&gid=158929564";
         const ROLLS_KEY = 'filmGuideRolls_v1';
         const CAMERAS_KEY = 'filmGuideCameras_v1';
+        const LENSES_KEY = 'filmGuideLenses_v1';
+        const CAMERA_LENSES_KEY = 'filmGuideCameraLenses_v1';
         const USER_PROFILE_KEY = 'filmGuideUserProfile_v1';
         // Nach dem Deploy des Apps Scripts hier die Web-App-URL eintragen.
         const ROLLS_API_URL = 'https://script.google.com/macros/s/AKfycbzyL58zdiMkWL8SlbABqcebTNXhMB2Ai0PZoaeCKGNM2F2E2LImwCWDqtM9o25GziqPng/exec';
         let filmsData = [];
         let rollsData = [];
         let camerasData = [];
+        let lensesData = [];
+        let cameraLensesData = [];
         let userProfile = null;
         let rollStatusFilter = 'all';
         let rollSortMode = 'status';
@@ -1140,6 +1165,14 @@
 
         function cacheCameras() {
             localStorage.setItem(CAMERAS_KEY, JSON.stringify(camerasData));
+        }
+
+        function cacheLenses() {
+            localStorage.setItem(LENSES_KEY, JSON.stringify(lensesData));
+        }
+
+        function cacheCameraLenses() {
+            localStorage.setItem(CAMERA_LENSES_KEY, JSON.stringify(cameraLensesData));
         }
 
         function normalizeEmail(value) {
@@ -1226,6 +1259,36 @@
             if (!hasUserProfile()) return true;
             const cameraEmail = normalizeEmail(camera.userEmail || camera['User Email'] || camera.email || camera.Mail);
             return !cameraEmail || cameraEmail === userProfile.email;
+        }
+
+        function attachCurrentUserLens(lens) {
+            if (!hasUserProfile()) return lens;
+            return {
+                ...lens,
+                userEmail: normalizeEmail(lens.userEmail || lens['User Email'] || userProfile.email),
+                userName: lens.userName || lens['User Name'] || userProfile.name || ''
+            };
+        }
+
+        function attachCurrentUserCameraLens(mapping) {
+            if (!hasUserProfile()) return mapping;
+            return {
+                ...mapping,
+                userEmail: normalizeEmail(mapping.userEmail || mapping['User Email'] || userProfile.email),
+                userName: mapping.userName || mapping['User Name'] || userProfile.name || ''
+            };
+        }
+
+        function isCurrentUserLens(lens) {
+            if (!hasUserProfile()) return true;
+            const lensEmail = normalizeEmail(lens.userEmail || lens['User Email'] || lens.email || lens.Mail);
+            return !lensEmail || lensEmail === userProfile.email;
+        }
+
+        function isCurrentUserCameraLens(mapping) {
+            if (!hasUserProfile()) return true;
+            const mappingEmail = normalizeEmail(mapping.userEmail || mapping['User Email'] || mapping.email || mapping.Mail);
+            return !mappingEmail || mappingEmail === userProfile.email;
         }
 
         function getRollCode(roll) {
@@ -1319,6 +1382,24 @@
                 .sort((a, b) => getCameraLabel(a).localeCompare(getCameraLabel(b)));
         }
 
+        function mergeSyncedLenses(syncedLenses) {
+            return syncedLenses
+                .filter(lens => lens && lens.id)
+                .filter(isCurrentUserLens)
+                .map(serverLens => {
+                    const localLens = lensesData.find(item => item.id === serverLens.id) || {};
+                    return attachCurrentUserLens({ ...localLens, ...serverLens });
+                })
+                .sort((a, b) => getLensLabel(a).localeCompare(getLensLabel(b)));
+        }
+
+        function mergeSyncedCameraLenses(syncedCameraLenses) {
+            return syncedCameraLenses
+                .filter(mapping => mapping && mapping.cameraId && mapping.lensId)
+                .filter(isCurrentUserCameraLens)
+                .map(attachCurrentUserCameraLens);
+        }
+
         function loadRolls() {
             const savedRolls = localStorage.getItem(ROLLS_KEY);
             if (!savedRolls) {
@@ -1362,6 +1443,41 @@
             fetchCamerasFromSync({ silent: true });
         }
 
+        function loadLenses() {
+            const savedLenses = localStorage.getItem(LENSES_KEY);
+            if (!savedLenses) {
+                lensesData = [];
+            } else {
+                try {
+                    lensesData = JSON.parse(savedLenses)
+                        .filter(isCurrentUserLens)
+                        .map(attachCurrentUserLens)
+                        .sort((a, b) => getLensLabel(a).localeCompare(getLensLabel(b)));
+                    cacheLenses();
+                } catch (error) {
+                    console.error("Fehler beim Lesen der Objektive", error);
+                    lensesData = [];
+                }
+            }
+
+            const savedCameraLenses = localStorage.getItem(CAMERA_LENSES_KEY);
+            if (!savedCameraLenses) {
+                cameraLensesData = [];
+            } else {
+                try {
+                    cameraLensesData = JSON.parse(savedCameraLenses)
+                        .filter(isCurrentUserCameraLens)
+                        .map(attachCurrentUserCameraLens);
+                    cacheCameraLenses();
+                } catch (error) {
+                    console.error("Fehler beim Lesen der Objektivzuordnung", error);
+                    cameraLensesData = [];
+                }
+            }
+
+            fetchLensesFromSync({ silent: true });
+        }
+
         function saveRolls() {
             cacheRolls();
             renderRolls();
@@ -1370,6 +1486,13 @@
         function saveCameras() {
             camerasData = camerasData.sort((a, b) => getCameraLabel(a).localeCompare(getCameraLabel(b)));
             cacheCameras();
+            renderRolls();
+        }
+
+        function saveLenses() {
+            lensesData = lensesData.sort((a, b) => getLensLabel(a).localeCompare(getLensLabel(b)));
+            cacheLenses();
+            cacheCameraLenses();
             renderRolls();
         }
 
@@ -1404,6 +1527,7 @@
 
         async function syncAllData() {
             await fetchCamerasFromSync();
+            await fetchLensesFromSync();
             await fetchRollsFromSync();
         }
 
@@ -1476,6 +1600,34 @@
             }
         }
 
+        async function fetchLensesFromSync(options = {}) {
+            if (!requireUserProfile()) {
+                setRollsSyncStatus('Profil fehlt');
+                return;
+            }
+
+            if (!hasRollsApi()) {
+                setRollsSyncStatus('Lokal gespeichert');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${ROLLS_API_URL}?action=listLenses&userEmail=${encodeURIComponent(userProfile.email)}&ts=${Date.now()}`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const payload = await response.json();
+                if (!Array.isArray(payload.lenses)) throw new Error('Lens sync not available');
+                lensesData = mergeSyncedLenses(payload.lenses);
+                cameraLensesData = mergeSyncedCameraLenses(payload.cameraLenses || []);
+                cacheLenses();
+                cacheCameraLenses();
+                if (!options.silent) setRollsSyncStatus('Objektive synchronisiert');
+            } catch (error) {
+                console.error("Fehler beim Synchronisieren der Objektive", error);
+                if (!options.silent) setRollsSyncStatus('Objektive lokal');
+            }
+        }
+
         async function syncCameraMutation(action, camera) {
             if (!requireUserProfile()) {
                 setRollsSyncStatus('Profil fehlt');
@@ -1508,10 +1660,58 @@
                     cacheCameras();
                     renderRolls();
                 }
+                if (Array.isArray(payload.cameraLenses)) {
+                    cameraLensesData = mergeSyncedCameraLenses(payload.cameraLenses);
+                    cacheCameraLenses();
+                }
                 setRollsSyncStatus('Synchronisiert');
             } catch (error) {
                 console.error("Fehler beim Speichern der Kamera", error);
                 setRollsSyncStatus('Kamera nicht synchronisiert');
+            }
+        }
+
+        async function syncLensMutation(action, lens, cameraIds = []) {
+            if (!requireUserProfile()) {
+                setRollsSyncStatus('Profil fehlt');
+                return;
+            }
+
+            if (!hasRollsApi()) {
+                setRollsSyncStatus('Lokal gespeichert');
+                return;
+            }
+
+            setRollsSyncStatus('Speichere Objektiv...');
+
+            try {
+                const response = await fetch(ROLLS_API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action,
+                        lens: lens ? attachCurrentUserLens(lens) : null,
+                        cameraIds,
+                        id: lens ? lens.id : '',
+                        userEmail: userProfile.email,
+                        userName: userProfile.name || ''
+                    })
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const payload = await response.json();
+                if (payload.ok === false) throw new Error(payload.error || 'Lens sync failed');
+                if (Array.isArray(payload.lenses)) {
+                    lensesData = mergeSyncedLenses(payload.lenses);
+                    cacheLenses();
+                }
+                if (Array.isArray(payload.cameraLenses)) {
+                    cameraLensesData = mergeSyncedCameraLenses(payload.cameraLenses);
+                    cacheCameraLenses();
+                }
+                setRollsSyncStatus('Synchronisiert');
+            } catch (error) {
+                console.error("Fehler beim Speichern des Objektivs", error);
+                setRollsSyncStatus('Objektiv nicht synchronisiert');
             }
         }
 
@@ -1584,10 +1784,69 @@
         }
 
         function getCameraMeta(camera) {
+            const lensLabels = getCameraLensLabels(camera.id);
+            const lensSummary = lensLabels.length
+                ? lensLabels.slice(0, 3).join(', ') + (lensLabels.length > 3 ? ` +${lensLabels.length - 3}` : '')
+                : '';
             return [
                 camera.format,
+                lensSummary,
                 camera.note
             ].filter(Boolean).join(' · ');
+        }
+
+        function getLensLabel(lens) {
+            if (!lens) return '';
+            return [
+                lens.brand,
+                lens.name || lens.focalLength
+            ].filter(Boolean).join(' ').trim();
+        }
+
+        function getLensById(lensId) {
+            return lensesData.find(lens => lens.id === lensId) || null;
+        }
+
+        function getCameraLensIds(cameraId) {
+            return cameraLensesData
+                .filter(mapping => mapping.cameraId === cameraId)
+                .map(mapping => mapping.lensId);
+        }
+
+        function getLensCameraIds(lensId) {
+            return cameraLensesData
+                .filter(mapping => mapping.lensId === lensId)
+                .map(mapping => mapping.cameraId);
+        }
+
+        function getCameraLensLabels(cameraId) {
+            return getCameraLensIds(cameraId)
+                .map(getLensById)
+                .filter(Boolean)
+                .map(getLensLabel);
+        }
+
+        function getLensMeta(lens) {
+            return [
+                lens.focalLength,
+                lens.maxAperture,
+                lens.mount,
+                lens.type,
+                lens.character
+            ].filter(Boolean).join(' · ');
+        }
+
+        function setLensCameraMappings(lensId, cameraIds) {
+            const existingOtherMappings = cameraLensesData.filter(mapping => mapping.lensId !== lensId);
+            const now = new Date().toISOString();
+            const nextMappings = [...new Set(cameraIds || [])].filter(Boolean).map(cameraId => attachCurrentUserCameraLens({
+                id: `${cameraId}_${lensId}`,
+                cameraId,
+                lensId,
+                createdAt: now,
+                updatedAt: now
+            }));
+            cameraLensesData = [...existingOtherMappings, ...nextMappings];
         }
 
         function formatTodayForInput() {
@@ -2345,11 +2604,171 @@
             if (!window.confirm(`Kamera "${getCameraLabel(camera)}" löschen? Rollen behalten den Kameranamen.`)) return;
 
             camerasData = camerasData.filter(item => item.id !== cameraId);
+            cameraLensesData = cameraLensesData.filter(mapping => mapping.cameraId !== cameraId);
             rollsData = rollsData.map(roll => roll.cameraId === cameraId ? { ...roll, cameraId: '' } : roll);
             saveCameras();
+            cacheCameraLenses();
             cacheRolls();
             openCamerasForm();
             await syncCameraMutation('deleteCamera', { id: cameraId });
+        }
+
+        function openLensesForm() {
+            if (!requireUserProfile()) return;
+            const overlay = document.getElementById('modalOverlay');
+            const contentBlock = document.querySelector('.modal-content');
+            const lensRows = lensesData.length
+                ? lensesData.map(lens => {
+                    const cameraNames = getLensCameraIds(lens.id)
+                        .map(getCameraById)
+                        .filter(Boolean)
+                        .map(getCameraLabel);
+                    return `
+                        <div class="camera-row">
+                            <div>
+                                <strong>${escapeHtml(getLensLabel(lens))}</strong>
+                                <span>${escapeHtml(getLensMeta(lens) || 'Keine Details')}</span>
+                                <span>${escapeHtml(cameraNames.length ? cameraNames.join(' · ') : 'Keiner Kamera zugeordnet')}</span>
+                            </div>
+                            <div class="roll-actions">
+                                <button type="button" class="secondary-btn" onclick="openLensForm('${escapeHtml(lens.id)}')">Bearbeiten</button>
+                                <button type="button" class="danger-btn" onclick="deleteLens('${escapeHtml(lens.id)}')">Löschen</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('')
+                : '<div class="empty-state" style="margin-top:0;">Noch keine Objektive.</div>';
+
+            contentBlock.innerHTML = `
+                <button class="close-btn" onclick="closeModal(null)">&times;</button>
+                <div class="modal-body">
+                    <span class="card-brand" style="color:var(--primary);">Objektive</span>
+                    <h2 style="font-family: var(--font-headings); font-weight:800; margin: 5px 0 12px; font-size: 2rem; color: #fff; line-height:1.1;">Deine Objektive</h2>
+                    <p style="color:#a1a1aa; line-height:1.5; margin:0 0 18px;">Objektive können mehreren Kameras zugeordnet werden.</p>
+                    <button type="button" class="primary-btn" onclick="openLensForm()">Objektiv anlegen</button>
+                    <div class="camera-list">${lensRows}</div>
+                </div>
+            `;
+
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function openLensForm(lensId = '') {
+            if (!requireUserProfile()) return;
+            const existingLens = lensId ? getLensById(lensId) : null;
+            const overlay = document.getElementById('modalOverlay');
+            const contentBlock = document.querySelector('.modal-content');
+            const selectedCameraIds = new Set(existingLens ? getLensCameraIds(existingLens.id) : []);
+            const cameraChoices = camerasData.length
+                ? camerasData
+                    .map(camera => `
+                        <label class="checkbox-row">
+                            <input type="checkbox" name="lensCamera" value="${escapeHtml(camera.id)}" ${selectedCameraIds.has(camera.id) ? 'checked' : ''}>
+                            <span>${escapeHtml(getCameraLabel(camera))}</span>
+                        </label>
+                    `).join('')
+                : '<div class="empty-state" style="margin-top:0;">Noch keine Kameras angelegt.</div>';
+
+            contentBlock.innerHTML = `
+                <button class="close-btn" onclick="closeModal(null)">&times;</button>
+                <div class="modal-body">
+                    <span class="card-brand" style="color:var(--primary);">${existingLens ? 'Objektiv bearbeiten' : 'Neues Objektiv'}</span>
+                    <h2 style="font-family: var(--font-headings); font-weight:800; margin: 5px 0 24px; font-size: 2rem; color: #fff; line-height:1.1;">${escapeHtml(existingLens ? getLensLabel(existingLens) : 'Objektiv anlegen')}</h2>
+                    <form class="form-grid" onsubmit="saveLensFromForm(event, '${escapeHtml(lensId)}')">
+                        <div class="form-field">
+                            <label for="lensBrand">Marke</label>
+                            <input id="lensBrand" type="text" value="${escapeHtml(existingLens ? existingLens.brand : '')}" placeholder="z.B. Nikon">
+                        </div>
+                        <div class="form-field">
+                            <label for="lensName">Name</label>
+                            <input id="lensName" type="text" value="${escapeHtml(existingLens ? existingLens.name : '')}" placeholder="z.B. Nikkor 50mm f/1.8" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="lensMount">Mount</label>
+                            <input id="lensMount" type="text" value="${escapeHtml(existingLens ? existingLens.mount : '')}" placeholder="z.B. Nikon F, Leica M">
+                        </div>
+                        <div class="form-field">
+                            <label for="lensFocalLength">Brennweite</label>
+                            <input id="lensFocalLength" type="text" value="${escapeHtml(existingLens ? existingLens.focalLength : '')}" placeholder="z.B. 50mm oder 28-70mm">
+                        </div>
+                        <div class="form-field">
+                            <label for="lensMaxAperture">Lichtstärke</label>
+                            <input id="lensMaxAperture" type="text" value="${escapeHtml(existingLens ? existingLens.maxAperture : '')}" placeholder="z.B. f/1.8">
+                        </div>
+                        <div class="form-field">
+                            <label for="lensType">Typ</label>
+                            <select id="lensType">
+                                <option value="">Nicht festlegen</option>
+                                <option value="Prime" ${existingLens && existingLens.type === 'Prime' ? 'selected' : ''}>Prime</option>
+                                <option value="Zoom" ${existingLens && existingLens.type === 'Zoom' ? 'selected' : ''}>Zoom</option>
+                                <option value="Macro" ${existingLens && existingLens.type === 'Macro' ? 'selected' : ''}>Macro</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <label for="lensCharacter">Charakter</label>
+                            <input id="lensCharacter" type="text" value="${escapeHtml(existingLens ? existingLens.character : '')}" placeholder="z.B. weich, kontrastreich, swirly bokeh">
+                        </div>
+                        <div class="form-field">
+                            <label>Kameras</label>
+                            <div class="checkbox-list">${cameraChoices}</div>
+                        </div>
+                        <div class="form-field">
+                            <label for="lensNote">Notiz</label>
+                            <textarea id="lensNote" placeholder="z.B. Haze, Filtergewinde, Lieblingslinse">${escapeHtml(existingLens ? existingLens.note : '')}</textarea>
+                        </div>
+                        <button type="submit" class="primary-btn">Speichern</button>
+                    </form>
+                </div>
+            `;
+
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        async function saveLensFromForm(event, lensId) {
+            event.preventDefault();
+            const existingLens = lensId ? getLensById(lensId) : null;
+            const selectedCameraIds = Array.from(document.querySelectorAll('input[name="lensCamera"]:checked')).map(input => input.value);
+            const lens = {
+                id: lensId || `lens_${Date.now()}`,
+                brand: document.getElementById('lensBrand').value.trim(),
+                name: document.getElementById('lensName').value.trim(),
+                mount: document.getElementById('lensMount').value.trim(),
+                focalLength: document.getElementById('lensFocalLength').value.trim(),
+                maxAperture: document.getElementById('lensMaxAperture').value.trim(),
+                type: document.getElementById('lensType').value,
+                character: document.getElementById('lensCharacter').value.trim(),
+                note: document.getElementById('lensNote').value.trim(),
+                createdAt: existingLens ? existingLens.createdAt : '',
+                updatedAt: new Date().toISOString(),
+                userEmail: userProfile.email,
+                userName: userProfile.name || ''
+            };
+
+            if (lensId) {
+                lensesData = lensesData.map(item => item.id === lensId ? lens : item);
+            } else {
+                lens.createdAt = lens.updatedAt;
+                lensesData.push(lens);
+            }
+
+            setLensCameraMappings(lens.id, selectedCameraIds);
+            saveLenses();
+            openLensesForm();
+            await syncLensMutation('upsertLens', lens, selectedCameraIds);
+        }
+
+        async function deleteLens(lensId) {
+            const lens = getLensById(lensId);
+            if (!lens) return;
+            if (!window.confirm(`Objektiv "${getLensLabel(lens)}" löschen?`)) return;
+
+            lensesData = lensesData.filter(item => item.id !== lensId);
+            cameraLensesData = cameraLensesData.filter(mapping => mapping.lensId !== lensId);
+            saveLenses();
+            openLensesForm();
+            await syncLensMutation('deleteLens', { id: lensId });
         }
 
         function openProfileForm() {
@@ -2389,6 +2808,7 @@
             saveUserProfile({ name, email });
             closeModal(null);
             loadCameras();
+            loadLenses();
             loadRolls();
         }
 
@@ -2748,6 +3168,7 @@
         // Direkt starten
         loadUserProfile();
         loadCameras();
+        loadLenses();
         loadRolls();
         loadFilmsFromGoogleSheet();
     </script>
