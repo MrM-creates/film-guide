@@ -1849,6 +1849,30 @@
             cameraLensesData = [...existingOtherMappings, ...nextMappings];
         }
 
+        function setCameraLensMappings(cameraId, lensIds) {
+            const existingOtherMappings = cameraLensesData.filter(mapping => mapping.cameraId !== cameraId);
+            const now = new Date().toISOString();
+            const nextMappings = [...new Set(lensIds || [])].filter(Boolean).map(lensId => attachCurrentUserCameraLens({
+                id: `${cameraId}_${lensId}`,
+                cameraId,
+                lensId,
+                createdAt: now,
+                updatedAt: now
+            }));
+            cameraLensesData = [...existingOtherMappings, ...nextMappings];
+        }
+
+        async function syncLensMappingsForCamera(cameraId, previousLensIds, selectedLensIds) {
+            if (!hasRollsApi()) return;
+            const affectedLensIds = [...new Set([...(previousLensIds || []), ...(selectedLensIds || [])])].filter(Boolean);
+            for (const lensId of affectedLensIds) {
+                const lens = getLensById(lensId);
+                if (lens) {
+                    await syncLensMutation('upsertLens', lens, getLensCameraIds(lensId));
+                }
+            }
+        }
+
         function formatTodayForInput() {
             const today = new Date();
             const year = today.getFullYear();
@@ -2532,6 +2556,16 @@
             const cameraName = existingCamera ? getCameraLabel(existingCamera) : '';
             const format = existingCamera ? normalizeRollFormat(existingCamera.format) : '';
             const note = existingCamera ? existingCamera.note || '' : '';
+            const selectedLensIds = new Set(existingCamera ? getCameraLensIds(existingCamera.id) : []);
+            const lensChoices = lensesData.length
+                ? lensesData
+                    .map(lens => `
+                        <label class="checkbox-row">
+                            <input type="checkbox" name="cameraLens" value="${escapeHtml(lens.id)}" ${selectedLensIds.has(lens.id) ? 'checked' : ''}>
+                            <span>${escapeHtml(getLensLabel(lens))}</span>
+                        </label>
+                    `).join('')
+                : '<div class="empty-state" style="margin-top:0;">Noch keine Objektive angelegt.</div>';
 
             contentBlock.innerHTML = `
                 <button class="close-btn" onclick="closeModal(null)">&times;</button>
@@ -2558,6 +2592,10 @@
                             <label for="cameraNote">Notiz</label>
                             <textarea id="cameraNote" placeholder="z.B. 50mm, defekter Belichtungsmesser, Lieblingskamera">${escapeHtml(note)}</textarea>
                         </div>
+                        <div class="form-field">
+                            <label>Objektive</label>
+                            <div class="checkbox-list">${lensChoices}</div>
+                        </div>
                         <button type="submit" class="primary-btn">Speichern</button>
                     </form>
                 </div>
@@ -2573,6 +2611,8 @@
             const name = document.getElementById('cameraName').value.trim();
             const format = normalizeRollFormat(document.getElementById('cameraFormat').value);
             const note = document.getElementById('cameraNote').value.trim();
+            const previousLensIds = cameraId ? getCameraLensIds(cameraId) : [];
+            const selectedLensIds = Array.from(document.querySelectorAll('input[name="cameraLens"]:checked')).map(input => input.value);
             const camera = {
                 id: cameraId || `camera_${Date.now()}`,
                 name,
@@ -2593,9 +2633,12 @@
                 camerasData.push(camera);
             }
 
+            setCameraLensMappings(camera.id, selectedLensIds);
             saveCameras();
+            cacheCameraLenses();
             openCamerasForm();
             await syncCameraMutation('upsertCamera', camera);
+            await syncLensMappingsForCamera(camera.id, previousLensIds, selectedLensIds);
         }
 
         async function deleteCamera(cameraId) {
