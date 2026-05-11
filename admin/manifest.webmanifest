@@ -1,0 +1,19 @@
+{
+  "id": "/admin/",
+  "name": "FilmGuide Admin",
+  "short_name": "Guide Admin",
+  "description": "Admin-App zum Pflegen der FilmGuide-Filmdaten.",
+  "start_url": "/admin/",
+  "scope": "/admin/",
+  "display": "standalone",
+  "background_color": "#0d0f0f",
+  "theme_color": "#0d0f0f",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
