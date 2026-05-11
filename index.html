@@ -1344,6 +1344,7 @@
             if (!compactFormat) return '';
             if (compactFormat === '35mm' || compactFormat === '35' || compactFormat === '135mm') return '135';
             if (compactFormat === '120mm') return '120';
+            if (compactFormat === 'sheet') return 'Sheet';
             if (compactFormat.includes('4x5') || compactFormat.includes('4×5')) return '4x5';
             if (compactFormat.includes('8x10') || compactFormat.includes('8×10')) return '8x10';
             if (compactFormat.includes('instax')) return 'Instax';
@@ -2445,7 +2446,7 @@
             const title = document.getElementById('rollFormTitle');
             if (!filmSelect || !customField || !filmNameInput) return;
 
-            const defaultFormatChoices = ['135', '120', '4x5', '8x10', 'Instax'];
+            const defaultFormatChoices = ['135', '120', 'Sheet', '4x5', '8x10', 'Instax'];
             const isCustomFilm = filmSelect.value === '__custom__';
             const film = getFilmById(filmSelect.value);
             const customFieldWasHidden = customField.classList.contains('hidden');
@@ -2875,7 +2876,7 @@
             const rollCode = existingRoll ? getRollCode(existingRoll) : generateNextRollCode(rollsData);
             const overlay = document.getElementById('modalOverlay');
             const contentBlock = document.querySelector('.modal-content');
-            const defaultFormatChoices = ['135', '120', '4x5', '8x10', 'Instax'];
+            const defaultFormatChoices = ['135', '120', 'Sheet', '4x5', '8x10', 'Instax'];
             const formatChoices = film
                 ? [...new Set(film.formats.map(normalizeRollFormat).filter(Boolean))]
                 : [...defaultFormatChoices];
@@ -3114,6 +3115,11 @@
                     </p>
 
                     <div class="section-title">Specs</div>
+                    ${film.specs.exposureNote ? `
+                    <div class="pro-tip-box" style="border-left-color: var(--accent-2); background: rgba(255,255,255,0.04);">
+                        <span style="font-weight:800; font-family:var(--font-headings); letter-spacing:1px; color:#fff; display:block; margin-bottom:8px;">Belichtungsspielraum Hinweis</span>
+                        <p style="margin: 0; color: #d4d4d8; line-height:1.6;">${film.specs.exposureNote}</p>
+                    </div>` : ''}
                     <div class="info-grid">
                         <div class="info-card"><div class="info-item"><label>Korn</label><span>${film.specs.grain}</span></div></div>
                         <div class="info-card"><div class="info-item"><label>Belichtungsspielraum</label><span>${film.specs.exposure}</span></div></div>
@@ -3130,7 +3136,6 @@
                     
                     <div class="section-title" style="margin-top:40px">Technische Details</div>
                     <div style="font-size: 0.95rem; line-height:1.6; color: #a1a1aa; display:grid; grid-template-columns: 1fr; gap:15px; background:rgba(0,0,0,0.2); padding: 20px; border-radius:12px; border:1px solid var(--surface-border);">
-                        ${film.specs.exposureNote ? `<div><strong style="color:#fff;">Belichtungsspielraum:</strong> ${film.specs.exposureNote}</div>` : ''}
                         ${film.tips.scanning ? `<div><strong style="color:#fff;">Scan:</strong> ${film.tips.scanning}</div>` : ''}
                         ${film.tips.dev ? `<div><strong style="color:#fff;">Entwicklung:</strong> ${film.tips.dev}</div>` : ''}
                     </div>

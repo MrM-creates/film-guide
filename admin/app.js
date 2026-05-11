@@ -3,7 +3,8 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 const CONFIG_KEY = "filmguide_admin_supabase_config";
 const BUCKET = "film-packshots";
 const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/13lPATFa6AumQkerDv_6CXJ68tp7QXoMfeP5GUFsekY0/export?format=csv&gid=158929564";
-const FORMAT_OPTIONS = ["135", "120", "4x5", "8x10", "Instax"];
+const MAX_IMAGE_UPLOAD_BYTES = 20 * 1024 * 1024;
+const FORMAT_OPTIONS = ["135", "120", "Sheet", "4x5", "8x10", "Instax"];
 const USE_CASE_OPTIONS = [
   "Portrait",
   "Street",
@@ -152,6 +153,12 @@ function bindEvents() {
     const [file] = event.target.files;
     state.pendingImageFile = file || null;
     if (file) {
+      if (file.size > MAX_IMAGE_UPLOAD_BYTES) {
+        state.pendingImageFile = null;
+        els.imageFile.value = "";
+        setStatus("Bild ist zu groß. Bitte maximal 20 MB hochladen.", true);
+        return;
+      }
       els.imagePreview.src = URL.createObjectURL(file);
       els.imagePreview.parentElement.classList.add("has-image");
     }
@@ -381,7 +388,7 @@ function updateRecordActions() {
 }
 
 function maybeSuggestId() {
-  if (state.selectedId || els.filmForm.elements.id.value.trim()) return;
+  if (state.selectedId) return;
   const brand = els.filmForm.elements.brand.value;
   const name = els.filmForm.elements.name.value;
   const iso = els.filmForm.elements.iso_box.value;
@@ -400,8 +407,12 @@ async function saveFilm(event) {
   if (!requireClient() || !requireSession()) return;
 
   const film = readForm();
+  if (!film.id) {
+    film.id = slugify([film.brand, film.name, film.iso_box].filter(Boolean).join(" "));
+    els.filmForm.elements.id.value = film.id;
+  }
   if (!film.id || !film.brand || !film.name) {
-    setStatus("Marke, Name und ID sind Pflichtfelder.", true);
+    setStatus("Marke und Name sind Pflichtfelder.", true);
     return;
   }
 
@@ -467,6 +478,14 @@ function readForm() {
 
 async function uploadImage(film) {
   const file = state.pendingImageFile;
+  if (file.size > MAX_IMAGE_UPLOAD_BYTES) {
+    setStatus("Bild ist zu groß. Bitte maximal 20 MB hochladen.", true);
+    return null;
+  }
+  if (!["image/jpeg", "image/png", "image/webp", "image/avif"].includes(file.type)) {
+    setStatus("Bildformat nicht unterstützt. Erlaubt sind JPG, PNG, WebP und AVIF.", true);
+    return null;
+  }
   const ext = file.name.split(".").pop().toLowerCase();
   const path = `${film.id}/${Date.now()}-${slugify(file.name.replace(/\.[^.]+$/, ""))}.${ext}`;
 
@@ -478,12 +497,23 @@ async function uploadImage(film) {
     });
 
   if (error) {
-    setStatus(`Bild konnte nicht hochgeladen werden: ${error.message}`, true);
+    setStatus(`Bild konnte nicht hochgeladen werden: ${getUploadErrorMessage(error)}`, true);
     return null;
   }
 
   const { data } = state.client.storage.from(BUCKET).getPublicUrl(path);
   return { path, publicUrl: data.publicUrl };
+}
+
+function getUploadErrorMessage(error) {
+  const message = error && error.message ? error.message : String(error || "");
+  if (/payload|size|too large|exceeded/i.test(message)) {
+    return "Die Datei ist vermutlich zu groß. Bitte Supabase-Bucket auf 20 MB aktualisieren oder ein kleineres Bild wählen.";
+  }
+  if (/mime|type|not allowed/i.test(message)) {
+    return "Das Dateiformat wurde vom Bucket abgelehnt. Erlaubt sind JPG, PNG, WebP und AVIF.";
+  }
+  return message;
 }
 
 function duplicateSelectedFilm() {

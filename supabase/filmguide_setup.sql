@@ -83,7 +83,7 @@ to authenticated
 using (true);
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('film-packshots', 'film-packshots', true, 5242880, array['image/jpeg', 'image/png', 'image/webp', 'image/avif'])
+values ('film-packshots', 'film-packshots', true, 20971520, array['image/jpeg', 'image/png', 'image/webp', 'image/avif'])
 on conflict (id) do update
 set public = excluded.public,
     file_size_limit = excluded.file_size_limit,
