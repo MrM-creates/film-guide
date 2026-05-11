@@ -1,5 +1,6 @@
 {
   "scripts": {
-    "add-packshot": "node tools/add-packshot.js"
+    "add-packshot": "node tools/add-packshot.js",
+    "admin:dev": "python3 -m http.server 4173 --bind 127.0.0.1"
   }
 }

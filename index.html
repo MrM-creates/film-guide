@@ -1110,6 +1110,8 @@
 
         // Diese URL erhältst du aus Google Sheets -> Datei -> Freigeben -> Im Web veröffentlichen -> als CSV
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/13lPATFa6AumQkerDv_6CXJ68tp7QXoMfeP5GUFsekY0/export?format=csv&gid=158929564";
+        const SUPABASE_URL = "https://pugxvmrzswhlggmvwfiu.supabase.co";
+        const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_yNq_RAN6J2sAQhf-fdqdrQ_rCyoemMe";
         const ROLLS_KEY = 'filmGuideRolls_v1';
         const CAMERAS_KEY = 'filmGuideCameras_v1';
         const LENSES_KEY = 'filmGuideLenses_v1';
@@ -2031,6 +2033,7 @@
         function getFilmImagePath(imageValue) {
             const imageName = String(imageValue || '').trim();
             if (!imageName) return '';
+            if (imageName.startsWith('../')) return imageName;
             if (/^https?:\/\//i.test(imageName) || imageName.startsWith('img/')) return imageName;
             if (imageName.includes('/')) return `img/${imageName}`;
             const vintageImageName = imageName
@@ -3145,67 +3148,131 @@
             }
         }
 
-        // Initialer Lade-Aufruf statt statischem `prepareData()`
-        function loadFilmsFromGoogleSheet() {
-            // Erstmal Lade-Text anzeigen
-            prepareData();
+        function mapSheetFilm(row) {
+            const filmType = getFirstCsvValue(row, ["Filmtyp", "Typ"]);
+            const process = getFirstCsvValue(row, ["Prozess"]) ||
+                (filmType === "B&W" ? "B&W" : (filmType === "Slide" ? "E-6" : "C-41"));
+            const formatValue = getFirstCsvValue(row, ["Formate aktuell", "Formate"]);
+            const usesValue = getFirstCsvValue(row, ["Einsatz", "Alt Einsatzgebiete"]);
 
-            Papa.parse(withCacheBuster(SHEET_CSV_URL), {
-                download: true,
-                header: true,
-                skipEmptyLines: true,
-                complete: function (results) {
-                    const data = results.data;
-                    console.log("Daten aus Google Sheets:", data);
-
-                    filmsData = data.map(row => {
-                        const filmType = getFirstCsvValue(row, ["Filmtyp", "Typ"]);
-                        const process = getFirstCsvValue(row, ["Prozess"]) ||
-                            (filmType === "B&W" ? "B&W" : (filmType === "Slide" ? "E-6" : "C-41"));
-                        const formatValue = getFirstCsvValue(row, ["Formate aktuell", "Formate"]);
-                        const usesValue = getFirstCsvValue(row, ["Einsatz", "Alt Einsatzgebiete"]);
-
-                        return {
-                            id: getCsvValue(row, "ID") || getCsvValue(row, "Name").toLowerCase().replace(/\s+/g, '-'),
-                            brand: getCsvValue(row, "Marke"),
-                            name: getCsvValue(row, "Name"),
-                            img: getFilmImagePath(getCsvValue(row, "Bilder")),
-                            iso: parseInt(getFirstCsvValue(row, ["ISO Box", "ISO"])) || 0,
-                            type: filmType,
-                            formats: formatValue ? formatValue.split(",").map(s => normalizeRollFormat(s)).filter(Boolean) : [],
-                            process,
-                            shortDesc: getCsvValue(row, "Kurzbeschreibung"),
-                            specs: {
-                                grain: getFirstCsvValue(row, ["Korn", "Grain"]),
-                                exposure: getFirstCsvValue(row, ["Belichtungsspielraum", "Handling"]),
-                                exposureNote: getCsvValue(row, "Belichtungsspielraum Hinweis"),
-                                saturation: getCsvValue(row, "Sättigung"),
-                                tone: getCsvValue(row, "Farbton"),
-                                contrast: getCsvValue(row, "Kontrast"),
-                                budget: getFirstCsvValue(row, ["Preisniveau", "Budget"])
-                            },
-                            uses: usesValue ? usesValue.split(",").map(s => s.trim()) : [],
-                            keywords: [],
-                            look: {
-                                desc: getCsvValue(row, "Look Beschreibung")
-                            },
-                            tips: {
-                                exposure: getFirstCsvValue(row, ["Tipp Belichtung", "Tipp: Belichtung"]),
-                                scanning: getFirstCsvValue(row, ["Tipp Scan", "Tipp: Scan"]),
-                                dev: getFirstCsvValue(row, ["Tipp Entwicklung", "Tipp: Dev"])
-                            }
-                        };
-                    });
-
-                    // Nach dem Mapping bereiten wir die Daten für das Frontend vor
-                    prepareData();
-                    renderRolls();
+            return {
+                id: getCsvValue(row, "ID") || getCsvValue(row, "Name").toLowerCase().replace(/\s+/g, '-'),
+                brand: getCsvValue(row, "Marke"),
+                name: getCsvValue(row, "Name"),
+                img: getFilmImagePath(getCsvValue(row, "Bilder")),
+                iso: parseInt(getFirstCsvValue(row, ["ISO Box", "ISO"])) || 0,
+                type: filmType,
+                formats: formatValue ? formatValue.split(",").map(s => normalizeRollFormat(s)).filter(Boolean) : [],
+                process,
+                shortDesc: getCsvValue(row, "Kurzbeschreibung"),
+                specs: {
+                    grain: getFirstCsvValue(row, ["Korn", "Grain"]),
+                    exposure: getFirstCsvValue(row, ["Belichtungsspielraum", "Handling"]),
+                    exposureNote: getCsvValue(row, "Belichtungsspielraum Hinweis"),
+                    saturation: getCsvValue(row, "Sättigung"),
+                    tone: getCsvValue(row, "Farbton"),
+                    contrast: getCsvValue(row, "Kontrast"),
+                    budget: getFirstCsvValue(row, ["Preisniveau", "Budget"])
                 },
-                error: function (error) {
-                    console.error("Fehler beim Laden:", error);
-                    document.getElementById('grid').innerHTML = '<div style="color:red; text-align:center; grid-column:1/-1;">Fehler beim Laden der Filmdaten. Bitte überprüfe die Google Sheets URL.</div>';
+                uses: usesValue ? usesValue.split(",").map(s => s.trim()) : [],
+                keywords: [],
+                look: {
+                    desc: getCsvValue(row, "Look Beschreibung")
+                },
+                tips: {
+                    exposure: getFirstCsvValue(row, ["Tipp Belichtung", "Tipp: Belichtung"]),
+                    scanning: getFirstCsvValue(row, ["Tipp Scan", "Tipp: Scan"]),
+                    dev: getFirstCsvValue(row, ["Tipp Entwicklung", "Tipp: Dev"])
                 }
+            };
+        }
+
+        function mapSupabaseFilm(row) {
+            const filmType = normalizeSwissGermanText(row.film_type);
+            const process = normalizeSwissGermanText(row.process) ||
+                (filmType === "B&W" ? "B&W" : (filmType === "Slide" ? "E-6" : "C-41"));
+
+            return {
+                id: normalizeSwissGermanText(row.id),
+                brand: normalizeSwissGermanText(row.brand),
+                name: normalizeSwissGermanText(row.name),
+                img: getFilmImagePath(row.image_url),
+                iso: parseInt(row.iso_box, 10) || 0,
+                type: filmType,
+                formats: Array.isArray(row.formats) ? row.formats.map(s => normalizeRollFormat(s)).filter(Boolean) : [],
+                process,
+                shortDesc: normalizeSwissGermanText(row.short_description),
+                specs: {
+                    grain: normalizeSwissGermanText(row.grain),
+                    exposure: normalizeSwissGermanText(row.exposure_latitude),
+                    exposureNote: normalizeSwissGermanText(row.exposure_note),
+                    saturation: normalizeSwissGermanText(row.saturation),
+                    tone: normalizeSwissGermanText(row.tone),
+                    contrast: normalizeSwissGermanText(row.contrast),
+                    budget: normalizeSwissGermanText(row.price_level)
+                },
+                uses: Array.isArray(row.use_cases) ? row.use_cases.map(s => normalizeSwissGermanText(s)).filter(Boolean) : [],
+                keywords: [],
+                look: {
+                    desc: normalizeSwissGermanText(row.look_description)
+                },
+                tips: {
+                    exposure: normalizeSwissGermanText(row.tip_exposure),
+                    scanning: normalizeSwissGermanText(row.tip_scan),
+                    dev: normalizeSwissGermanText(row.tip_development)
+                }
+            };
+        }
+
+        async function loadFilmsFromSupabase() {
+            const url = `${SUPABASE_URL}/rest/v1/films?select=*&active=eq.true&order=brand.asc,name.asc`;
+            const response = await fetch(url, {
+                headers: {
+                    apikey: SUPABASE_PUBLISHABLE_KEY,
+                    Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+                    'Cache-Control': 'no-cache'
+                },
+                cache: 'no-store'
             });
+            if (!response.ok) throw new Error(`Supabase HTTP ${response.status}`);
+            const data = await response.json();
+            filmsData = data.map(mapSupabaseFilm);
+            prepareData();
+            renderRolls();
+        }
+
+        function loadFilmsFromGoogleSheet() {
+            return new Promise((resolve, reject) => {
+                Papa.parse(withCacheBuster(SHEET_CSV_URL), {
+                    download: true,
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: function (results) {
+                        filmsData = results.data.map(mapSheetFilm);
+                        prepareData();
+                        renderRolls();
+                        resolve();
+                    },
+                    error: function (error) {
+                        reject(error);
+                    }
+                });
+            });
+        }
+
+        async function loadFilms() {
+            prepareData();
+            try {
+                await loadFilmsFromSupabase();
+            } catch (error) {
+                console.error("Fehler beim Laden aus Supabase, nutze Google Sheets Fallback:", error);
+                try {
+                    await loadFilmsFromGoogleSheet();
+                } catch (fallbackError) {
+                    console.error("Fehler beim Laden:", fallbackError);
+                    document.getElementById('grid').innerHTML = '<div style="color:red; text-align:center; grid-column:1/-1;">Fehler beim Laden der Filmdaten.</div>';
+                }
+            }
         }
 
         // Direkt starten
@@ -3213,7 +3280,7 @@
         loadCameras();
         loadLenses();
         loadRolls();
-        loadFilmsFromGoogleSheet();
+        loadFilms();
     </script>
 
 </body>

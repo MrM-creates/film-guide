@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FilmGuide Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">FilmGuide</p>
+          <h1>Admin</h1>
+        </div>
+        <div class="topbar-actions">
+          <button id="newFilmBtn" class="btn btn-primary" type="button">Film anlegen</button>
+          <span id="connectionState" class="account-email">Nicht angemeldet</span>
+          <div class="account-menu-wrap">
+            <button id="toggleSetupBtn" class="icon-btn" type="button" aria-label="Kontomenü anzeigen">...</button>
+            <div id="accountMenu" class="account-menu hidden">
+              <div class="menu-heading">
+                <strong>Konto</strong>
+                <p id="accountSummary" class="account-summary">Nicht angemeldet</p>
+              </div>
+              <div class="menu-list">
+                <button id="importSheetBtn" class="menu-item" type="button">
+                  <span>
+                    <strong>Sheet importieren</strong>
+                    <small>Einmaliger Startimport aus Google Sheets</small>
+                  </span>
+                </button>
+                <button id="editConnectionBtn" class="menu-item" type="button">
+                  <span>
+                    <strong>Verbindung bearbeiten</strong>
+                    <small>Supabase URL und Publishable Key</small>
+                  </span>
+                </button>
+              </div>
+              <form id="setupForm" class="setup-form hidden">
+                <label>
+                  Supabase URL
+                  <input id="supabaseUrl" type="url" autocomplete="off" placeholder="https://xxxx.supabase.co">
+                </label>
+                <label>
+                  Publishable Key
+                  <input id="supabaseAnonKey" type="password" autocomplete="off" placeholder="sb_publishable_...">
+                </label>
+                <button class="btn btn-secondary full-width" type="submit">Verbindung speichern</button>
+              </form>
+              <form id="authForm" class="auth-form">
+                <label>
+                  E-Mail
+                  <input id="authEmail" type="email" autocomplete="email" placeholder="name@example.com">
+                </label>
+                <label>
+                  Passwort
+                  <input id="authPassword" type="password" autocomplete="current-password">
+                </label>
+                <div class="menu-actions">
+                  <button class="btn btn-secondary" type="submit">Einloggen</button>
+                  <button id="signUpBtn" class="btn btn-ghost" type="button">Account anlegen</button>
+                </div>
+              </form>
+              <div id="signedInActions" class="signed-in-actions hidden">
+                <button id="signOutBtn" class="menu-item danger-menu-item" type="button">
+                  <span>
+                    <strong>Ausloggen</strong>
+                    <small>Diese Admin-Sitzung beenden</small>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <aside class="side-panel" aria-label="Filme">
+          <section class="panel-section">
+            <div class="section-heading">
+              <h2>Filme</h2>
+              <span id="filmCount" class="muted">0</span>
+            </div>
+            <input id="searchInput" class="search-input" type="search" placeholder="Suchen nach Film, Marke, ISO">
+            <div class="list-filters" aria-label="Filme filtern">
+              <div class="filter-group">
+                <span>Filmtyp</span>
+                <div class="filter-row">
+                  <button class="filter-chip active" type="button" data-filter-group="type" data-filter-key="all" data-filter-value="all">Alle</button>
+                  <button class="filter-chip" type="button" data-filter-group="type" data-filter-key="film_type" data-filter-value="Color Negative">Farbnegativ</button>
+                  <button class="filter-chip" type="button" data-filter-group="type" data-filter-key="film_type" data-filter-value="B&W">Schwarzweiss</button>
+                  <button class="filter-chip" type="button" data-filter-group="type" data-filter-key="film_type" data-filter-value="Slide">Diafilm</button>
+                </div>
+              </div>
+              <div class="filter-group">
+                <span>Look</span>
+                <div class="filter-row">
+                  <button class="filter-chip active" type="button" data-filter-group="look" data-filter-key="all" data-filter-value="all">Alle</button>
+                  <button class="filter-chip" type="button" data-filter-group="look" data-filter-key="grain" data-filter-value="Fein">Korn fein</button>
+                  <button class="filter-chip" type="button" data-filter-group="look" data-filter-key="grain" data-filter-value="Sichtbar">Korn sichtbar</button>
+                  <button class="filter-chip" type="button" data-filter-group="look" data-filter-key="grain" data-filter-value="Grob">Korn grob</button>
+                  <button class="filter-chip" type="button" data-filter-group="look" data-filter-key="saturation" data-filter-value="Natürlich">Natürlich</button>
+                  <button class="filter-chip" type="button" data-filter-group="look" data-filter-key="saturation" data-filter-value="Hoch">Satt</button>
+                  <button class="filter-chip" type="button" data-filter-group="look" data-filter-key="price_level" data-filter-value="Budget">Budget</button>
+                  <button class="filter-chip" type="button" data-filter-group="look" data-filter-key="price_level" data-filter-value="Premium">Premium</button>
+                </div>
+              </div>
+            </div>
+            <div id="filmList" class="film-list" role="list"></div>
+          </section>
+        </aside>
+
+        <section class="editor-panel" aria-label="Filmdaten bearbeiten">
+          <div class="editor-header">
+            <div>
+              <p class="eyebrow">Datensatz</p>
+              <h2 id="editorTitle">Neuer Film</h2>
+            </div>
+            <div id="recordActions" class="button-row">
+              <button id="duplicateBtn" class="btn btn-ghost" type="button">Duplizieren</button>
+              <button id="deleteBtn" class="btn btn-danger" type="button">Archivieren</button>
+            </div>
+          </div>
+
+          <form id="filmForm" class="film-form">
+            <fieldset>
+              <legend>Basis</legend>
+              <div class="grid-3">
+                <label>
+                  Marke
+                  <input name="brand" required placeholder="Kodak">
+                </label>
+                <label>
+                  Name
+                  <input name="name" required placeholder="Portra 400">
+                </label>
+                <label>
+                  ISO Box
+                  <input name="iso_box" required type="number" min="0" step="1" placeholder="400">
+                </label>
+              </div>
+              <div class="grid-3">
+                <label>
+                  ID
+                  <input name="id" required placeholder="kodak_portra_400">
+                </label>
+                <label>
+                  Filmtyp
+                  <select name="film_type" required>
+                    <option>Color Negative</option>
+                    <option>B&W</option>
+                    <option>Slide</option>
+                  </select>
+                </label>
+                <label>
+                  Prozess
+                  <select name="process" required>
+                    <option>C-41</option>
+                    <option>B&W</option>
+                    <option>E-6</option>
+                    <option>ECN-2</option>
+                  </select>
+                </label>
+              </div>
+              <label class="checkbox-row">
+                <input name="active" type="checkbox" checked>
+                Im Guide anzeigen
+              </label>
+            </fieldset>
+
+            <fieldset>
+              <legend>Look</legend>
+              <div class="grid-4">
+                <label>
+                  Korn
+                  <select name="grain">
+                    <option></option>
+                    <option>Fein</option>
+                    <option>Sichtbar</option>
+                    <option>Grob</option>
+                  </select>
+                </label>
+                <label>
+                  Sättigung
+                  <select name="saturation">
+                    <option></option>
+                    <option>Natürlich</option>
+                    <option>Hoch</option>
+                    <option>Mittel</option>
+                    <option>Monochrom</option>
+                  </select>
+                </label>
+                <label>
+                  Farbton
+                  <select name="tone">
+                    <option></option>
+                    <option>Warm</option>
+                    <option>Neutral</option>
+                    <option>Kühl</option>
+                    <option>Variabel</option>
+                  </select>
+                </label>
+                <label>
+                  Kontrast
+                  <select name="contrast">
+                    <option></option>
+                    <option>Weich</option>
+                    <option>Mittel</option>
+                    <option>Hoch</option>
+                  </select>
+                </label>
+              </div>
+              <div class="grid-3">
+                <label>
+                  Preisniveau
+                  <select name="price_level">
+                    <option></option>
+                    <option>Budget</option>
+                    <option>Mittel</option>
+                    <option>Premium</option>
+                  </select>
+                </label>
+                <label>
+                  Belichtungsspielraum
+                  <select name="exposure_latitude">
+                    <option></option>
+                    <option>Gering</option>
+                    <option>Mittel</option>
+                    <option>Hoch</option>
+                    <option>Sehr hoch</option>
+                  </select>
+                </label>
+                <label>
+                  Review nötig
+                  <select name="review_needed">
+                    <option value="false">Nein</option>
+                    <option value="true">Ja</option>
+                  </select>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Inhalt</legend>
+              <label>
+                Kurzbeschreibung
+                <textarea name="short_description" rows="3" placeholder="Kurzer Nutzen und Charakter."></textarea>
+              </label>
+              <label>
+                Look Beschreibung
+                <textarea name="look_description" rows="4" placeholder="Farbe, Kontrast, Korn, Stimmung."></textarea>
+              </label>
+              <div class="choice-section">
+                <span class="choice-label">Formate</span>
+                <div id="formatsChoices" class="choice-grid" data-choice-group="formats"></div>
+              </div>
+              <div class="choice-section">
+                <span class="choice-label">Einsatzgebiete</span>
+                <div id="useCasesChoices" class="choice-grid" data-choice-group="use_cases"></div>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Tipps</legend>
+              <label>
+                Tipp Belichtung
+                <textarea name="tip_exposure" rows="3"></textarea>
+              </label>
+              <div class="grid-2">
+                <label>
+                  Tipp Entwicklung
+                  <textarea name="tip_development" rows="3"></textarea>
+                </label>
+                <label>
+                  Tipp Scan
+                  <textarea name="tip_scan" rows="3"></textarea>
+                </label>
+              </div>
+              <label>
+                Belichtungsspielraum Hinweis
+                <textarea name="exposure_note" rows="2"></textarea>
+              </label>
+            </fieldset>
+
+            <fieldset>
+              <legend>Packshot</legend>
+              <div class="image-layout">
+                <div class="image-preview">
+                  <img id="imagePreview" alt="">
+                  <span id="imagePlaceholder">Kein Bild</span>
+                </div>
+                <div class="image-controls">
+                  <label>
+                    Bild hochladen
+                    <input id="imageFile" type="file" accept="image/jpeg,image/png,image/webp,image/avif">
+                  </label>
+                  <label>
+                    Bild-URL
+                    <input name="image_url" type="text" placeholder="https://... oder ../img/...">
+                  </label>
+                  <input name="image_path" type="hidden">
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Notiz</legend>
+              <label>
+                Interne Notiz
+                <textarea name="notes" rows="3"></textarea>
+              </label>
+            </fieldset>
+
+            <div class="sticky-actions">
+              <p id="formStatus" class="form-status">Bereit</p>
+              <button class="btn btn-primary" type="submit">Film speichern</button>
+            </div>
+          </form>
+        </section>
+      </main>
+
+      <div id="importDialog" class="dialog-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="importDialogTitle">
+        <div class="dialog">
+          <h2 id="importDialogTitle">Sheet importieren</h2>
+          <p>Die bestehenden Filme aus dem Google Sheet werden nach Supabase übernommen.</p>
+          <p class="dialog-note">Das brauchst du normalerweise nur einmal beim Einrichten. Bestehende Filme mit gleicher ID werden aktualisiert.</p>
+          <div class="dialog-actions">
+            <button id="cancelImportBtn" class="btn btn-ghost" type="button">Abbrechen</button>
+            <button id="confirmImportBtn" class="btn btn-primary" type="button">Import starten</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
