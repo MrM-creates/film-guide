@@ -126,7 +126,7 @@ function bindEvents() {
   els.signOutBtn.addEventListener("click", signOut);
   els.newFilmBtn.addEventListener("click", resetForm);
   els.duplicateBtn.addEventListener("click", duplicateSelectedFilm);
-  els.deleteBtn.addEventListener("click", archiveSelectedFilm);
+  els.deleteBtn.addEventListener("click", deleteSelectedFilm);
   els.importSheetBtn.addEventListener("click", openImportDialog);
   els.cancelImportBtn.addEventListener("click", closeImportDialog);
   els.confirmImportBtn.addEventListener("click", importSheetFilms);
@@ -533,22 +533,28 @@ function duplicateSelectedFilm() {
   setImagePreview("");
 }
 
-async function archiveSelectedFilm() {
+async function deleteSelectedFilm() {
   if (!requireClient() || !requireSession()) return;
   const film = state.films.find(item => item.id === state.selectedId);
   if (!film) return setStatus("Wähle zuerst einen Film aus.", true);
-  const confirmed = window.confirm(`${film.brand} ${film.name} archivieren?`);
+  const confirmed = window.confirm(`${film.brand} ${film.name} dauerhaft löschen?`);
   if (!confirmed) return;
 
   const { error } = await state.client
     .from(FILMS_TABLE)
-    .update({ active: false })
+    .delete()
     .eq("id", film.id);
 
-  if (error) return setStatus(`Film konnte nicht archiviert werden: ${error.message}`, true);
+  if (error) return setStatus(`Film konnte nicht gelöscht werden: ${error.message}`, true);
+
+  if (film.image_path) {
+    await state.client.storage.from(BUCKET).remove([film.image_path]);
+  }
+
+  state.selectedId = "";
   await loadFilms();
-  selectFilm(film.id);
-  setStatus("Archiviert");
+  resetForm();
+  setStatus("Gelöscht");
 }
 
 async function importSheetFilms() {
