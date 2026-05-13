@@ -1,12 +1,12 @@
 # FilmGuide Admin
 
-Separate Admin-App fuer FilmGuide. Sie pflegt Filme in Supabase und speichert Packshots in Supabase Storage.
+Separate Admin-App fuer FilmGuide. Sie pflegt Filme in Supabase und speichert neue Packshots in Supabase Storage.
 
 ## Setup in Supabase
 
-1. Oeffne dein Supabase-Projekt, z.B. PhotoPay.
+1. Oeffne dein bestehendes Supabase-Projekt `MrM-creates PhotoPay`.
 2. Oeffne den SQL Editor.
-3. Fuehre `supabase/filmguide_setup.sql` aus.
+3. Fuehre `supabase/filmguide_photopay_migration.sql` aus.
 4. Gehe zu Authentication und lege deinen Admin-User an oder erlaube Sign-ups kurzzeitig.
 5. Kopiere aus Project Settings > API:
    - Project URL
@@ -37,10 +37,21 @@ http://localhost:4173/admin/
 Neue Uploads landen im public Storage Bucket:
 
 ```txt
-film-packshots
+filmguide-packshots
 ```
 
 Die Admin-App speichert die oeffentliche Bild-URL im Feld `image_url`.
+
+## Tabellen
+
+FilmGuide nutzt im gemeinsamen Supabase-Projekt bewusst eigene Namen:
+
+```txt
+filmguide_films
+filmguide-packshots
+```
+
+So bleibt FilmGuide getrennt von PhotoPay-Tabellen und spaeteren Apps wie FilmLab.
 
 ## Naechster Schritt
 

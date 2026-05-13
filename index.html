@@ -1110,8 +1110,9 @@
 
         // Diese URL erhältst du aus Google Sheets -> Datei -> Freigeben -> Im Web veröffentlichen -> als CSV
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/13lPATFa6AumQkerDv_6CXJ68tp7QXoMfeP5GUFsekY0/export?format=csv&gid=158929564";
-        const SUPABASE_URL = "https://pugxvmrzswhlggmvwfiu.supabase.co";
-        const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_yNq_RAN6J2sAQhf-fdqdrQ_rCyoemMe";
+        const SUPABASE_URL = "https://bfkrirfqtqkjbqddchoe.supabase.co";
+        const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_JiiCDMOb3Tw7et3edX-4mg_rKQtOyS6";
+        const SUPABASE_FILMS_TABLE = "filmguide_films";
         const ROLLS_KEY = 'filmGuideRolls_v1';
         const CAMERAS_KEY = 'filmGuideCameras_v1';
         const LENSES_KEY = 'filmGuideLenses_v1';
@@ -3230,7 +3231,7 @@
         }
 
         async function loadFilmsFromSupabase() {
-            const url = `${SUPABASE_URL}/rest/v1/films?select=*&active=eq.true&order=brand.asc,name.asc`;
+            const url = `${SUPABASE_URL}/rest/v1/${SUPABASE_FILMS_TABLE}?select=*&active=eq.true&order=brand.asc,name.asc`;
             const response = await fetch(url, {
                 headers: {
                     apikey: SUPABASE_PUBLISHABLE_KEY,

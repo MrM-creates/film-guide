@@ -3,7 +3,7 @@
 
 create extension if not exists pgcrypto;
 
-create table if not exists public.films (
+create table if not exists public.filmguide_films (
   id text primary key,
   brand text not null,
   name text not null,
@@ -33,12 +33,12 @@ create table if not exists public.films (
   updated_at timestamptz not null default now()
 );
 
-create index if not exists films_brand_name_idx on public.films (brand, name);
-create index if not exists films_active_idx on public.films (active);
+create index if not exists filmguide_films_brand_name_idx on public.filmguide_films (brand, name);
+create index if not exists filmguide_films_active_idx on public.filmguide_films (active);
 
 grant usage on schema public to anon, authenticated;
-grant select on public.films to anon;
-grant select, insert, update, delete on public.films to authenticated;
+grant select on public.filmguide_films to anon;
+grant select, insert, update, delete on public.filmguide_films to authenticated;
 
 create or replace function public.set_updated_at()
 returns trigger
@@ -50,65 +50,65 @@ begin
 end;
 $$;
 
-drop trigger if exists films_set_updated_at on public.films;
-create trigger films_set_updated_at
-before update on public.films
+drop trigger if exists filmguide_films_set_updated_at on public.filmguide_films;
+create trigger filmguide_films_set_updated_at
+before update on public.filmguide_films
 for each row
 execute function public.set_updated_at();
 
-alter table public.films enable row level security;
+alter table public.filmguide_films enable row level security;
 
-drop policy if exists "Films are readable by everyone" on public.films;
-create policy "Films are readable by everyone"
-on public.films for select
+drop policy if exists "FilmGuide films are readable by everyone" on public.filmguide_films;
+create policy "FilmGuide films are readable by everyone"
+on public.filmguide_films for select
 using (true);
 
-drop policy if exists "Authenticated users can insert films" on public.films;
-create policy "Authenticated users can insert films"
-on public.films for insert
+drop policy if exists "Authenticated users can insert FilmGuide films" on public.filmguide_films;
+create policy "Authenticated users can insert FilmGuide films"
+on public.filmguide_films for insert
 to authenticated
 with check (true);
 
-drop policy if exists "Authenticated users can update films" on public.films;
-create policy "Authenticated users can update films"
-on public.films for update
+drop policy if exists "Authenticated users can update FilmGuide films" on public.filmguide_films;
+create policy "Authenticated users can update FilmGuide films"
+on public.filmguide_films for update
 to authenticated
 using (true)
 with check (true);
 
-drop policy if exists "Authenticated users can delete films" on public.films;
-create policy "Authenticated users can delete films"
-on public.films for delete
+drop policy if exists "Authenticated users can delete FilmGuide films" on public.filmguide_films;
+create policy "Authenticated users can delete FilmGuide films"
+on public.filmguide_films for delete
 to authenticated
 using (true);
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('film-packshots', 'film-packshots', true, 20971520, array['image/jpeg', 'image/png', 'image/webp', 'image/avif'])
+values ('filmguide-packshots', 'filmguide-packshots', true, 20971520, array['image/jpeg', 'image/png', 'image/webp', 'image/avif'])
 on conflict (id) do update
 set public = excluded.public,
     file_size_limit = excluded.file_size_limit,
     allowed_mime_types = excluded.allowed_mime_types;
 
-drop policy if exists "Film packshots are publicly readable" on storage.objects;
-create policy "Film packshots are publicly readable"
+drop policy if exists "FilmGuide packshots are publicly readable" on storage.objects;
+create policy "FilmGuide packshots are publicly readable"
 on storage.objects for select
-using (bucket_id = 'film-packshots');
+using (bucket_id = 'filmguide-packshots');
 
-drop policy if exists "Authenticated users can upload film packshots" on storage.objects;
-create policy "Authenticated users can upload film packshots"
+drop policy if exists "Authenticated users can upload FilmGuide packshots" on storage.objects;
+create policy "Authenticated users can upload FilmGuide packshots"
 on storage.objects for insert
 to authenticated
-with check (bucket_id = 'film-packshots');
+with check (bucket_id = 'filmguide-packshots');
 
-drop policy if exists "Authenticated users can update film packshots" on storage.objects;
-create policy "Authenticated users can update film packshots"
+drop policy if exists "Authenticated users can update FilmGuide packshots" on storage.objects;
+create policy "Authenticated users can update FilmGuide packshots"
 on storage.objects for update
 to authenticated
-using (bucket_id = 'film-packshots')
-with check (bucket_id = 'film-packshots');
+using (bucket_id = 'filmguide-packshots')
+with check (bucket_id = 'filmguide-packshots');
 
-drop policy if exists "Authenticated users can delete film packshots" on storage.objects;
-create policy "Authenticated users can delete film packshots"
+drop policy if exists "Authenticated users can delete FilmGuide packshots" on storage.objects;
+create policy "Authenticated users can delete FilmGuide packshots"
 on storage.objects for delete
 to authenticated
-using (bucket_id = 'film-packshots');
+using (bucket_id = 'filmguide-packshots');

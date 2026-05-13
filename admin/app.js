@@ -1,7 +1,8 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
 const CONFIG_KEY = "filmguide_admin_supabase_config";
-const BUCKET = "film-packshots";
+const FILMS_TABLE = "filmguide_films";
+const BUCKET = "filmguide-packshots";
 const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/13lPATFa6AumQkerDv_6CXJ68tp7QXoMfeP5GUFsekY0/export?format=csv&gid=158929564";
 const MAX_IMAGE_UPLOAD_BYTES = 20 * 1024 * 1024;
 const FORMAT_OPTIONS = ["135", "120", "Sheet", "4x5", "8x10", "Instax"];
@@ -251,7 +252,7 @@ async function loadFilms() {
   if (!requireClient(false)) return;
 
   const { data, error } = await state.client
-    .from("films")
+    .from(FILMS_TABLE)
     .select("*")
     .order("brand", { ascending: true })
     .order("name", { ascending: true });
@@ -428,7 +429,7 @@ async function saveFilm(event) {
   }
 
   const { data, error } = await state.client
-    .from("films")
+    .from(FILMS_TABLE)
     .upsert(film, { onConflict: "id" })
     .select()
     .single();
@@ -540,7 +541,7 @@ async function archiveSelectedFilm() {
   if (!confirmed) return;
 
   const { error } = await state.client
-    .from("films")
+    .from(FILMS_TABLE)
     .update({ active: false })
     .eq("id", film.id);
 
@@ -565,7 +566,7 @@ async function importSheetFilms() {
     if (films.length === 0) throw new Error("Keine gültigen Filme gefunden.");
 
     const { error } = await state.client
-      .from("films")
+      .from(FILMS_TABLE)
       .upsert(films, { onConflict: "id" });
 
     if (error) throw error;
