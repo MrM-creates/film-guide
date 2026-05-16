@@ -208,16 +208,16 @@ async function handleReadUrl(request, response) {
 }
 
 async function handleExtractPdf(request, response, url) {
-  const buffer = await readRawBody(request, maxPdfUploadBytes);
-  if (!buffer.length) {
-    sendJson(response, 400, { error: "PDF-Datei fehlt." });
-    return;
-  }
-
-  const sourceName = clean(url.searchParams.get("sourceName")) || "PDF Factsheet";
-  const parser = new PDFParse({ data: buffer });
-
+  let parser;
   try {
+    const buffer = await readRawBody(request, maxPdfUploadBytes);
+    if (!buffer.length) {
+      sendJson(response, 400, { error: "PDF-Datei fehlt." });
+      return;
+    }
+
+    const sourceName = clean(url.searchParams.get("sourceName")) || "PDF Factsheet";
+    parser = new PDFParse({ data: buffer });
     const result = await parser.getText();
     const text = clean(result.text).slice(0, maxFactsheetChars);
     if (text.length < 120) {
@@ -230,8 +230,12 @@ async function handleExtractPdf(request, response, url) {
       text,
       pages: result.total
     });
+  } catch (error) {
+    sendJson(response, 422, {
+      error: `PDF konnte nicht gelesen werden: ${error.message || "Unbekannter Fehler"}`
+    });
   } finally {
-    await parser.destroy();
+    await parser?.destroy();
   }
 }
 

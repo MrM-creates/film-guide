@@ -36,6 +36,7 @@ const state = {
   factsheetFileName: "",
   factsheetInput: null,
   currentProposal: null,
+  currentFactsheetSourceId: "",
   filters: {
     type: { key: "all", value: "all" },
     look: { key: "all", value: "all" }
@@ -248,6 +249,7 @@ function resetFactsheetInputs() {
   state.factsheetFileName = "";
   state.factsheetInput = null;
   state.currentProposal = null;
+  state.currentFactsheetSourceId = "";
   els.proposalPanel.classList.add("hidden");
   els.proposalPanel.innerHTML = "";
   updateSavedFactsheetActions();
@@ -437,7 +439,7 @@ async function readPdfFactsheet(file) {
       headers: { "Content-Type": "application/pdf" },
       body: file
     });
-    const payload = await response.json();
+    const payload = await readJsonResponse(response);
     if (!response.ok) throw new Error(payload.error || `HTTP ${response.status}`);
 
     state.factsheetFileText = payload.text;
@@ -461,7 +463,26 @@ async function readPdfFactsheet(file) {
   }
 }
 
+async function readJsonResponse(response) {
+  const contentType = response.headers.get("content-type") || "";
+  const raw = await response.text();
+
+  if (contentType.includes("application/json")) {
+    return raw ? JSON.parse(raw) : {};
+  }
+
+  try {
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    const message = raw.trim().slice(0, 220) || `HTTP ${response.status}`;
+    return {
+      error: `Server hat keine JSON-Antwort geliefert: ${message}`
+    };
+  }
+}
+
 async function createAndApplyFactsheetProposal() {
+  setAnalyzingFactsheet(true);
   try {
     const sourceUrl = els.factsheetUrl.value.trim();
     let text = els.factsheetText.value.trim();
@@ -494,15 +515,24 @@ async function createAndApplyFactsheetProposal() {
       return;
     }
 
+    renderProposalMessage("Analyse läuft ...", false);
     const localProposal = buildFactsheetProposal(text, sourceName);
     state.currentProposal = await getBestFactsheetProposal(text, sourceName, localProposal);
-    await saveProposalDraft(text, state.currentProposal);
+    state.currentFactsheetSourceId = await saveProposalDraft(text, state.currentProposal);
     applyFactsheetProposal(state.currentProposal);
     renderFactsheetProposalSummary(state.currentProposal);
     closeNewFilmDialog();
   } catch (error) {
     renderProposalMessage(`Vorschlag konnte nicht erstellt werden: ${error.message}`, true);
+  } finally {
+    setAnalyzingFactsheet(false);
   }
+}
+
+function setAnalyzingFactsheet(isAnalyzing) {
+  els.analyzeFactsheetBtn.disabled = isAnalyzing;
+  els.analyzeFactsheetBtn.textContent = isAnalyzing ? "Analyse läuft ..." : "Vorschlag erstellen";
+  if (isAnalyzing) setStatus("Analyse läuft ...");
 }
 
 async function readFactsheetUrl(sourceUrl) {
@@ -573,11 +603,16 @@ async function getBestFactsheetProposal(text, sourceName, localProposal) {
 function normalizeRemoteProposal(payload, sourceName, fallback) {
   const remote = payload.proposal || {};
   const remoteFilm = remote.film || {};
+  const brand = clean(remoteFilm.brand) || fallback.film.brand;
+  const name = normalizeFilmName(clean(remoteFilm.name) || fallback.film.name, brand);
+  const isoBox = Number(remoteFilm.iso_box || fallback.film.iso_box || 0);
   const film = {
     ...fallback.film,
     ...remoteFilm,
-    id: slugify(remoteFilm.id || fallback.film.id),
-    iso_box: Number(remoteFilm.iso_box || fallback.film.iso_box || 0),
+    brand,
+    name,
+    id: buildFilmId(brand, name, isoBox),
+    iso_box: isoBox,
     formats: filterAllowed(remoteFilm.formats, FORMAT_OPTIONS, fallback.film.formats),
     use_cases: filterAllowed(remoteFilm.use_cases, USE_CASE_OPTIONS, fallback.film.use_cases),
     review_needed: true,
@@ -678,9 +713,11 @@ async function saveProposalDraft(extractedText, proposal) {
 
     if (proposalError) throw proposalError;
     await loadSavedFactsheets();
+    return source.id;
   } catch (error) {
     console.info("Proposal-Entwurf wurde nicht in Supabase gespeichert:", error.message);
   }
+  return "";
 }
 
 function filterAllowed(values, allowed, fallback) {
@@ -1027,6 +1064,7 @@ function selectFilm(id) {
   state.selectedId = id;
   state.pendingImageFile = null;
   state.currentProposal = null;
+  state.currentFactsheetSourceId = "";
   fillForm(film);
   updateRecordActions();
   renderFilmList();
@@ -1036,6 +1074,7 @@ function resetForm() {
   state.selectedId = "";
   state.pendingImageFile = null;
   state.currentProposal = null;
+  state.currentFactsheetSourceId = "";
   els.filmForm.reset();
   els.filmForm.elements.active.checked = true;
   els.filmForm.elements.film_type.value = "Color Negative";
@@ -1081,6 +1120,7 @@ function updateRecordActions() {
 
 function discardDraft() {
   state.currentProposal = null;
+  state.currentFactsheetSourceId = "";
   resetForm();
   els.proposalPanel.classList.add("hidden");
   els.proposalPanel.innerHTML = "";
@@ -1092,7 +1132,7 @@ function maybeSuggestId() {
   const brand = els.filmForm.elements.brand.value;
   const name = els.filmForm.elements.name.value;
   const iso = els.filmForm.elements.iso_box.value;
-  els.filmForm.elements.id.value = slugify([brand, name, iso].filter(Boolean).join(" "));
+  els.filmForm.elements.id.value = buildFilmId(brand, name, iso);
 }
 
 function maybeSuggestProcess() {
@@ -1108,7 +1148,7 @@ async function saveFilm(event) {
 
   const film = readForm();
   if (!film.id) {
-    film.id = slugify([film.brand, film.name, film.iso_box].filter(Boolean).join(" "));
+    film.id = buildFilmId(film.brand, film.name, film.iso_box);
     els.filmForm.elements.id.value = film.id;
   }
   if (!film.id || !film.brand || !film.name) {
@@ -1139,10 +1179,28 @@ async function saveFilm(event) {
   }
 
   state.selectedId = data.id;
+  await linkCurrentFactsheetSource(data.id);
   state.pendingImageFile = null;
   await loadFilms();
   selectFilm(data.id);
   setStatus("Gespeichert");
+}
+
+async function linkCurrentFactsheetSource(filmId) {
+  if (!state.currentFactsheetSourceId || !filmId) return;
+
+  const { error } = await state.client
+    .from(FACTSHEET_SOURCES_TABLE)
+    .update({ film_id: filmId })
+    .eq("id", state.currentFactsheetSourceId);
+
+  if (error) {
+    console.info("Factsheet konnte nicht mit Film verknüpft werden:", error.message);
+    return;
+  }
+
+  state.currentFactsheetSourceId = "";
+  await loadSavedFactsheets();
 }
 
 function readForm() {
@@ -1277,7 +1335,7 @@ function buildFactsheetProposal(text, sourceName) {
   if (!formats.length) warnings.push("Formate wurden nicht sicher erkannt.");
 
   const film = {
-    id: slugify([brand, name, String(name).includes(String(iso)) ? "" : iso].filter(Boolean).join(" ")),
+    id: buildFilmId(brand, name, iso),
     brand,
     name,
     film_type: filmType,
@@ -1361,7 +1419,36 @@ function inferFilmName(text, sourceName, brand) {
     ["800T", /800t|800 tungsten/i],
     ["Lomography 800", /lomography\s*800/i]
   ];
-  return known.find(([, pattern]) => pattern.test(`${sourceName} ${text}`))?.[0] || titleCase(fromSource);
+  const knownName = known.find(([, pattern]) => pattern.test(`${sourceName} ${text}`))?.[0];
+  return normalizeFilmName(knownName || titleCase(fromSource), brand);
+}
+
+function buildFilmId(brand, name, iso) {
+  const normalizedName = normalizeFilmName(name, brand);
+  const parts = [brand, normalizedName];
+  if (iso && !String(normalizedName).includes(String(iso))) parts.push(iso);
+  return slugify(parts.filter(Boolean).join(" "));
+}
+
+function normalizeFilmName(name, brand = "") {
+  let value = String(name || "")
+    .replace(/\bT[-\s]?MAX\b/gi, "TMAX")
+    .replace(/\bF[-\s]?\d{3,5}\b/gi, " ")
+    .replace(/\b[A-Z]{1,3}[-\s]?\d{3,5}\b(?=\s|$)/g, " ")
+    .replace(/\bTECHNICAL\s+DATA\b/gi, " ")
+    .replace(/\bDATASHEET\b/gi, " ")
+    .replace(/\bPROFESSIONAL\b/gi, " ")
+    .replace(/\bBLACK[-\s]?AND[-\s]?WHITE\s+NEGATIVE\s+FILM\b/gi, " ")
+    .replace(/\bCOLOR\s+NEGATIVE\s+FILM\b/gi, " ")
+    .replace(/\bFILM\b$/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (brand) {
+    value = value.replace(new RegExp(`^${escapeRegExp(brand)}\\s+`, "i"), "").trim();
+  }
+
+  return value;
 }
 
 function inferIso(text, sourceName, name) {
@@ -1787,6 +1874,10 @@ function escapeHtml(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 init();
