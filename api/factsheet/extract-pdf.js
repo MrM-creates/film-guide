@@ -41,6 +41,7 @@ module.exports.config = {
 };
 
 async function extractPdfText(buffer) {
+  installPdfJsNodePolyfills();
   const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
   const loadingTask = pdfjs.getDocument({
     data: new Uint8Array(buffer),
@@ -65,6 +66,15 @@ async function extractPdfText(buffer) {
   } finally {
     await document.destroy();
   }
+}
+
+function installPdfJsNodePolyfills() {
+  const canvas = require("@napi-rs/canvas");
+  globalThis.DOMMatrix ||= canvas.DOMMatrix;
+  globalThis.DOMPoint ||= canvas.DOMPoint;
+  globalThis.DOMRect ||= canvas.DOMRect;
+  globalThis.ImageData ||= canvas.ImageData;
+  globalThis.Path2D ||= canvas.Path2D;
 }
 
 async function readRawBody(request, maxBytes) {

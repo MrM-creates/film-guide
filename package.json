@@ -6,6 +6,7 @@
     "packshots:import-local": "node tools/import-local-packshots.mjs"
   },
   "dependencies": {
+    "@napi-rs/canvas": "^0.1.80",
     "@supabase/supabase-js": "^2.87.1",
     "pdf-parse": "^2.4.5",
     "pdfjs-dist": "^5.4.296"
