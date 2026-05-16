@@ -75,6 +75,8 @@ const els = {
   imageFile: document.querySelector("#imageFile"),
   imagePreview: document.querySelector("#imagePreview"),
   imagePlaceholder: document.querySelector("#imagePlaceholder"),
+  viewPackshotBtn: document.querySelector("#viewPackshotBtn"),
+  downloadPackshotBtn: document.querySelector("#downloadPackshotBtn"),
   formatsChoices: document.querySelector("#formatsChoices"),
   useCasesChoices: document.querySelector("#useCasesChoices"),
   savedFactsheetSelect: document.querySelector("#savedFactsheetSelect"),
@@ -212,8 +214,13 @@ function bindEvents() {
       }
       els.imagePreview.src = URL.createObjectURL(file);
       els.imagePreview.parentElement.classList.add("has-image");
+      els.imagePlaceholder.textContent = "";
+      updatePackshotActions();
+      setStatus("Packshot gewählt. Speichern lädt ihn nach Supabase hoch.");
     }
   });
+  els.viewPackshotBtn.addEventListener("click", viewCurrentPackshot);
+  els.downloadPackshotBtn.addEventListener("click", downloadCurrentPackshot);
 
   els.filmForm.elements.brand.addEventListener("input", maybeSuggestId);
   els.filmForm.elements.name.addEventListener("input", maybeSuggestId);
@@ -1637,6 +1644,71 @@ function setImagePreview(url) {
   els.imagePreview.src = hasUrl ? url : "";
   els.imagePreview.parentElement.classList.toggle("has-image", hasUrl);
   els.imagePlaceholder.textContent = hasUrl ? "" : "Kein Bild";
+  updatePackshotActions();
+}
+
+function getCurrentPackshot() {
+  const formUrl = clean(els.filmForm.elements.image_url.value);
+  const previewUrl = els.imagePreview.src || "";
+  const url = formUrl || (previewUrl.startsWith("blob:") ? previewUrl : previewUrl);
+  return {
+    url,
+    filename: `${slugify([
+      els.filmForm.elements.brand.value,
+      els.filmForm.elements.name.value,
+      els.filmForm.elements.iso_box.value
+    ].filter(Boolean).join(" ")) || "packshot"}${getPackshotExtension(url)}`
+  };
+}
+
+function getPackshotExtension(url) {
+  const file = state.pendingImageFile;
+  if (file?.name?.includes(".")) return `.${file.name.split(".").pop().toLowerCase()}`;
+  const match = String(url || "").split("?")[0].match(/\.(jpe?g|png|webp|avif)$/i);
+  return match ? `.${match[1].toLowerCase().replace("jpeg", "jpg")}` : ".jpg";
+}
+
+function updatePackshotActions() {
+  const hasImage = Boolean(els.imagePreview.src);
+  els.viewPackshotBtn.disabled = !hasImage;
+  els.downloadPackshotBtn.disabled = !hasImage;
+}
+
+function viewCurrentPackshot() {
+  const { url } = getCurrentPackshot();
+  if (!url) return;
+  window.open(url, "_blank", "noopener");
+}
+
+async function downloadCurrentPackshot() {
+  const { url, filename } = getCurrentPackshot();
+  if (!url) return;
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const blob = await response.blob();
+    downloadBlob(blob, filename);
+  } catch {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    link.rel = "noopener";
+    document.body.append(link);
+    link.click();
+    link.remove();
+  }
+}
+
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
 }
 
 function renderChoiceGroup(container, name, options) {

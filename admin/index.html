@@ -298,10 +298,11 @@
                     Bild hochladen
                     <input id="imageFile" type="file" accept="image/jpeg,image/png,image/webp,image/avif">
                   </label>
-                  <label>
-                    Bild-URL
-                    <input name="image_url" type="text" placeholder="https://... oder ../img/...">
-                  </label>
+                  <div class="button-row">
+                    <button id="viewPackshotBtn" class="btn btn-ghost" type="button">Ansehen</button>
+                    <button id="downloadPackshotBtn" class="btn btn-ghost" type="button">Download</button>
+                  </div>
+                  <input name="image_url" type="hidden">
                   <input name="image_path" type="hidden">
                 </div>
               </div>

@@ -2,7 +2,8 @@
   "scripts": {
     "add-packshot": "node tools/add-packshot.js",
     "admin:dev": "node server/admin-server.mjs",
-    "factsheets:import-repo": "node tools/import-repo-factsheets.mjs"
+    "factsheets:import-repo": "node tools/import-repo-factsheets.mjs",
+    "packshots:import-local": "node tools/import-local-packshots.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.87.1",
