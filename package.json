@@ -1,6 +1,11 @@
 {
   "scripts": {
     "add-packshot": "node tools/add-packshot.js",
-    "admin:dev": "python3 -m http.server 4173 --bind 127.0.0.1"
+    "admin:dev": "node server/admin-server.mjs",
+    "factsheets:import-repo": "node tools/import-repo-factsheets.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.87.1",
+    "pdf-parse": "^2.4.5"
   }
 }

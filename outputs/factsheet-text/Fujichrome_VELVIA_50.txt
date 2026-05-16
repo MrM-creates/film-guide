@@ -1,0 +1,504 @@
+
+--- PAGE 1 ---
+
+– 1 –
+AF3-0221E2
+1. FEATURES AND USES
+FUJICHROME Velvia 50 Professional [RVP 50] is a
+professional daylight color reversal film with an ISO
+speed rating of 50. Nearly identical in performance to
+FUJICHROME Velvia for Professionals [RVP], this film
+was made possible through the development of new
+production technologies and substitutes for raw materi-
+als vital for the manufacture of the current Velvia but
+now hard to procure. In addition to the world’s highest
+level of image color saturation and vibrancy, this film
+combines superb granularity with resolving power. The
+result is well-modulated, vivid color reproduction and
+high picture quality, as re quired in such wide-ranging
+subjects as nature photography, fashion, products,
+interiors and artwork. It is especially suited to subjects
+that demand precision in reproduction and emphasis in
+colors.
+Features
+• Vibrant Color ..............
+Reproduction/
+Rich Color Tone
+Depiction
+Vivid skin tone reproduction
+with the world’s highest color
+saturation equal to that of the
+current Velvia. Superb color
+tone depiction for rich color
+reproduction.
+• Fine Grain Quality/ ....
+High Definition/
+High Resolving
+Power
+Superb grain quality, vibrancy
+and resolving power, as with
+the current Velvia.
+• Neutral Grays and .....
+Excellent Deep
+Shadows
+Fine neutral gray reproduc-
+tion from the highlights to the
+shadows.
+• Superb Push/Pull ......
+Processing
+Minimum color balance varia-
+tion over a range from –1/2 to
++1 stop to enable wider pho-
+to opportunities. Also allows
+fine adjustments of exposure
+and density to be easily done
+during processing.
+2. SPEED
+Light Source Speed Color Balancing Filter
+Daylight ISO 50/18º None
+T ungsten Lamps
+(3200K) ISO 16/13º * No. 80A **
+* Indicates the effective speed resulting from designated filter
+use.
+** Wratten Filter
+FUJICHROME Velvia 50 Professional [RVP50]
+COLOR REVERSAL FILMS
+3. FILM SIZES, EMULSION NUMBER, BASE
+MATERIAL AND THICKNESS
+Sizes Emulsion
+Number
+Base
+Material
+Base
+Thickness
+• Rolls*
+135 ... 36-exp.
+ ... 36-exp. (20-roll pack)
+#501–
+Cellulose
+Triacetate
+127 µm
+120 ... 12-exp.
+ ... 12-exp. (5-roll pack)
+220 ... 24-exp. (5-roll pack)
+98 µm
+• Sheets*
+4×5 in. (10.2×12.7 cm)
+... 10 sheets
+8×10 in. (20.3×25.4 cm)
+... 10 sheets
+QuickLoad 4×5 in ... 20 sheets
+Polyester 175 µm
+* Some sizes are not available in certain markets.
+4. EXPOSURE GUIDE FOR VARIOUS
+LIGHT CONDITIONS
+Use a meter to determine the exposure setting. If a me-
+ter is not available, refer to the following table.
+Light
+Conditions
+Seashore or
+Snow Scenes
+under Bright
+Sun
+Bright
+Sunlight
+Hazy
+Sunlight
+Cloudy
+Bright
+Cloudy
+Day or
+Open
+Shade
+Lens
+Aperture f/16 f/11 f/8 f/5.6 f/4
+(Exposure time: 1/125 sec.)
+NOTES
+• The settings are for 2 hours after sunrise and 2 hours before
+sunset.
+• Provide a lens opening 1/2-stop smaller during the summer
+and 1/2-stop larger during the winter (except for snow scenes).
+• Excessively bright (or dark) or backlighted subjects may require
+plus (or minus) 1-stop lens opening adjustments.
+Daylight
+Under usual daylight conditions, color balancing filters
+are not necessary. For the following exposure condi-
+tions, however, the indicated filters are recommended.
+• A UV filter No. 2C*, No. 2B* or other appropriate ul-
+traviolet absorbing filter is recommended for scenes
+that are receiving strong ultraviolet light from the
+sun, such as seaside lo cations, snow scenes, and
+bright distant views.
+
+--- PAGE 2 ---
+
+– 2 –
+FUJIFILM PRODUCT INFORMATION BULLETIN • FUJICHROME Velvia 50 Professional [RVP50]
+Fluorescent
+Lamp Type
+White
+(W)
+Daylight
+(D)
+Cool White
+(CW)
+Warm White
+(WW)
+Color
+Compensating
+Filters*
+40M+10B 40R+10M 40M+5R No. 80C+
+25M
+Exposure
+Corrections** +1 2/3 stop +1 2/3 stop +1 1/2 stop +2 stops
+(Exposure time: 1/4 sec.)
+* Wratten Color Compensating (CC) Filters are recommended.
+ NOTE: No. 80C is a Wratten Color Conversion Filter.
+** Exposure correction values when using a filter relative to unfil-
+tered exposure results.  A “+” followed by a number indicates
+the required increase in lens opening.
+NOTES
+• Use a shutter speed slower than 1/30 second.
+• For shutter speeds of 4 seconds or more, exposure adjust-
+ments will be necessary to compensate for reciprocity law
+failure.
+Tungsten Lamps
+• A Wratten Filter No.80A is required when using
+3200K tungsten lighting.  A 1 2/3-stop larger lens
+opening is also required.
+• If household tungsten lighting (room lamps, etc.)
+constitutes the main source of illumination, in ad-
+dition to the above filter a Wratten Filter No.82A is
+required, plus an aperture increase of 1/3 stop (total
+2 stops).
+Mixed Light Sources
+Under mixed light conditions, the basic filter configura-
+tion should suit the main light source.  In the case of
+cameras with TTL metering, there is no need for addi-
+tional exposure compensation for any CC filter(s) used.
+5. LONG EXPOSURE COMPENSATION
+No exposure correction or color balance compensation
+is required for exposures within a shutter speed range
+of 1/4000 second to 1 second.  However, for exposures
+of 4 seconds or longer, ‘reciprocity law failure’-related
+color balance and exposure compensations are re-
+quired.
+Exposure Time
+(sec.)
+1/4000
+to 1 4 8 16 32 64
+Color
+Compensating
+Filters None
+5M 7.5M 10M 12.5M Not
+recom-
+mendExposure
+Corrections*
++1/3
+stop
++1/2
+stop
++2/3
+stop
++1
+stop
+* Exposure correction values when using a filter relative to unfil-
+tered exposure results.  A “+” followed by a number indicates
+the required increase in the lens opening.
+NOTE
+ The above figures are based on the use of standard process-
+ing for films with average emulsions.  These figures should
+therefore be used as a rough guide only.  For more accurate
+results, it is recommended that test exposures be made under
+the actual shooting conditions.
+• Excessively high or low color temperatures may re-
+quire the following filters and exposure corrections.
+Subject Conditions Filter Exposure
+Correction
+High Color T emperature:
+Cloudy weather landscapes or por-
+traits in open shade in clear weather.
+No.81A* +1/3
+ stop**
+Low Color T emperature:
+Morning and evening twilight scenes
+and portraits.
+No.82A* or
+No.82C*
++1/3 to
++2/3 stop**
+* Wratten Filter
+** A “+” followed by a number indicates the required increase in
+lens opening.
+Electronic Flash
+• Electronic flash produces light similar to daylight, so
+filters are not needed.  However, the possibility of
+undesirable effects on color balance, due to various
+factors (differences in equipment, use duration, etc.)
+should be taken into consideration. T est exposures
+are recommended.
+• The use of a flash meter is advisable, but the follow-
+ing formula can also be used to obtain a satisfactory
+lens opening.
+Lens
+Aperture
+(F-number)
+=
+Electronic Flash Guide Number (at ISO 50)
+Electronic Flash-to-Subject Distance
+• Set the film speed at ISO 50.  Since the amount of
+light reflected onto the subject from surrounding sur-
+faces will differ with the conditions, refer to the flash
+unit instructions.
+Daylight Photoflood / Photo-Reflector Lamps
+• Daylight-type photoflood or photo-reflector lamp
+output may be lower than that indicated by the ex-
+posure meter. It is recommended to compensate for
+the difference by increasing the exposure time by
+lowering the shutter speed or by increasing the lens
+opening. Whenever possible, test exposures are rec-
+ommended.
+• Other factors that should be considered when deter-
+mining the exposure settings are lamp configuration,
+length of time used and line voltage, as they may af-
+fect lamp output and color balance.
+Fluorescent Lamps
+• The use of the following combinations of color com-
+pensating filters is advisable when photographing
+under fluorescent lighting.
+• For exacting work, however, test exposures are rec-
+ommended because lamp brand and age may af-
+fect light output and color balance.
+
+--- PAGE 3 ---
+
+– 3 –
+FUJICHROME Velvia 50 Professional [RVP50] • FUJIFILM PRODUCT INFORMATION BULLETIN
+6. EXPOSURE PRECAUTIONS
+With artificial light, such as electronic flash, photoflood,
+fluorescent, tungsten, high intensity discharge lamp
+(metal halide, sodium, mercury vapor), etc., the lamp
+output and color temperature may be affected by such
+factors as brand, age of equipment and line voltage.
+Reflectors and diffusers can also influence light inten-
+sity and color temperature.
+7. UNPROCESSED FILM HANDLING/STORAGE
+
+HANDLING
+• Expose film before the expiration date indicated on
+the film package and process as soon as possible
+after exposure.
+• Roll film should be loaded and unloaded quickly and
+away from direct sunlight.
+• Film loaded in cameras should be exposed and pro-
+cessed promptly.
+• Sheet film must be handled in total darkness and
+with care so as not to touch the emulsion surface.
+• X-rays inspection machines used to inspect
+checked-in baggage at airports can cause fogging
+of film. Put both exposed and unexposed film into
+carry-on baggage (preferably in a transparent plas-
+tic bag or a net bag that allows the film to be seen).
+Because of the increasing number of airports using
+strong X-ray machines for carry-on baggage, it is
+recommended that you remove film from your carry-
+on baggage and request a visual (manual) inspec-
+tion of your film.
+• Film fogging may occur near X-ray equipment used
+in hospitals, factories, laboratories and other places
+where radiation is used. Always keep film away from
+sources of radiation.
+STORAGE
+Storing exposed or unexposed film under hot and hu-
+mid conditions may adversely affect the speed, color
+balance and physical properties of the film. Although it
+is best to store film at a low temperature, for practical
+purposes, film should be stored as follows:
+Short-term
+Storage Store at 59ºF(15ºC) or below (Refrigerator)
+Long-term
+Storage Store at 32ºF(0ºC) or below (Freezer)
+• New building materials, newly manufactured furni-
+ture, paints and bonding agents may produce gases
+which could affect photographic film. Do not store
+film, lightproof boxes containing film or cameras or
+film holders loaded with film near these materials.
+• Film should be sealed in plastic bags* prior to cold
+storage. When taken out of cold storage, film should
+be allowed to reach room temperature before open-
+ing by letting it stand over 3 hours (for refrigerated
+film) or over 6 hours (for frozen film).  Opening film
+while it is still cold may cause condensation to form
+on the film surface, causing color changes or the
+emulsion to become more susceptible to scratches.
+   * Polyester, polystyrene, polyethylene, polypropylene, etc.
+8. PROCESSING
+This film is designed for processing by Process E-6,
+Fujifilm Process CR-56, or Fuji Hunt’s PR06, etc.
+9. PROCESSED FILM HANDLING/STORAGE
+Since the purpose of film is to provide a long-term re-
+cord of memorable events, as much effort as possible
+has been made to use materials that exhibit the least
+amount of change over time, but the effects of light,
+heat, atmospheric oxygen, contaminant gases, humid-
+ity and mold cannot be completely avoided. It is pos-
+sible, however, to minimize change in the photographic
+image or base material by maintaining appropriate stor-
+age conditions, such as those used by museums and
+art galleries. T emperature and humidity control is the
+most important key to minimizing the change that oc-
+curs in film. Processed film stored in the dark under the
+following conditions may be expected to show almost
+no change over time.
+Storage Period with
+Almost No Change Temperature Relative Humidity
+More than 20 years Below 50ºF(10ºC) 30% – 50%
+10 – 20 years Below 77ºF(25ºC) 30% – 50%
+(1) Color reversal film should be mounted inserted into
+sleeves* for storage.
+ * Polyester, polystyrene, polyethylene, polypropylene, etc.
+(2) Processed film should be stored at a place as far
+away as possible from high temperatures, direct
+sunlight and other strong light. The following condi-
+tions are not desirable for the storage of film and
+should be avoided in the case of long-term storage:
+• Storage in a closet lying against a wall that is ex-
+posed to cold, outside air (where condensation
+may form).
+• Storage in an attic or on top of a closet or cabi-
+net near the ceiling (where high temperatures
+may occur).
+
+--- PAGE 4 ---
+
+– 4 –
+FUJIFILM PRODUCT INFORMATION BULLETIN • FUJICHROME Velvia 50 Professional [RVP50]
+10. LIGHT SOURCES FOR VIEWING
+Use a standard transparency viewer.  Visual responses
+will differ with light source quality and brightness.
+Therefore, employ a viewer which meets the ISO/ANSI
+standard.*
+* The ISO standard (ISO 3664:2000) specifies an illuminated
+viewer surface with a color temperature derived from a CIE il-
+luminant D50 (D:Daylight) with a reciprocal color temperature
+of 5000K, an average brightness of 1270cd/m
+2
+ ± 320cd/m
+2
+, a
+brightness uniformity of more than 75%, a light diffusion level
+of more than 90% and an average color rendition assessment
+value of more than Ra90.  Transparency viewers should meet
+these standards.
+11. PRINTS AND DUPLICATES
+This film can produce high-quality prints when used
+with digital printers such as the Fuji Digital Minilab
+Frontier.  High-quality duplicates can be made on FUJI-
+CHROME DUPLICATING FILM CDU TYPE
+II (CDU II).
+12. RETOUCHING AND BLEACHING
+Changes in density and color balance can be made by
+using readily available retouching dyes and bleaching
+chemicals.
+13. PACKAGING
+Size Item Contents
+135 Film Box New Exclusive Design
+Identification Color: Gold, Blue
+Plastic Case Same as the current product (Tranparent container with a black cap).
+Cartridge New Exclusive Design
+Identification Color: Gold, Blue
+120 Film Box New Exclusive Design
+Identification Color: Gold, Blue
+
+5 roll pack
+Envelope
+
+
+
+--- PAGE 5 ---
+
+– 5 –
+FUJICHROME Velvia 50 Professional [RVP50] • FUJIFILM PRODUCT INFORMATION BULLETIN
+Size Item Contents
+120 Backing Pa-
+per and Seal
+Backing paper: FUJICHROME Exclusive Design
+Seal: Exclusive Design
+220 Film Box New Exclusive Design
+Identification Color: Gold, Blue
+Envelope
+
+Backing Pa-
+per and Seal
+Backing paper: FUJICHROME Exclusive Design
+Seal: Exclusive Design
+
+Sheet Film Box, La-
+bel and Seal
+New Exclusive Design
+Identification Color: Gold, Blue
+
+
+End SealT op Seal
+Backing Paper
+End SealT op Seal
+Backing Paper
+5 roll pack
+
+
+--- PAGE 6 ---
+
+– 6 –
+FUJIFILM PRODUCT INFORMATION BULLETIN • FUJICHROME Velvia 50 Professional [RVP50]
+14. SHEET FILM CODE NOTCHING
+A notch code identifying this emulsion type is located in
+the upper right-hand corner when the emulsion surface
+is facing toward you. The same notch is provided for
+QuickLoad type films.
+15. PROCESSED FILM EDGE MARKINGS*
+<Rolls>
+• 135 Size
+• 120 Size
+• 220 Size
+
+--- PAGE 7 ---
+
+– 7 –
+FUJICHROME Velvia 50 Professional [RVP50] • FUJIFILM PRODUCT INFORMATION BULLETIN
+<Sheets>
+• Standard Sheet Film • QuickLoad
+
+NOTES
+  * The emulsion is on the opposite side. (Base side facing you)
+** This code represents an identification marking enabling Fujufilm’s manufacturing quality control system to assure individual  quality.
+16. FILM STRUCTURE
+Interlayer
+Interlayer
+Interlayer
+* These layers become colorless and transparent after processing.
+** The backing layer becomes colorless and transparent after processing, but it is not provided with 135 size film.
+17. DIFFUSE RMS GRANULARITY VALUE  ......9
+Micro-densitometer Measurement Aperture: 48 µm in
+diameter.
+Sample Density: 1.0 above minimum density.
+18. RESOLVING POWER
+Chart Contrast 1.6 :1 .......................... 80 lines/mm
+Chart Contrast 1000 :1 ........................ 160 lines/mm
+
+--- PAGE 8 ---
+
+FUJIFILM PRODUCT INFORMATION BULLETIN • FUJICHROME Velvia 50 Professional [RVP50]
+NOTICE  The data herein published were derived from materials taken from
+general production runs. However, changes in specifications may occur without
+prior notice.
+– 8 –
+7-3, Akasaka 9-chome, Minato-ku, Tokyo 107-0052, Japan
+Ref. No. AF3-0221E2 (KAMIQ-07.3-FP) Printed in Japan
+20. SPECTRAL SENSITIVITY CURVES
+22. SPECTRAL DYE DENSITY CURVES
+19. CHARACTERISTIC CURVES
+21. MTF CURVE
+* Sensitivity equals the reciprocal of the exposure (J/cm
+2
+)
+required to produce a specified density.

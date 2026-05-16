@@ -1,0 +1,367 @@
+
+--- PAGE 1 ---
+
+
+
+
+
+ Page 1 of 6 Nov 2018
+
+HARMAN technology Limited
+TECHNICAL INFORMATION
+HP5 PLUS
+ISO 400/27º, BLACK AND WHITE PROFESSIONAL FILM
+FOR HIGH PRINT QUALITY AND FLEXIBILITY IN USE
+
+ILFORD HP5 Plus is a fast black and white film. It is ideal for action, available light and general-purpose
+photography. HP5 Plus is compatible with all major processing systems, including those which give the standard
+short fixing and washing times.
+
+Although rated at ISO 400/27º, HP5 Plus can produce high quality prints when exposed at meter settings up to
+EI 3200/36 and given extended development in ILFORD ILFOTEC DD-X, ILFOTEC HC, MICROPHEN or
+ILFOTEC RT RAPID developers.
+
+HP5 Plus 35mm film is coated on 0.125mm/5-mil acetate base and is available in 24 or
+36 exposure cassettes, or in bulk lengths of 30.5 metres (100ft). HP5 Plus 35mm film is
+supplied in DX coded cassettes, suitable for all 35mm cameras.
+
+HP5 Plus roll film is coated on 0.110mm/4-mil clear acetate base with an anti-halation
+backing which clears during development. It is available in 120 lengths and is edge
+numbered 1 to 19.
+
+HP5 Plus sheet film is coated on 0.180mm/7-mil polyester base with an anti-halation
+backing which clears during development. It is available in a wide range of standard sizes. The emulsion faces
+the user when sheet film is held in the position shown.
+
+EXPOSURE RATING
+Best results are obtained at EI 400/27, but good image quality will also be obtained at meter settings from EI
+400/27 to EI 3200/36. It should be noted that the exposure index (EI) range recommended for HP5 Plus is
+based on a practical evaluation of film speed and is not based on foot speed, as is the ISO standard.
+
+SPECTRAL SENSITIVITY
+Wedge spectrogram to tungsten light (2850K)
+
+
+
+
+--- PAGE 2 ---
+
+
+Page 2 of 6 Nov 2018
+
+HP5 PLUS Technical Information
+FILTER FACTORS
+HP5 Plus film may be used with all types of filters (eg colour, polarising and neutral density filters) in the usual
+way. Follow the instructions given by the filter manufacturer.
+The exposure increase in daylight may vary with the angle of the sun and the time of day. In the late afternoon
+or the winter months, when daylight contains more red light, green and blue filters may need slightly more
+exposure than usual.
+Cameras with through-the-lens metering will usually adjust the exposure automatically when using filters. With
+some automatic exposure cameras, the correction given for deep red and orange filters can produce negatives
+under exposed by as much as 1½ stops.
+
+
+MAKING LONG EXPOSURES
+For exposures between ½ and 1/10 000 second, no
+adjustments are needed for reciprocity law failure.
+
+When exposures longer than ½ second are given, HP5
+Plus, along with other films, needs to be given more
+exposure than indicated by a meter. Use the graph to
+calculate the increased exposure time which should be
+given once the metered time is known.
+
+The graph is based on the formulae Ta = Tm
+1.31
+
+Ta = Adjusted Time
+Tm = Metered Time
+
+CHOOSING THE BEST ILFORD DEVELOPER FOR THE JOB
+Manual processing Spiral tank, dish/tray, deep tank Including rotary processors
+ Liquid Powde r
+Best overall image quality
+EI 400/27, EI 800/30
+EI 1600/33, EI 3200/36
+
+ILFOTEC DD-X
+ILFOTEC DD-X
+ID-11 (stock)
+MICROPHEN (stock)
+Finest grain ILFOTEC DD-X PERCEPTOL (stock)
+Maximum sharpness  ILFOSOL 3 (1+9) ID-11 (1+3)
+Maximum film speed
+(EI 3200/36)
+ILFOTEC DD-X MICROPHEN (stock)
+Economy  ILFOTEC LC29 (1+29) ID-11 (1+3)
+MICROPHEN (1+3)
+One-shot convenience ILFOSOL 3 (1+9)
+ILFOTEC DD-X
+ID-11 (1+1)
+MICROPHEN (1+1)
+Replenishable ILFOTEC HC ID-11
+
+Machine Processing
+Dip and dunk
+
+ILFOTEC DD Best overall image quality (liquid) and long tank life
+Short leader
+
+ILFOTEC RT RAPID Rapid processing , best overall image quality and
+long tank life.
+Roller transport  ILFOTEC RT RAPID Rapid processing
+
+
+--- PAGE 3 ---
+
+
+Page 3 of 6 Nov 2018
+
+HP5 PLUS Technical Information
+DEVELOPMENT TIMES
+The table below gives development times for both manual and machine processing HP5 Plus. These times will
+produce negatives of average contrast suitable for printing in all enlargers. The development times are intended
+as a guide and may be altered if a different result is needed.
+For manual processing in spiral tanks and deep tanks, the development times are based on intermittent
+agitation. Where continuous agitation is used for manual processing (as in a dish/tray or with some types of
+developing tank), reduce these times by up to 15%. For use in rotary processors without a pre-rinse, reduce the
+spiral tank development times by up to15%. A pre-rinse is not recommended as it can lead to uneven
+processing.
+
+  35mm and Roll Film
+ILFORD developer Dilution Meter setting (EI)
+200/24 250/25 320/26 400/27 800/30 1600/33 3200/36
+Spiral tank, deep tank, dip and dunk machines (min/20°C/68°F)
+ILFOTEC DD-X 1+4 − − − 9 10 13 20
+ILFOSOL 3 1+9 5 − − 6½ 13½ − −
+ 1+14 7 − − 11 19½ − −
+ILFOTEC HC 1+15 − − − 3½ 5 7 ½ 11
+ 1+31 − − − 6½ 9½ 14 −
+ILFOTEC LC29 1+9 − − − 3½ 5 7½ 11
+ 1+19 − − − 6½ 9½ 14 −
+ 1+29 − − − 9 − − −
+ID-11 stock − − − 7½ 10½ 14 −
+ 1+1 − − − 13 16 ½ − −
+ 1+3 − − − 20 − − −
+MICROPHEN stock − − − 6½ 8 11 16
+ 1+1 − − − 12 15 − −
+ 1+3 − − − 23 − − −
+PERCEPTOL stock − 13 − − − − −
+ 1+1 − − 18 − − − −
+ 1+3 − − 25 − − − −
+Non-ILFORD Developers (min/20°C/68°F)
+Acufine  stock − − − 4½ 6½ 9½ −
+Agfa Rodinal 1+25 − − − 6 8 − −
+ 1+50 − − − 11 − − −
+Kodak D-76 stock − − − 7½ 9½ 12½ −
+ 1+1 − − − 11 13 − −
+ 1+3 − − − 22 − − −
+Kodak HC-110 A − − − 2½ 3¾ 5½ 9½
+ B − − − 5 7½ 11 −
+Kodak T-Max 1+4 − − − 6½ 8 9½ 11½
+Tetenal Ultrafin SF Stock − − − 7½ 10 − −
+ 1+1 − − − 16 − − −
+Tetenal Ultrafin
+Plus 1+4 − − − 7 10 13 −
+Kodak Xtol stock − − − 8 11 14 19
+ 1+1 − − − 12 17 − −
+Note. Development times may need adjusting to suit individual processing systems and working practices. If an
+established system is producing good results, adjust the recommended development times until the desired
+contrast level is obtained. Development times in other manufacturers’ developers are included for your
+convenience and are only a general guide. Other manufacturers can and do change their product
+specifications from time to time, and the development times may change as a result.
+
+--- PAGE 4 ---
+
+
+Page 4 of 6 Nov 2018
+
+HP5 PLUS Technical Information
+
+  35mm and Roll Film
+ILFORD developer Dilution Meter setting (EI)
+200/24 250/25 320/26 400/27 800/30 1600/33 3200/36
+Dip and dunk machines (min/24°C/75°F)
+ILFOTEC DD 1+4 − − − 7 10 14 18
+Kodak T-Max RS stock − − − 4½ 5 7 −
+Kodak Xtol stock − − − 7½ 9½ 12 16
+
+ILFOLAB FP40, roller transport and short leader machines (sec/26°C/79°F)
+ILFOTEC RT RAPID 1+1+2 − − − 60 75 91 108
+ 1+1+5 − − − 70 95 120 166
+
+
+
+PROCESSING
+If HP5 Plus film has been inadvertently exposed at settings below EI 250 / 25, the following guide will ensure
+usable negatives are obtained. Obviously, the quality of negatives processed in this way will not be so high as
+conventionally processed ones.
+
+
+
+Note. Development times may need adjusting to suit individual processing systems and working practices. If an
+established system is producing good results, adjust the recommended development times until the desired
+contrast level is obtained. Development times for some other manufacturers’ developers are included for your
+convenience and are only a general guide. Other manufacturers can and do change their product
+specifications from time to time, and the development times may change as a result.
+
+
+Processing at Different Temperatures
+HP5 Plus film can be processed over a range of temperatures. Approximate development times at temperatures
+other than 20°C/68°F may be calculated from the charts below. For example, if 6 minutes at 20°C/68°F is
+recommended, the time at 23°C/73°F will be 4½ min and the time at 16°C/61°F will be 9 min.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Manual processing (min /20°C/68°F) accidental exposure only
+Developer Dilution Meter setting
+50 / 18
+Meter setting
+100 / 21
+Meter setting
+EI 200 / 24
+PERCEPTOL Stock 9 9 11
+
+
+--- PAGE 5 ---
+
+
+Page 5 of 6 Nov 2018
+
+HP5 PLUS Technical Information
+CHARACTERISTIC CURVE
+
+
+
+
+
+
+
+HP5 Plus film developed in ILFORD ILFOTEC HC (1+31) stock
+for 6½ minutes at 20ºC/68ºF with intermittent agitation. This
+curve is also representative of roll film and sheet film formats.
+
+
+
+PROCESSING
+HP5 Plus can be processed in all types of processing equipment including spiral tanks, rotary processors,
+dishes/trays, deep tanks and automatic processors. Standard capacity figures and replenishment rates can be
+maintained.
+
+Safelight recommendations
+Handle HP5 Plus film in total darkness.
+
+Agitation
+Intermittent agitation is recommended for use in spiral tanks and deep tanks. With spiral tanks, invert the tank
+four times during the first 10 seconds, then invert the tank four times again during the first 10 seconds of each
+further minute. Otherwise, follow the recommendations given by the processing equipment manufacturer.
+Continuous agitation is recommended in dishes/trays by rocking the dish/tray.
+
+
+Stop, fix, wash and rinse
+For best results it is recommended that all process solutions are kept at the same temperature or at least within
+5ºC (9ºF) of the developer temperature.
+
+
+Stop Bath
+After development the film can be rinsed in
+water but we recommend that an acid stop
+bath is used such as ILFORD ILFOSTOP (with
+indicator dye). ILFOSTOP is also
+recommended for all machine processing
+applications. When tanks or dishes (trays) of
+process solutions are in use a stop bath
+immediately stops development and reduces
+carry over of excess developer into the fixer
+bath. This helps to maintain the activity and
+prolong the life of the fixer solution.
+
+The process time given is the minimum required, if necessary a longer time may be used and should not cause
+any process problems provided it is not excessive
+
+ILFORD ILFOSTOP
+Dilution 1+19
+Temperature Range 18–24ºC (64–75ºF)
+Time (sec) at 20ºC (68ºF) 10
+Capacity (films per litre,
+unreplenished) 15x (135-36)
+
+--- PAGE 6 ---
+
+
+Page 6 of 6 Nov 2018
+
+HP5 PLUS Technical Information
+
+Fix
+The recommended fixers are ILFORD RAPID
+FIXER or ILFORD HYPAM FIXER.
+
+Wash
+Wash the films in running water for 5–10
+minutes at a temperature within 5ºC (9ºF) of
+the process temperature. Or see note below
+for greater economy when using spiral tanks.
+
+
+Note: For spiral tank use, the following method of washing is recommended. This method of washing is faster,
+uses less water yet still gives negatives suitable for long term storage.
+After fixing, fill the spiral tank with water at the same temperature, +/– 5ºC (9ºF), as the processing solutions
+and invert it five times. Drain the water away and refill. Invert the tank ten times. Once more drain the water
+away and refill. Finally, invert the tank twenty times and drain the water away.
+
+Rinse
+For a final rinse use ILFORD ILFOTOL wetting agent added to water, it helps the film to dry rapidly and evenly.
+Start by using 5ml per litre of rinse water (1+200), however the amount of ILFOTOL used may need some
+adjustment depending on the local water quality and drying method. Too little or too much wetting agent can
+lead to uneven drying. Remove excess rinse solution from the film before drying.
+
+Drying
+To avoid drying marks, use a clean squeegee or chamois cloth to wipe HP5 Plus film before hanging it to dry.
+Dry HP5 Plus at 30–40°C/86-104°F in a drying cabinet or at room temperature in a clean dust-free area.
+
+
+STORAGE
+For immediate use, store HP5 Plus in a cool (10–20°C/50-68°F), dry place in its original packaging.
+HP5 Plus may be stored in a fridge/freezer but allow plenty of time for the film to acclimatise prior to use.
+
+Exposed film
+Once exposed, process HP5 Plus as soon as practical.
+Exposed films should always be stored in cool, dry conditions - as recommended above.
+
+Negatives
+Store processed negatives in a cool (10–20°C/50-68°F), dry place, in the dark. Suitable storage sleeves
+include those made of cellulose triacetate, Mylar, paper (pH6.5–7.5) or inert polyester.
+
+
+
+
+
+
+
+
+A wide range of fact sheets is available which describe and give guidance on using ILFORD PHOTO products.
+Some products in this fact sheet might not be available in your country.
+
+HARMAN technology Limited, Ilford Way, Mobberley,
+Knutsford, Cheshire WA16 7JL, England
+www.ilfordphoto.com
+ILFORD RAPID OR HYPAM FIXERS
+Dilution 1+4
+Temperature Range 18–24ºC (64–75ºF)
+Time (mins) at 20ºC (68ºF) 2-5
+Capacity (films per litre,
+unreplenished) 24x (135-36)

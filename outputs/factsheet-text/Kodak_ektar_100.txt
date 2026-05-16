@@ -1,0 +1,440 @@
+
+--- PAGE 1 ---
+
+© 2016 Kodak Alaris Inc.
+February 2016 •  E-4046TECHNICAL DATA / COLOR NEGATIVE FILM
+KODAK PROFESSIONAL EKTAR
+100 Film
+KODAK PROFESSIONAL EKTAR 100 Film is the world's
+finest grain color negative film. With ISO 100 speed, high
+saturation and ultra-vivid color, this film offers the finest,
+smoothest grain of any color negative film available today.
+An ideal choice for commercial photographers and
+advanced amateurs, KODAK PROFESSIONAL EKTAR 100
+Film is recommended for applications such as nature,
+travel and outdoor photography, as well as for fashion and
+product photography.
+SIZES AVAILABLE
+Availability may differ from country to country. See your
+dealer who supplies KODAK PROFESSIONAL Products.
+TECHNOLOGY BENEFIT
+• Incorporates Entertainment
+Imaging’s KODAK VISION Film
+technology
+• Micro-Structure Optimized
+KODAK T-GRAIN Emulsions
+• KODAK Proprietary Advanced
+Development Accelerators
+• World's finest-grained color
+negative film
+• Ideal for scanning
+• Extraordinary enlargement
+capability from a 35mm
+negative
+• Optimized Emulsion Spectral
+Sensitivity and Image Modifier
+Chemistry
+• Ultra-vivid color
+•K O D A K  A d v a n c e d  C u b i c
+Emulsions
+•K O D A K  P r o p r i e t a r y  D I R
+Couplers
+• Optimized sharpness
+• Distinct edges, fine detail
+• Unified Emulsion Technology • Printing compatible with
+other KODAK Films
+Size/Format Code Base
+135 5110 0.13 mm (0.005 inch)
+acetate
+120 6110 0.10 mm (0.004 inch)
+acetate
+Sheets
+0.19 mm (0.007 inch)
+KODAK ESTAR
+Thick Base
+STORAGE AND HANDLING
+Store unexposed film at 21°C (70°F) or lower in the original
+sealed package. For extended periods, store film at
+13°C( 5 5°F) to preserve consistency.
+To avoid moisture condensation on film that has been
+refrigerated, allow the film to warm up to room
+temperature before opening the package. Typical warm-up
+times are given in the table below.
+Load and unload roll-film cameras in subdued light.
+Total darkness is required when you load and unload sheet
+film holders.
+Process film as soon as possible after exposure. Protect
+negatives from strong light, and store them in a cool, dry
+place. For long-term storage, keep negatives at a
+temperature between 2°C (35°F) and 13°C (55°F) and at a
+relative humidity between 30 and 35 percent.
+DARKROOM RECOMMENDATIONS
+Do not use a safelight. Handle unprocessed film in total
+darkness.
+EXPOSURE
+Film Speed
+Use the speed numbers in the tables below with cameras
+or meters marked for ISO, ASA, or DIN speeds or exposure
+indexes (EIs). Do not change the film-speed setting when
+metering through a filter. Metering through filters may
+affect light meter accuracy; see your meter or camera
+manual for specific information. For critical work, make a
+series of test exposures.
+* For best results without special printing.
+Size
+Warm-Up Times (Hours) to Reach Room
+T emperature of 21°C (70°F) From a Storage
+T emperature of:
+-18°C (0°F) 2 °C (35°F) 13 °C (55°F)
+135 magazine 1 1⁄2 11⁄4 1
+120 1 3⁄4 1⁄2
+10-sheet box 1 1⁄2 11
+Light Source KODAK WRATTEN
+Gelatin Filter ISO Speed
+Daylight or Electronic
+Flash None 100
+Photolamp (3400 K) No. 80B 32
+T ungsten (3200 K) No. 80A 25
+
+--- PAGE 2 ---
+
+2 KODAK PROFESSIONAL EKTAR 100 Film •  E-4046
+Daylight
+Use the exposures in the table below for average frontlit
+subjects from 2 hours after sunrise to 2 hours before
+sunset.
+* Use f/5.6 for backlit close-up subjects.
+† Use f/8 for backlit close-up subjects.
+‡ Subject shaded from the sun but lighted by a large area of sky.
+Adjustments for Long and Short Exposures
+No filter correction or exposure compensation is required
+for exposures from 1⁄10,000 second to 1 second. For
+critical applications with longer exposure times, make tests
+under your conditions.
+Electronic Flash
+Use the appropriate guide number in the table below as
+starting-point recommendations for your equipment.
+Select the unit output closest to the number given by your
+flash manufacturer. Then find the guide number for feet or
+metres. T o determine the lens opening, divide the guide
+number by the flash-to-subject distance. If negatives are
+consistently too dense (overexposed), use a higher guide
+number; if they are too thin (underexposed), use a lower
+number.
+* BCPS = beam candlepower seconds
+Lighting Conditions Shutter Speed (second)
+and Lens Opening
+Bright or Hazy Sun on Light Sand or
+Snow
+1/125
+f/16
+Bright or Hazy Sun (Distinct Shadows) 1/125
+f/11*
+Weak, Hazy Sun
+(Soft Shadows)
+1/125
+f/8
+Cloudy Bright
+(No Shadows)
+1/125
+f/5.6
+Heavy Overcast or Open Shade‡ 1/125
+f/4
+Unit
+Output
+(BCPS)*
+Guide Number
+Distances in Feet/Metres
+350 40/12
+500 50/15
+700 60/18
+1000 70/21
+1400 85/26
+2000 100/30
+2800 120/36
+4000 140/42
+5600 170/50
+8000 200/60
+Fluorescent and High-Intensity Discharge Lamps
+Use the color-compensating filters and exposure
+adjustments in the tables below as starting points to
+expose KODAK PROFESSIONAL EKTAR 100 Film under
+fluorescent or high-intensity discharge lamps. For critical
+applications, make a series of test exposures under your
+actual conditions.
+To avoid the brightness and color variations that occur
+during a single alternating-current cycle, use exposure
+times of 1⁄60 second or longer with ﬂuorescent lamps;
+with high-intensity discharge lamps, use exposure times of
+1⁄125 second or longer.
+PROCESSING
+Process EKTAR 100 Film in KODAK FLEXICOLOR
+Chemicals for Process C-41 using the replenishment and
+wash rates in the tables below. Note that the developer
+replenishment rates are starting-point recommendations
+only and may vary due to the amount of exposure to the
+film, scene content, and the presence/ absence of sprocket
+holes.
+Replenishment and Wash Rates
+* Rates are for first wash and a two-stage countercurrent final wash. Double
+these rates for a single stage final wash.
+Ty p e  o f  F l u o re s c e n t  L a m p
+KODAK Color
+Compensating
+Filter(s)
+Exposure
+Adjustment
+Daylight 20R + 5M +1 stop
+White 40B + 5C +1 2/3 stop
+Warm White 40B + 40C +2 stops
+Warm White Deluxe 40B + 50C +2 stops
+Cool White 30B +1 stop
+Cool White Deluxe 40C + 10M +1 stop
+High-Intensity Discharge
+Lamp (CCT)
+KODAK Color
+Compensating
+Filter(s)
+Exposure
+Adjustment
+High-Pressure Sodium
+Vapor 50B + 70C +2 2/3 stops
+Metal Halide 5C + 10M +2/3 stop
+Mercury Vapor with
+Phosphor 30B + 5C +1 stop
+Mercury Vapor without
+Phosphor 80R +1 2/3 stop
+Film
+Size
+KODAK
+FLEXICOLOR
+Developer
+Replenisher
+KODAK
+FLEXICOLOR
+Developer
+Replenisher
+LORR
+KODAK
+FLEXICOLOR
+Bleach III,
+Fixer, and
+Stabilizer
+Wash
+Water
+*
+135 1012 mL/m2
+94 mL/ft2
+506 mL/ m2
+47 mL/ft2
+861 mL/ m2
+80 mL/ft2
+31 L/m2
+2.9 L/ft2
+120 1012 mL/m2
+94 mL/ft2
+506 mL/ m2
+47 mL/ft2
+1023 mL/m2
+107 mL/ft2
+31 L/m2
+2.9 L/ft2
+4 x 5 1012 mL/m2
+94 mL/ft2
+506 mL/ m2
+47 mL/ft2
+1023 mL/m2
+107 mL/ft2
+31 L/m2
+2.9 L/ft2
+8 x 10 1012 mL/m2
+94 mL/ft2
+506 mL/ m2
+47 mL/ft2
+1023 mL/m2
+107 mL/ft2
+31 L/m2
+2.9 L/ft2
+
+--- PAGE 3 ---
+
+KODAK PROFESSIONAL EKTAR 100 Film •  E-4046 3
+JUDGING NEGATIVE EXPOSURES
+Y ou can check the exposure level with a suitable electronic
+densitometer equipped with a filter such as a KODAK
+WRATTEN Gelatin Filter No. 92 or the red filter for
+Status M densitometry. Depending on the subject and the
+light source used for exposure, a normally exposed and
+processed color negative measured through the red filter
+should have the approximate densities listed below.
+Because of the extreme range in skin color, use these red
+density values for a normally lit forehead only as a guide.
+For best results, use a KODAK Gray Card (gray side).
+RETOUCHING
+Y ou can retouch the 120 and sheet sizes on both the
+base side and the emulsion side. Retouch only the
+emulsion side of 135 size film.
+PRINTING NEGATIVES
+This film is optimized for printing to —
+KODAK PROFESSIONAL ENDURA Premier Paper
+KODAK PROFESSIONAL ENDURA Premier Canvas
+Paper
+KODAK PROFESSIONAL ENDURA Premier Metallic
+Paper
+KODAK PROFESSIONAL ENDURA Transparency
+Display Material
+KODAK PROFESSIONAL ENDURA Clear Display
+Material
+SCANNING NEGATIVES
+Y ou can easily scan EKTAR 100 Film negatives with a
+variety of linear-array-CCD, area-array-CCD, and PMT film
+scanners. Y ou can scan negatives on desktop scanners as
+well as high-end drum scanners.
+Area Measured Density Reading
+KODAK Gray Card (gray side) receiving
+same illumination as subject 0.77 to 0.87
+Lightest step (darkest in the negative) of a
+KODAK Paper Gray Scale receiving same
+illumination as subject
+1.13 to 1.23
+Highest diffuse density on normally lighted
+forehead
+—light complexion
+—dark complexion
+1.08 to 1.18
+0.93 to 1.03
+IMAGE STRUCTURE
+Print Grain Index
+The Print Grain Index number refers to a method of
+defining graininess in a print made with diffuse-printing
+illumination. It replaces rms granularity and has a different
+scale which cannot be compared to rms granularity.
+• The method uses a uniform perceptual scale, with a
+change of four units equaling a just noticeable difference
+in graininess to 90 percent of observers.
+• A Print Grain Index rating of 25 on the scale represents
+the approximate visual threshold for graininess. A
+higher number indicates an increase in the amount of
+graininess observed.
+• The standardized inspection (print-to-viewer)
+distance for all print sizes is 14 inches, the typical
+viewing distance for a 4 x 6-inch print.
+• In practice, larger prints will likely be viewed from
+distances greater than 14 inches, which reduces
+apparent graininess.
+• Print Grain Index numbers may not represent
+graininess observed from more specular printing
+illuminants, such as condenser enlargers.
+Negative Size: 24 x 36 mm (135)
+* 25 is the visual threshold for perception of grain.
+Negative Size: 6 x 6 cm (120)
+Negative Size: 4 x 5 Inches (Sheets)
+Negative Size: 8 x 10 Inches (Sheets)
+Print Size in inches 4x6 8x10 16x20
+Magnification 4.4X 8.8X 17.8X
+Print Grain Index less than 25* 38 66
+Print Size in inches 4x6 8x10 16x20
+Magnification 2.6X 4.4X 8.8X
+Print Grain Index less than 25 less than 25 38
+Print Size in inches 4x6 8x10 16x20
+Magnification 1.2X 4X 8X
+Print Grain Index less than 25 less than 25 less than 25
+Print Size in inches 4x6 8x10 16x20
+Magnification 0.6X 1X 2X
+Print Grain Index less than 25 less than 25 less than 25
+
+--- PAGE 4 ---
+
+KODAK PROFESSIONAL EKTAR 100 Film
+Revised 2/16
+KODAK PROFESSIONAL EKTAR 100 Film
+KODAK Publication No. E-4046
+KODAK ALARIS •  ROCHESTER, NY 14615
+CURVES
+Characteristic Curves
+Spectral-Sensitivity Curves
+Exposure: Daylight
+Densitometry: Status M
+Log H Ref: -0.84
+LOG EXPOSURE (lux-seconds)
+-3.0
+0.0
+-2.0
+DENSITY
+1.0
+2.0
+3.0
+4.0
+-1.0 0.0 1.0 2.0
+B
+G
+R
+E4046A
+Exposure: Daylight
+Effective Exposure: 1/25 Second
+Densitometry: Status M
+Density: 0.2>D-min
+Yellow-
+Forming
+Layer
+Magenta-
+Forming
+Layer
+Cyan-
+Forming
+Layer
+700 750650600550500450400350300250
+*Sensitivity = reciprocal of exposure (erg/cm  ) required
+to produce specified density
+WAVELENGTH (nm)
+2
+LOG SENSITIVITY*
+1.0
+2.0
+3.0
+0.0
+E4046B
+Spectral-Dye-Density Curves
+Modulation Transfer Function
+Minimum Density
+Midscale Neutral
+and D-min.
+Typical densities for a midscale neutral subject
+700
+2.5
+1.5
+2.0
+0.5
+1.0
+DIFFUSE SPECTRAL DENSITY
+600
+WAVELENGTH (nm)
+400
+0.0
+500450 550 650
+E4046C
+Exposure: Daylight
+Process: C-41
+1001 2 3 4 5 10 20 50 200 600
+SPATIAL FREQUENCY (cycles/mm)
+RESPONSE (%)
+10
+1
+2
+5
+3
+7
+30
+20
+100
+70
+50
+200
+R
+G
+B
+E4046D
+© 2016 Kodak Alaris Inc.
+TM: Endura, Flexicolor and Portra
+The Kodak, Kodak Professional, Ektar, Estar, T-Grain, Vision, and Wratten trademarks
+are used under license from Eastman Kodak Company.

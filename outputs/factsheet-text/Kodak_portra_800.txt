@@ -1,0 +1,467 @@
+
+--- PAGE 1 ---
+
+© 2016 Kodak Alaris Inc.
+February 2016 •  E-4040TECHNICAL DATA / COLOR NEGATIVE FILM
+KODAK PROFESSIONAL PORTRA
+800 Film
+KODAK PROFESSIONAL PORTRA 800 Film delivers well
+balanced color saturation, very fine grain, and best-in-class
+underexposure latitude. This film is ideal for long lenses
+and low light situations.
+For natural skin tone reproduction, and enhanced color
+in the most difficult lighting, PORTRA 800 is the film of
+choice.
+SIZES AVAILABLE
+Availability may differ from country to country. See your
+dealer who supplies KODAK PROFESSIONAL Products.
+TECHNOLOGY BENEFIT
+• Micro-Structure Optimized
+KODAK T-GRAIN Emulsions
+• KODAK Proprietary Advanced
+Development Accelerators
+• Antenna Dye Sensitization
+(High speed films)
+• Noticeably finer grain
+• Enhanced scanning
+performance
+• Allows for greater
+enlargement
+• Human Eye Spectral Sensitivity
+• High-Efficiency Masking
+Coupler
+• Beautiful, natural skin tones
+• Superb color reproduction,
+even under mixed lighting
+•K O D A K  P r o p r i e t a r y  D I R
+Couplers
+• Optimized sharpness
+• Distinct, fine detail
+• Precision Sensitometry with
+extended latitude
+• True-to-speed exposure
+accuracy
+• Best-in-class underexposure
+latitude
+• Captures a greater range of
+brightness
+• More highlight and shadow
+detail
+• Unified Film Emulsion
+Technology
+• Single channel printing
+across speeds and formats
+• Album compatibility
+Size/Format Code Base
+135 800 0.13 mm (0.005 inch)
+acetate
+120 800 0.11 mm (0.004 inch)
+acetate
+STORAGE AND HANDLING
+Store unexposed film at 21°C (70°F) or lower in the original
+sealed package. For extended periods, store film at
+13°C( 5 5°F) to preserve consistency.
+To avoid moisture condensation on film that has been
+refrigerated, allow the film to warm up to room
+temperature before opening the package. Typical warm-up
+times are given in the table below.
+Load and unload roll-film cameras in subdued light.
+Total darkness is required when you load and unload sheet
+film holders.
+Process film as soon as possible after exposure. Protect
+negatives from strong light, and store them in a cool, dry
+place. For long-term storage, keep negatives at a
+temperature between 2°C (35°F) and 13°C (55°F) and at a
+relative humidity between 30 and 35 percent.
+Note: High speed films, such as PORTRA 800 Film, are
+sensitive to environmental radiation. Expose and process
+this film promptly. As exposure to radiation is cumulative,
+you may want to request visual inspection of PORTRA 800
+Film at airport and other security x-ray inspection stations.
+DARKROOM RECOMMENDATIONS
+Do not use a safelight. Handle unprocessed film in total
+darkness.
+Size
+Warm-Up Times (Hours) to Reach Room
+T emperature of 21°C (70°F) From a Storage
+T emperature of:
+-18°C (0°F) 2 °C (35°F) 13 °C (55°F)
+135 magazine 1 1⁄2 11⁄4 1
+120 1 3⁄4 1⁄2
+
+--- PAGE 2 ---
+
+2 KODAK PROFESSIONAL PORTRA  800 Film •  E-4040
+EXPOSURE
+Film Speed
+Use the speed numbers in the tables below with cameras
+or meters marked for ISO, ASA, or DIN speeds or exposure
+indexes (EIs). Do not change the film-speed setting when
+metering through a filter. Metering through filters may
+affect light meter accuracy; see your meter or camera
+manual for specific information. For critical work, make a
+series of test exposures.
+* For best results without special printing.
+Daylight
+Use the exposures in the table below for average frontlit
+subjects from 2 hours after sunrise to 2 hours before
+sunset.
+† Use f/8 for backlit close-up subjects.
+‡ Subject shaded from the sun but lighted by a large area of sky.
+Adjustments for Long and Short Exposures
+No filter correction or exposure compensation is required
+for exposures from 1⁄10,000 second to 1 second. For
+critical applications with longer exposure times, make tests
+under your conditions.
+Light Source KODAK WRATTEN
+Gelatin Filter* ISO Speed
+Daylight or Electronic
+Flash None 800
+Photolamp (3400 K) No. 80B 250
+T ungsten (3200 K) No. 80A 200
+Lighting Conditions Shutter Speed (second)
+and Lens Opening
+Bright or Hazy Sun on Light Sand
+or Snow
+1/1000
+f/16
+Bright or Hazy Sun (Distinct
+Shadows)
+1/500
+f/16†
+Weak, Hazy Sun
+(Soft Shadows)
+1/500
+f/11
+Cloudy Bright
+(No Shadows)
+1/250
+f/11
+Heavy Overcast or Open Shade‡ 1/125
+f/11
+Electronic Flash
+Use the appropriate guide number in the table below as
+starting-point recommendations for your equipment.
+Select the unit output closest to the number given by your
+flash manufacturer. Then find the guide number for feet or
+metres. T o determine the lens opening, divide the guide
+number by the flash-to-subject distance. If negatives are
+consistently too dense (overexposed), use a higher guide
+number; if they are too thin (underexposed), use a lower
+number.
+* BCPS = beam candlepower seconds
+Fluorescent and High-Intensity Discharge Lamps
+Use the color-compensating filters and exposure
+adjustments in the tables below as starting points to
+expose PORTRA 800 Film under fluorescent or
+high-intensity discharge lamps. For critical applications,
+make a series of test exposures under your actual
+conditions.
+To avoid the brightness and color variations that occur
+during a single alternating-current cycle, use exposure
+times of 1⁄60 second or longer with ﬂuorescent lamps;
+with high-intensity discharge lamps, use exposure times of
+1⁄125 second or longer.
+Unit Output
+(BCPS)*
+Guide Number
+Distances in Feet/Metres
+350 120/36
+500 140/42
+700 170/50
+1000 200/60
+1400 240/70
+2000 280/85
+2800 340/100
+4000 400/120
+5600 470/140
+8000 560/170
+T ype of Fluorescent
+Lamp
+KODAK Color
+Compensating
+Filter(s)
+Exposure
+Adjustment
+Daylight 40R + 2/3 stop
+White 20C + 30M + 1 stop
+Warm White 40B + 1 stop
+Warm White Deluxe 30B + 30C + 1 1/3 stops
+Cool White 30M + 2/3 stop
+Cool White Deluxe 10C + 10M + 2/3 stop
+High-Intensity Discharge
+Lamp (CCT)
+KODAK Color
+Compensating
+Filter(s)
+Exposure
+Adjustment
+High-Pressure Sodium Vapor 70B + 50C + 3 stops
+Metal Halide 10R + 20M + 2/3 stop
+Mercury Vapor with Phosphor 20R + 20M + 2/3 stop
+Mercury Vapor without
+Phosphor 80R + 1 2/3 stops
+
+--- PAGE 3 ---
+
+KODAK PROFESSIONAL PORTRA  800 Film •  E-4040 3
+PROCESSING
+Process PORTRA Films in KODAK FLEXICOLOR Chemicals
+for Process C-41 using the replenishment and wash rates in
+the tables below.  Note that the developer replenishment
+rates are starting-point recommendations only and may
+vary due to the amount of exposure to the film, scene
+content, and the presence/ absence of sprocket holes.
+Replenishment and Wash Rates
+* Rates are for first wash and a two-stage countercurrent final wash. Double
+these rates for a single stage final wash.
+JUDGING NEGATIVE EXPOSURES
+Y ou can check the exposure level with a suitable electronic
+densitometer equipped with a filter such as a KODAK
+WRATTEN Gelatin Filter No. 92 or the red filter for
+Status M densitometry. Depending on the subject and the
+light source used for exposure, a normally exposed and
+processed color negative measured through the red filter
+should have the approximate densities listed below.
+Because of the extreme range in skin color, use these red
+density values for a normally lit forehead only as a guide.
+For best results, use a KODAK Gray Card (gray side).
+RETOUCHING
+Y ou can retouch the sheet and 120 size on both the base
+side and the emulsion side. Retouch only the emulsion side
+on the 135 size.
+Film
+Size
+KODAK
+FLEXICOLOR
+Developer
+Replenisher
+KODAK
+FLEXICOLOR
+Developer
+Replenisher
+LORR
+KODAK
+FLEXICOLOR
+Bleach III,
+Fixer, and
+Stabilizer
+Wash
+Water*
+135 1400 mL/ m2
+130 mL/ft2
+700 mL/m2
+65 mL/ft2
+861 mL/ m2
+80 mL/ft2
+31 L/m2
+2.9 L/ft2
+120 1400 mL/ m2
+130 mL/ft2
+700 mL/m2
+65 mL/ft2
+1023 mL/ m2
+95 mL/ft2
+31 L/m2
+2.9 L/ft2
+Area Measured
+Density Reading
+EI 800 EI 1600
+(Push 1)
+EI 3200
+(Push 2)
+KODAK Gray Card (gray
+side) receiving same
+illumination as subject
+0.75 to 0.95 0.85 to 1.05 0.95 to 1.15
+Lightest step (darkest
+in the negative) of a
+KODAK Paper Gray Scale
+receiving same
+illumination as subject
+1.00 to 1.20 1.20 to 1.40 1.40 to 1.60
+Highest diffuse density
+on normally lighted
+forehead
+—light complexion
+—dark complexion
+0.95 to 1.25
+0.75 to 1.10
+1.10 to 1.40
+0.90 to 1.25
+1.25 to 1.55
+1.00 to 1.35
+PRINTING NEGATIVES
+This film is optimized for printing to —
+KODAK PROFESSIONAL ENDURA Premier Paper
+KODAK PROFESSIONAL ENDURA Premier Canvas
+Paper
+KODAK PROFESSIONAL ENDURA Premier Metallic
+Paper
+KODAK PROFESSIONAL ENDURA Transparency
+Display Material
+KODAK PROFESSIONAL ENDURA Clear Display
+Material
+SCANNING NEGATIVES
+Y ou can easily scan PORTRA 800 Film negatives with a
+variety of linear-array-CCD, area-array-CCD, and PMT film
+scanners. Y ou can scan negatives on desktop scanners as
+well as high-end drum scanners.
+IMAGE STRUCTURE
+Print Grain Index
+The Print Grain Index number refers to a method of
+defining graininess in a print made with diffuse-printing
+illumination. It replaces rms granularity and has a different
+scale which cannot be compared to rms granularity.
+• The method uses a uniform perceptual scale, with a
+change of four units equaling a just noticeable difference
+in graininess to 90 percent of observers.
+• A Print Grain Index rating of 25 on the scale represents
+the approximate visual threshold for graininess. A
+higher number indicates an increase in the amount of
+graininess observed.
+• The standardized inspection (print-to-viewer)
+distance for all print sizes is 14 inches, the typical
+viewing distance for a 4 x 6-inch print.
+• In practice, larger prints will likely be viewed from
+distances greater than 14 inches, which reduces
+apparent graininess.
+• Print Grain Index numbers may not represent
+graininess observed from more specular printing
+illuminants, such as condenser enlargers.
+Negative Size: 24 x 36 mm (Size 135)
+Negative Size: 6 x 6 cm (Size 120)
+Print Size in inches 4x6 8x10 16x20
+Magnification 4.4X 8.8X 17.8X
+Print Grain Index 48 70 99
+Print Size in inches 4x6 8x10 16x20
+Magnification 2.6X 4.4X 8.8X
+Print Grain Index 36 48 70
+
+--- PAGE 4 ---
+
+4 KODAK PROFESSIONAL PORTRA  800 Film •  E-4040
+CURVES
+Characteristic Curves, EI 800
+Characteristic Curves, EI 1600 (Push 1)
+Exposure: Daylight
+Densitometry: Status M
+Log H Ref: -1.74
+0.0
+1.0
+2.0
+3.0
+4.0
+-4.0 -3.0 -2.0 -1.0 0.0 1.0
+LOG EXPOSURE (lux-seconds)
+DENSITY
+B
+G
+R
+E40440E
+Exposure: Daylight
+Densitometry: Status M ; Log H Ref: -1.74
+Process: 1 Stop Push
+-4.0 -3.0 -2.0 -1.0 0.0 1.0
+E4040S LOG EXPOSURE (lux-seconds)
+0.0
+1.0
+DENSITY
+2.0
+3.0
+4.0
+B
+G
+R
+Characteristic Curves, EI 3200 (Push 2)
+Spectral-Sensitivity Curves
+Exposure: Daylight
+Densitometry: Status M; Log H Ref: -1.74
+Process: 2 Stop Push
+-4.0 -3.0 -2.0 -1.0 0.0 1.0
+E4040T LOG EXPOSURE (lux-seconds)
+0.0
+DENSITY
+1.0
+2.0
+3.0
+4.0
+B
+G
+R
+Exposure: Daylight
+Effective Exposure: 1/200 sec
+Densitometry: Status M
+Density: 0.2>D-min
+700 750650600550500450400350300250
+*Sensitivity = reciprocal of exposure (erg/cm  ) required
+to produce specified density
+WAVELENGTH (nm)
+2
+LOG SENSITIVITY
+0.0
+*
+1.0
+2.0
+3.0
+4.0
+Yellow-
+Forming
+Layer
+Magenta-
+Forming
+Layer
+Cyan-
+Forming
+Layer
+E4040H
+
+--- PAGE 5 ---
+
+KODAK PROFESSIONAL PORTRA  800 Film
+Revised 2-16
+KODAK PROFESSIONAL PORTRA  800 Film
+KODAK Publication No. E-4040
+KODAK ALARIS •  ROCHESTER, NY 14615
+Spectral-Dye-Density Curves
+Modulation Transfer Function
+Process: C-41
+2.5
+1.5
+2.0
+0.5
+1.0
+DIFFUSE SPECTRAL DENSITY
+WAVELENGTH (nm)
+0.0
+Minimum Density
+Midscale Neutral
+700600400 500
+and D-min.
+Typical densities for a midscale neutral subject
+E4040M
+Exposure: Daylight
+Process: C-41
+1001 2 3 4 5 10 20 50 200 600
+SPATIAL FREQUENCY (cycles/mm)
+RESPONSE (%)
+10
+1
+2
+5
+3
+7
+30
+20
+100
+70
+50
+200
+R
+G
+B
+E4040R
+© 2016 Kodak Alaris Inc.
+TM: Endura, Flexicolor and Portra
+The Kodak, Kodak Professional, Estar, T-Grain and Wratten trademarks are
+used under license from Eastman Kodak Company.

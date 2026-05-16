@@ -1,0 +1,352 @@
+
+--- PAGE 1 ---
+
+
+
+
+
+
+Page 1 of 6 Nov 2018
+
+ HARMAN technology Limited
+TECHNICAL INFORMATION
+FP4 PLUS
+ISO 125/22º, BLACK AND WHITE PROFESSIONAL FILM
+FOR HIGH PRINT QUALITY AND FLEXIBILITY IN USE
+
+ILFORD FP4 Plus is an exceptionally fine grain, medium speed black and white film. It is ideal for
+high quality indoor and outdoor photography, particularly when giant enlargements are to be made. In
+addition to general photography, FP4 Plus is also suited to copying and internegative work, and has many
+applications in scientific, technical and industrial photography.
+
+FP4 Plus is robust and will give usable results even if it is overexposed by as much as six stops, or
+underexposed by two stops. It is compatible with all major processing systems, including those which give the
+standard short fixing and washing times.
+
+FP4 Plus 35mm film is coated on 0.125mm/5-mil acetate base and is available
+in 24 or 36 exposure cassettes, or in bulk lengths of 17 or 30.5 metres (56 and
+100ft). FP4 Plus 35mm film is supplied in DX coded cassettes, suitable for all
+35mm cameras.
+
+FP4 Plus roll film is coated on 0.110mm/4-mil clear acetate base with an anti-
+halation backing which clears during development. It is available in 120 lengths
+and is edge numbered 1 to 19.
+
+FP4 Plus sheet film is coated on 0.180mm/7-mil polyester base with an anti-
+halation backing which clears during development. It is available in a wide range of standard sizes. The
+emulsion faces the user when sheet film is held in the position shown opposite.
+
+EXPOSURE RATING
+FP4 Plus has a speed rating of ISO 125/22º to daylight. The ISO speed rating was measured using
+ILFORD ID-11 developer at 20ºC/68ºF with intermittent agitation in a spiral tank.
+Best results are obtained at EI 125/22, but good image quality will also be obtained at meter settings from EI
+50/18 to EI 200/24. It should be noted that the exposure index (EI) range recommended for FP4 Plus is based
+on a practical evaluation of film speed and is not based on foot speed, as is the ISO standard.
+
+SPECTRAL SENSITIVITY
+Wedge spectrogram to tungsten light (2850K)
+
+
+
+--- PAGE 2 ---
+
+
+Page 2 of 6 Nov 2018
+
+FP4 PLUS Technical Information
+FILTER FACTORS
+FP4 Plus film may be used with all types of filters (e.g. colour, polarising and neutral density filters) in the usual
+way. Follow the instructions given by the filter manufacturer.
+The exposure increase in daylight may vary with the angle of the sun and the time of day. In the late afternoon
+or the winter months, when daylight contains more red light, green and blue filters may need slightly more
+exposure than usual.
+Cameras with through-the-lens metering will usually adjust the exposure automatically when using filters. With
+some automatic exposure cameras, the correction given for deep red and orange filters can produce negatives
+under exposed by as much as 1½ stops.
+
+
+MAKING LONG EXPOSURES
+For exposures between ½ and 1/10 000 second, no
+adjustments are needed for reciprocity law failure.
+
+When exposures longer than ½ second are given, FP4
+Plus, along with other films, needs to be given more
+exposure than indicated by a meter. Use the graph to
+calculate the increased exposure time which should be
+given once the metered time is known.
+
+The graph is based on the formulae Ta = Tm1.26
+
+Ta = Adjusted Time
+Tm = Metered Time
+
+CHOOSING THE BEST ILFORD DEVELOPER FOR THE JOB
+Manual processing Spiral tank, dish/tray, deep tank Including rotary processors
+ Liquid Powder
+Best overall image quality ILFOTEC DD-X ID-11 (stock)
+Finest grain ILFOTEC DD-X PERCEPTOL (stock)
+Maximum sharpness  ILFOSOL 3 (1+9) ID-11 (1+3)
+Maximum film speed ILFOTEC DD-X MICROPHEN (stock)
+Economy  ILFOTEC LC29 (1+29) ID-11 (1+3)
+MICROPHEN (1+3)
+One-shot convenience ILFOSOL 3 (1+9)
+ILFOTEC DD-X
+ID-11 (1+1)
+MICROPHEN (1+1)
+Replenishable ILFOTEC DD-X ID-11
+
+Machine Processing
+Dip and dunk
+
+ILFOTEC DD Best overall image quality (liquid) and long tank life
+Short leader
+
+ILFOTEC RT RAPID Rapid processing, best overall image quality and
+long tank life.
+Roller transport  ILFOTEC RT RAPID  Rapid processing
+
+
+--- PAGE 3 ---
+
+
+Page 3 of 6 Nov 2018
+
+FP4 PLUS Technical Information
+DEVELOPMENT TIMES
+The table below gives development times for both manual and machine processing FP4 Plus. These times will
+produce negatives of average contrast suitable for printing in all enlargers. The development times are intended
+as a guide and may be altered if a different result is needed.
+For manual processing in spiral tanks and deep tanks, the development times are based on intermittent
+agitation. Where continuous agitation is used for manual processing (as in a dish/tray or with some types of
+developing tank), reduce these times by up to 15%. For use in rotary processors without a pre-rinse, reduce the
+spiral tank development times by up to15%. A pre-rinse is not recommended as it can lead to uneven
+processing.
+
+  35mm and Roll Film
+ILFORD developer Dilution Meter setting (EI)
+50/18 125/22 200/24
+Spiral tank, deep tank, dip and dunk machines (min/20°C/68°F)
+ILFOTEC DD-X 1+4 8 10 12
+ILFOSOL 3 1+9 ­ 4¼ ­
+ 1+14 ­ 7½ ­
+ILFOTEC HC 1+15 ­ 4 5
+ 1+31 6 8 9
+ILFOTEC LC29 1+9 ­ 4 5
+ 1+19 6 8 9
+ 1+29 8 12 ­
+ID-11 stock 6½ 8½ 10
+ 1+1 8 11 15
+ 1+3 17 20 ­
+MICROPHEN stock ­ 8 9
+ 1+1 ­ 10 14
+ 1+3 ­ 14 18
+PERCEPTOL stock 9 12 ­
+ 1+1 13 15 ­
+ 1+3 17 21 ­
+Non-ILFORD Developers (min/20°C/68°F)
+Acufine  stock ­ 4 6
+Rodinal 1+25 ­ 9 13
+ 1+50 ­ 15 20
+Kodak D-76 stock 6 8 9
+ 1+1 9 11 15
+ 1+3 14 16 20
+Kodak HC-110 A ­ 4½ 6
+ B 6 9 12
+Kodak T-Max 1+4 ­ 8 9
+Tetenal Ultrafin SF Stock ­ 7 9
+ 1+1 ­ 11 14
+Tetenal Ultrafin
+Plus 1+4 ­ 6 9
+Kodak Xtol stock ­ 8½ 10
+
+--- PAGE 4 ---
+
+
+Page 4 of 6 Nov 2018
+
+FP4 PLUS Technical Information
+
+  35mm and Roll Film
+ILFORD developer Dilution Meter setting (EI)
+50/18 125/22 200/24
+Dip and dunk machines (min/24°C/75°F)
+ILFOTEC DD 1+4 7 8½ 11½
+Kodak T-Max RS stock ­ 7½ ­
+Kodak Xtol stock ­ 7 10½
+
+ILFOLAB FP40, roller transport and short leader machines (sec/26°C/79°F)
+ILFOTEC RT RAPID 1+1+2 40 45 54
+ 1+1+5 55 65 84
+
+
+METER SETTINGS BELOW EI50/18 AND ABOVE EI 200/24
+If FP4 Plus has been inadvertently exposed at settings below EI 50/18 or above EI 200/24, the following guide
+will ensure usable negatives are obtained. Obviously, the quality of negatives processed in this way will not be
+so high as conventionally processed ones.
+
+
+
+Note. Development times may need adjusting to suit individual processing systems and working practices. If an
+established system is producing good results, adjust the recommended development times until the desired
+contrast level is obtained. Development times for some other manufacturers’ developers are included for your
+convenience and are only a general guide. Other manufacturers can and do change their product
+specifications from time to time, and the development times may change as a result.
+
+Processing at Different Temperatures
+FP4 Plus film can be processed over a range of temperatures. Development times at temperatures other than
+20°C/68°F may be calculated from the charts below. For example, if 4 minutes at 20°C/68°F is
+recommended, the time at 23°C/73°F will be 3 min and the time at 16°C/61°F will be 6 min.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Manual processing (min /20°C/68°F) accidental exposure only
+Developer Dilution Meter setting 25/15
+and below
+Meter setting 400/27
+and above
+MICROPHEN Stock ­ 16
+PERCEPTOL Stock 8½ ­
+
+
+--- PAGE 5 ---
+
+
+Page 5 of 6 Nov 2018
+
+FP4 PLUS Technical Information
+CHARACTERISTIC CURVE
+
+
+
+
+
+
+
+FP4 Plus roll film developed in ILFORD ILFOTEC HC (1+31) for 8 minutes at
+20°C/68°F with intermittent agitation. This curve is also
+representative of the 35mm and sheet film formats.
+
+
+
+PROCESSING
+FP4 Plus can be processed in all types of processing equipment including spiral tanks, rotary processors,
+dishes/trays, deep tanks and automatic processors. Standard capacity figures and replenishment rates can be
+maintained. FP4 Plus is very robust in processing and will tolerate less than ideal processing conditions. Also, it
+will not contaminate the processing chemicals.
+
+Safelight recommendations
+Handle FP4 Plus film in total darkness.
+
+Agitation
+Intermittent agitation is recommended for use in spiral tanks and deep tanks. With spiral tanks, invert the tank
+four times during the first 10 seconds, then invert the tank four times again during the first 10 seconds of each
+further minute. Otherwise, follow the recommendations given by the processing equipment manufacturer.
+For sheet film, continuous agitation is recommended in dishes/trays by rocking the dish/tray.
+
+Stop, fix, wash and rinse
+For best results it is recommended that all process solutions are kept at the same temperature or at least within
+5ºC (9ºF) of the developer temperature.
+
+Stop Bath
+After development the film can be rinsed in
+water but we recommend that an acid stop
+bath is used such as ILFORD ILFOSTOP (with
+indicator dye). ILFOSTOP is also
+recommended for all machine processing
+applications. When tanks or dishes (trays) of
+process solutions are in use a stop bath
+immediately stops development and reduces
+carry over of excess developer into the fixer
+bath. This helps to maintain the activity and
+prolong the life of the fixer solution.
+
+
+The process time given is the minimum required, if necessary, a longer time may be used and should not cause
+any process problems provided it is not excessive
+
+ILFORD ILFOSTOP
+Dilution 1+19
+Temperature Range 18–24ºC (64–75ºF)
+Time (sec) at 20ºC (68ºF) 10
+Capacity (films per litre,
+unreplenished) 15x (135-36)
+
+--- PAGE 6 ---
+
+
+Page 6 of 6 Nov 2018
+
+FP4 PLUS Technical Information
+Fix
+The recommended fixers are ILFORD RAPID
+FIXER or ILFORD HYPAM FIXER.
+
+Wash
+Wash the films in running water for 5–10
+minutes at a temperature within 5ºC (9ºF) of
+the process temperature. Or see note below
+for greater economy when using spiral tanks.
+
+
+
+Note: For spiral tank use, the following method of washing is recommended. This method of washing is faster,
+uses less water yet still gives negatives suitable for long term storage.
+After fixing, fill the spiral tank with water at the same temperature, +/– 5ºC (9ºF), as the processing solutions
+and invert it five times. Drain the water away and refill. Invert the tank ten times. Once more drain the water
+away and refill. Finally, invert the tank twenty times and drain the water away.
+
+Rinse
+For a final rinse use ILFORD ILFOTOL wetting agent added to water, it helps the film to dry rapidly and evenly.
+Start by using 5ml per litre of rinse water (1+200), however the amount of ILFOTOL used may need some
+adjustment depending on the local water quality and drying method. Too little or too much wetting agent can
+lead to uneven drying. Remove excess rinse solution from the film before drying.
+
+Drying
+To avoid drying marks, use a clean squeegee or chamois cloth to wipe FP4 Plus film before hanging it to dry.
+Dry FP4 Plus at 30–40°C/86-104°F in a drying cabinet or at room temperature in a clean dust-free area.
+
+
+STORAGE
+For immediate use, store FP4 Plus in a cool (10–20°C/50-68°F), dry place in its original packaging.
+FP4 Plus may be stored in a fridge/freezer but allow plenty of time for the film to acclimatise prior to use.
+
+Exposed film
+Once exposed, process FP4 Plus as soon as practical.
+Exposed films should always be stored in cool, dry conditions - as recommended above.
+
+Negatives
+Store processed negatives in a cool (10–20°C/50-68°F), dry place, in the dark. Suitable storage sleeves
+include those made of cellulose triacetate, Mylar, paper (pH6.5–7.5) or inert polyester.
+
+
+
+
+
+
+
+
+A wide range of fact sheets is available which describe and give guidance on using ILFORD PHOTO products.
+Some products in this fact sheet might not be available in your country.
+
+HARMAN technology Limited, Ilford Way, Mobberley,
+Knutsford, Cheshire WA16 7JL, England
+www.ilfordphoto.com
+ILFORD RAPID OR HYPAM FIXERS
+Dilution 1+4
+Temperature Range 18–24ºC (64–75ºF)
+Time (mins) at 20ºC (68ºF) 2-5
+Capacity (films per litre,
+unreplenished) 24x (135-36)

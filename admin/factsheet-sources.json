@@ -1,0 +1,16 @@
+[
+  { "label": "Foma Fomapan 200", "path": "../outputs/factsheet-text/Foma_Fomapan_200.txt" },
+  { "label": "Foma Fomapan 400", "path": "../outputs/factsheet-text/Foma_Fomapan_400.txt" },
+  { "label": "Fujifilm Velvia 50", "path": "../outputs/factsheet-text/Fujichrome_VELVIA_50.txt" },
+  { "label": "Fujifilm Provia 100F", "path": "../outputs/factsheet-text/Fujichrome_provia_100.txt" },
+  { "label": "Ilford Delta 3200", "path": "../outputs/factsheet-text/Ilford_DELTA_3200.txt" },
+  { "label": "Ilford FP4 Plus 125", "path": "../outputs/factsheet-text/Ilford_FP4plus_125.txt" },
+  { "label": "Ilford HP5 Plus 400", "path": "../outputs/factsheet-text/Ilford_hp5_400.txt" },
+  { "label": "Kodak Gold 200", "path": "../outputs/factsheet-text/Kodak_Gold_200.txt" },
+  { "label": "Kodak Portra 160", "path": "../outputs/factsheet-text/Kodak_Portra_160.txt" },
+  { "label": "Kodak Tri-X 400", "path": "../outputs/factsheet-text/Kodak_TriX_400.txt" },
+  { "label": "Kodak Ultramax 400", "path": "../outputs/factsheet-text/Kodak_Ultramax_400.txt" },
+  { "label": "Kodak Ektar 100", "path": "../outputs/factsheet-text/Kodak_ektar_100.txt" },
+  { "label": "Kodak Portra 400", "path": "../outputs/factsheet-text/Kodak_portra_400.txt" },
+  { "label": "Kodak Portra 800", "path": "../outputs/factsheet-text/Kodak_portra_800.txt" }
+]

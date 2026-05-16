@@ -1,0 +1,341 @@
+
+--- PAGE 1 ---
+
+The product has been produced and marketed in conformity with a
+quality system according to the international standard EN ISO 9001.
+In general
+FOMAPAN 200 Creative is a panchromatically sensitized, black -and-white negative
+film designed for taking photographs. The film meets high requirements for low
+granularity, high resolving power and high contour sharpness. FOMAPAN 200
+Creative has a nominal speed rating of ISO 200/24 o, but due to its wide exposure
+latitude the film gives good results even when being overexposed by 1 EV (exposure
+value) (as ISO 100/21 o) or underexpo sed by 2 EV (as ISO 800/30 o) without any
+change in processing, i.e. without lengthening the development time or increasing the
+temperature of the developer used.
+To make prints or enlargements, Fomabrom - and Fomaspeed-type enlarging papers
+are recommended; however, all sorts of black -and-white enlargement papers can be
+used.
+Speed
+ISO 200/24o, 24 o ČSN
+Schwarzschild effect
+Exposure (seconds) 1/1000–1/2 1 10 100
+Lengthening of exposure 1x 3x 9x 18x
+Correction of aperture number 0 -1,5 -3 -4
+Processing
+Safelighting: infrared light or total darkness
+Development
+FOMAPAN 200 Creative can be processed in all common negative developers.
+Recommended development times are shown in the table below (the development
+times are related to development in a spiral developing tank - agitation or turning over
+continuously during the first 30 seconds, then during the first 10 seconds in every
+minute). In this way, medium-contrast negatives can be obtained.
+Developer Development time (minutes)
+20 oC 30 oC
+Fomadon LQN (1+10)
+Fomadon R09 (1+50)
+Fomadon P
+Fomadon Excel
+Kodak Xtol
+Ilford Microphen–stock
+Ilford Perceptol–stock
+Ilford ID 11/ Kodak D76–stock
+Tetenal Emofin Liquid
+5 – 6
+9 – 10
+5 – 6
+6 – 7
+6 – 7
+5 – 6
+6
+5 – 6
+4 – 5
+3
+–
+3
+2
+2
+2
+2.5
+2.5
+–
+When the development time has elapsed, the film is recommended to be shortly rinsed
+in distilled water or dipped in a 2 % acetid acid solution for 10 seconds.
+Fixing: At a temperature ranging from 18 to 25 oC for 10 minutes in any common type
+of an acid fixing bath, or for at least 3 minutes in Fomafix rapid fixer.
+Washing: The film should be washed in running water: for 30 minutes and 15 minutes
+the temperature of water being below 15 oC and over 15 oC respectively.
+It is recommended to finish the processing with the film bei ng rinsed in distilled water,
+or dipped in a wetting agent solution.
+Storage
+Unexposed films should be stored in the original packaging in a cool, dry place
+(temperature ranging from 5 to 25  oC, relative humidity from 40 to 60 %), out of reach
+of harmful vapours, gases and ionizing radiations. Films stored in a refrigerator and a
+freezer should be acclimatized to room temperature for approx. 2 and approx. 6 hours
+respectively. Exposed films should be processed as soon as possible.
+Packaging
+FOMAPAN 200 Creative is available in the following sorts:
+– 120 rollfilm 60 mm wide, exlusively on a 120 spool; identification edge markings:
+„ULTRA 200“ or „ULTRA T200“
+– double-edge perforated 35 mm film in 135 -36 and 135 -24 cartridges for 36 and 24
+exposures 24 x 36 mm; bulk lengths of 17, 30.5 and 50 m in a darkroom packaging;
+identification edge markings: „FOMAPAN 200“ or „ULTRA T200“
+– sheet film (for large -format cameras) sized 10x15, 13x18 and 18x24 cm in a box of
+50 sheets. Orientation emulsion side of the film - is determined by a notch located on
+the upper right corner of the short side of the film format.
+
+Other sizes are subject of an agreement with the manufacturer.
+
+
+
+
+
+Relative spectral sensitivity
+(wedge spectrogram at 2850 K)
+400 500 600 700
+S
+Wavelength  [nm]
+
+Characteristic curves
+Exposure: Daylight (5500 K), 1/20 s
+Developer:  Microphen at 20 oC
+
+Modulation transfer function
+Resolving power
+110 lines per mm
+Granularity
+RMS = 14.0 (Microphen at 20 oC, developed to   = 0.6, (measured at D = 1.0.)
+Base
+The following bases are used for manufacturing the particular sorts of the film:
+- 120 rollfilm - a clear polyester base 0.1 mm thick, furnished with an antihalo colour
+backing which will decolourize during processing.
+- 35 mm film - a gray or gray-blue cellulose triacetate base 0.125 mm thick,
+- sheet film - a clear polyester base 0.175 mm thick furnished with an antihalo colour
+backing which will decolourize during processing.
+
+
+
+
+
+
+FOMAPAN 200 Creative
+BLACK-AND-WHITE NEGATIVE FILM
+Spatial frequency [lines per mm]
+
+
+
+--- PAGE 2 ---
+
+
+DEVELOPMENT CURVES FOR FOMAPAN 200 Creative
+0,10
+0,20
+0,30
+20 °C
+0,4
+0,6
+0,8
+1,0
+1,2
+0,4
+0,6
+0,8
+1,0
+1,2
+0,4
+0,5
+0,6
+0,7
+0,8
+0,4
+0,6
+0,8
+1,0
+1,2
+ D min
+S
+()°ISO ()°ISO
+()°ISO ()°ISO
+200
+160
+125
+100
+80
+200
+160
+125
+100
+80
+200
+160
+125
+100
+80
+200
+160
+125
+100
+80
+200
+160
+125
+100
+80
+200
+160
+125
+100
+80
+160
+125
+100
+80
+200
+160
+125
+100
+80
+S
+S
+S S
+S
+S
+S
+ Dmin
+ Dmin
+ Dmin
+ Dm in
+S
+6 84 10t (min)
+6 84 10t (min)
+5 73 9t (min)
+6 84 10t (min)
+0,00
+0,10
+0,20
+20 °C
+ Dmin
+S
+0,10
+0,20
+0,30
+20 °C
+ Dmin
+S
+30 °C
+0,10
+0,20
+0,30
+1 2 43 5 t (min)
+1 2 43 5 t (min)
+1 2 43 5 t (min)
+1 2 43 5 t (min)
+ Dmin
+S
+0,4
+0,6
+0,8
+1,0
+1,2
+
+0,4
+0,6
+0,8
+1,0
+1,2
+0,4
+0,6
+0,8
+1,0
+1,2
+0,4
+0,6
+0,8
+1,0
+1,2
+ Dmin
+ Dmin
+ Dmin
+ Dmin
+30 °C
+0,00
+0,10
+0,20  Dmin
+S
+30 °C
+0,10
+0,20
+0,30  Dmin
+S
+30 °C
+0,10
+0,20
+0,30  Dmin
+S
+0,10
+0,20
+0,30
+20 °C
+ Dm in
+S
+()° ISO ()°ISO
+()°ISO ()°ISO
+ 
+
+ 
+
+ 
+
+ 
+
+
+Ilford ID 11
+Kodak D 76
+ – stock
+ – stock
+Fomadon Excel
+Kodak Xtol
+– stock
+– stock
+Fomadon LQN developer   (1+10)
+Ilford Microphen – stock
+D /S/  – development time curves at 20
+and 30 C
+- daylight Tc = 5500 K
+- spiral developing tank - agitation or
+turning over continuously during the first
+30 seconds, then during the first 10
+seconds in every minute.
+min 
+
+D /S/  – development time curves at 20
+and 30 C
+- daylight Tc = 5500 K
+- spiral developing tank - agitation or
+turning over continuously during the first
+30 seconds, then during the first 10
+seconds in every minute.
+min 
+
+D /S/  – development time curves at 20
+and 30 C
+- daylight Tc = 5500 K
+- spiral developing tank - agitation or
+turning over continuously during the first
+30 seconds, then during the first 10
+seconds in every minute.
+min 
+
+D /S/  – development time curves at 20
+and 30 C
+- daylight Tc = 5500 K
+- spiral developing tank - agitation or
+turning over continuously during the first
+30 seconds, then during the first 10
+seconds in every minute.
+min 
+
+
+FOMA
+  FOMA 01/16
+Hradec Králové Tel.: +420 495 733 210 foma@foma.cz
+BOHEMIA spol. s r.o. Czech Republic Fax: +420 495 733 376 www.foma.eu

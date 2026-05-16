@@ -128,6 +128,31 @@ button {
   padding: 16px;
 }
 
+.collapsible-section {
+  display: grid;
+  gap: 0;
+}
+
+.collapsible-section summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.collapsible-section summary::-webkit-details-marker {
+  display: none;
+}
+
+.collapsible-section summary::before {
+  color: var(--muted);
+  content: "▾";
+  font-size: 0.78rem;
+  margin-right: 8px;
+}
+
+.collapsible-section:not([open]) summary::before {
+  content: "▸";
+}
+
 .panel-section:last-child {
   border-bottom: 0;
 }
@@ -420,6 +445,14 @@ textarea:focus {
   gap: 8px;
 }
 
+.film-list-item {
+  align-items: start;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) 38px;
+  position: relative;
+}
+
 .film-item {
   background: var(--surface-2);
   border: 1px solid var(--border);
@@ -444,6 +477,95 @@ textarea:focus {
 .film-item span {
   color: var(--muted);
   font-size: 0.8rem;
+}
+
+.film-menu-wrap {
+  position: relative;
+}
+
+.film-menu-button {
+  height: 100%;
+  min-height: 62px;
+}
+
+.film-action-menu {
+  background: rgba(21, 24, 23, 0.98);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+  min-width: 190px;
+  padding: 8px;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 20;
+}
+
+.factsheet-tools {
+  display: grid;
+  gap: 12px;
+}
+
+.proposal-panel {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 12px;
+}
+
+.proposal-title {
+  display: grid;
+  gap: 4px;
+}
+
+.proposal-title strong {
+  font-size: 0.95rem;
+}
+
+.proposal-title span,
+.proposal-list span {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.proposal-list {
+  display: grid;
+  gap: 8px;
+}
+
+.proposal-row {
+  border-top: 1px solid var(--border);
+  display: grid;
+  gap: 3px;
+  padding-top: 8px;
+}
+
+.proposal-row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.proposal-row strong {
+  color: var(--text);
+  font-size: 0.82rem;
+}
+
+.proposal-row small {
+  color: var(--soft);
+  font-size: 0.72rem;
+}
+
+.proposal-warning {
+  background: rgba(231, 198, 107, 0.08);
+  border: 1px solid rgba(231, 198, 107, 0.2);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin: 0;
+  padding: 9px;
 }
 
 .editor-panel {
@@ -645,6 +767,19 @@ code {
   width: 100%;
 }
 
+.new-film-dialog {
+  max-height: calc(100vh - 36px);
+  max-width: 560px;
+  overflow: auto;
+}
+
+.dialog-header {
+  align-items: start;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
 .dialog h2 {
   font-size: 1.15rem;
   margin: 0;
@@ -667,6 +802,24 @@ code {
   gap: 10px;
   justify-content: flex-end;
   margin-top: 4px;
+}
+
+.saved-factsheets-section {
+  border-top: 1px solid var(--border);
+  display: grid;
+  gap: 12px;
+  padding-top: 12px;
+}
+
+.saved-factsheets-section summary {
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.saved-factsheets-section[open] summary {
+  color: var(--text);
 }
 
 @media (max-width: 980px) {

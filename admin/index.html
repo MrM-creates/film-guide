@@ -33,12 +33,6 @@
                 <p id="accountSummary" class="account-summary">Nicht angemeldet</p>
               </div>
               <div class="menu-list">
-                <button id="importSheetBtn" class="menu-item" type="button">
-                  <span>
-                    <strong>Sheet importieren</strong>
-                    <small>Einmaliger Startimport aus Google Sheets</small>
-                  </span>
-                </button>
                 <button id="editConnectionBtn" class="menu-item" type="button">
                   <span>
                     <strong>Verbindung bearbeiten</strong>
@@ -85,12 +79,12 @@
       </header>
 
       <main class="workspace">
-        <aside class="side-panel" aria-label="Filme">
-          <section class="panel-section">
-            <div class="section-heading">
-              <h2>Filme</h2>
+        <aside class="side-panel" aria-label="Vorhandene Filme">
+          <details class="panel-section collapsible-section">
+            <summary class="section-heading">
+              <h2>Vorhandene Filme</h2>
               <span id="filmCount" class="muted">0</span>
-            </div>
+            </summary>
             <input id="searchInput" class="search-input" type="search" placeholder="Suchen nach Film, Marke, ISO">
             <div class="list-filters" aria-label="Filme filtern">
               <div class="filter-group">
@@ -117,7 +111,7 @@
               </div>
             </div>
             <div id="filmList" class="film-list" role="list"></div>
-          </section>
+          </details>
         </aside>
 
         <section class="editor-panel" aria-label="Filmdaten bearbeiten">
@@ -323,25 +317,57 @@
 
             <div class="sticky-actions">
               <p id="formStatus" class="form-status">Bereit</p>
-              <button class="btn btn-primary" type="submit">Film speichern</button>
+              <div class="button-row">
+                <button id="discardDraftBtn" class="btn btn-ghost hidden" type="button">Verwerfen</button>
+                <button class="btn btn-primary" type="submit">Film speichern</button>
+              </div>
             </div>
           </form>
         </section>
       </main>
+    </div>
 
-      <div id="importDialog" class="dialog-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="importDialogTitle">
-        <div class="dialog">
-          <h2 id="importDialogTitle">Sheet importieren</h2>
-          <p>Die bestehenden Filme aus dem Google Sheet werden nach Supabase übernommen.</p>
-          <p class="dialog-note">Das brauchst du normalerweise nur einmal beim Einrichten. Bestehende Filme mit gleicher ID werden aktualisiert.</p>
-          <div class="dialog-actions">
-            <button id="cancelImportBtn" class="btn btn-ghost" type="button">Abbrechen</button>
-            <button id="confirmImportBtn" class="btn btn-primary" type="button">Import starten</button>
+    <div id="newFilmDialog" class="dialog-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="newFilmDialogTitle">
+      <section class="dialog new-film-dialog">
+        <div class="dialog-header">
+          <div>
+            <p class="eyebrow">Neuer Film</p>
+            <h2 id="newFilmDialogTitle">Film anlegen</h2>
           </div>
+          <button id="closeNewFilmDialogBtn" class="icon-btn" type="button" aria-label="Dialog schliessen">×</button>
         </div>
+        <div class="factsheet-tools">
+          <label>
+            Datei hochladen
+            <input id="factsheetFile" type="file" accept=".txt,.pdf,text/plain,application/pdf">
+          </label>
+          <label>
+            URL einfügen
+            <input id="factsheetUrl" type="url" placeholder="https://...">
+          </label>
+          <label>
+            Text einfügen
+            <textarea id="factsheetText" rows="5" placeholder="Factsheet-Text oder Auszug"></textarea>
+          </label>
+          <button id="analyzeFactsheetBtn" class="btn btn-primary full-width" type="button">Vorschlag erstellen</button>
+        </div>
+        <div id="proposalPanel" class="proposal-panel hidden" aria-live="polite"></div>
+        <div class="dialog-actions">
+          <button id="cancelNewFilmDialogBtn" class="btn btn-ghost" type="button">Abbrechen</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="hidden" aria-hidden="true">
+      <select id="savedFactsheetSelect">
+        <option value="">Factsheet wählen</option>
+      </select>
+      <div id="savedFactsheetActions">
+        <button id="viewFactsheetBtn" type="button">Ansehen</button>
+        <button id="downloadFactsheetBtn" type="button">Download</button>
       </div>
     </div>
 
-    <script type="module" src="app.js?v=20260513-delete-film"></script>
+    <script type="module" src="app.js?v=20260516-film-factsheets"></script>
   </body>
 </html>

@@ -1,0 +1,978 @@
+
+--- PAGE 1 ---
+
+© 2016 Kodak Alaris Inc.
+February 2016 •  F-4017TECHNICAL DATA / BLACK-AND-WHITE FILM
+KODAK PROFESSIONAL TRI-X
+320 and 400 Films
+KODAK PROFESSIONAL TRI-X 320 and 400 Films are
+high-speed panchromatic films that are a good choice for
+photographing dimly lighted subjects or fast action, for
+photographing subjects that require good depth of field
+and fast shutter speeds, and for extending the distance
+range for flash pictures.
+TRI-X 400 Film (400TX) is available in 135 and 120 and
+135 sizes. You can retouch the 120-size film on the
+emulsion side. TRI-X 400 Film is recommended for
+push-processing applications.
+TRI-X 320 Film (320TXP) features excellent tone
+gradation and brilliant highlights. It is especially well suited
+to low-flare interior lighting or flash illumination. It is also
+useful for portraiture with low-contrast backlighting
+outdoors.
+TRI-X 320 Film (320TXP) is available in sheets on a
+7-mil KODAK ESTAR Thick Base.  You can retouch this film
+on the emulsion or base side.
+STORAGE AND HANDLING
+Load and unload your camera in subdued light.
+High temperatures or high humidity may produce
+unwanted quality changes. Store unexposed film at 24°C
+(75°F) or lower in the original sealed package. Always
+store film (exposed or unexposed) in a cool, dry place. For
+best results, process film as soon as possible after
+exposure.
+Protect processed film from strong light, and store it in a
+cool dry place.
+FEATURES BENEFITS
+• Fine grain • Good for producing
+high-quality images
+• Wide exposure latitude • Rich tonality maintained
+with overexposure and
+underexposure
+• High sharpness • Good for applications
+that require a moderate
+degree of enlargement
+• High resolving power • Good rendition of detail
+EXPOSURE
+Daylight
+Use the exposures in the table below for average front-lit
+subjects from 2 hours after sunrise to 2 hours before
+sunset.
+* Use f/5.6 at 1/500 for backlit close-up subjects.
+† Use f/8 at 1/500 for backlit close-up subjects.
+‡ Subject shaded from the sun but lighted by a large area of clear sky.
+Filter Corrections
+Multiply the normal exposure time by the filter factor.
+* Filter recommended for making separation negatives.
+† For TRI-X 320 sheet film only.
+Lighting Conditions
+Shutter Speed (second) and
+Lens Opening
+TRI-X 320 Film TRI-X 400
+Film
+Bright/Hazy Sun on Light Sand or
+Snow
+1/500
+f/16
+1/500
+f/22
+Bright or Hazy Sun, Distinct
+Shadows
+1/500
+f/11*
+1/500
+f/16†
+Weak, Hazy Sun (Soft Shadows) 1/500
+f/8
+1/500
+f/11
+Cloudy Bright (No Shadows) 1/500
+f/5.6
+1/500
+f/8
+Heavy Overcast, Open Shade‡ 1/500
+f/4
+1/500
+f/5.6
+KODAK WRATTEN
+Gelatin Filter
+Daylight Filter
+Factor
+T ungsten Filter
+Factor
+KODAK PROFESSIONAL TRI-X 400 Film / 400TX
+No. 8 (yellow) 2 1.5
+No. 11 (yellowish green) 4 3
+No. 12 (deep yellow) 2.5 —
+No. 15 (deep yellow) 2.5 1.5
+No. 25 (red)
+* 85
+No. 47 (blue)* 61 2
+No. 58 (green)* 66
+Polarizing Filter 2.5 2.5
+KODAK PROFESSIONAL TRI-X 320 Film / 320TXP
+No. 8 (yellow) 2 1.5
+No. 11 (yellowish green) 4 4
+No. 15 (deep yellow) 2.5 2
+No. 25 (red)
+* 85
+No. 29 (red)*† 16 10
+No. 47 (blue)* 61 0
+No. 58 (green)* 88
+Polarizing Filter 2.5 2.5
+
+--- PAGE 2 ---
+
+2 KODAK PROFESSIONAL TRI-X 320 and 400 Films •  F-4017
+Exposure and Development Adjustments for Long
+and Short Exposures
+At the exposure times in the table below, compensate for
+the reciprocity characteristics of this film by increasing
+exposure and adjusting the development as shown.
+It may be difficult to use the table to estimate the
+adjusted times for calculated exposure times between 1
+and 100 seconds. The graphs that follow will help you find
+the adjusted times for calculated exposure times between
+those given in the table.
+If Indicated
+Exposure
+Time Is
+(Seconds)
+Use This
+Lens-
+Aperture
+Adjustment
+OR
+This Adjusted
+Exposure
+Time
+(Seconds)
+AND Use This
+Development
+Adjustment
+1/100,000 +1 stop Change
+Aperture
++20%
+1/10,000 +1/2 stop Change
+Aperture
++15%
+1/1,000 None None +10%
+1/100 None None None
+1/10 None None None
+1+ 1  s t o p2 - 1 0 %
+10 +2 stops 50 -20%
+100 +3 stops 1200 -30% )B*&
+6HFRQGV
+0LQXWHV
+$'-867('(;32685(7,0(
+
+
+
+
+
+
+
+
+
+
+
+
+$'-867('(;32685(7,0(6HFRQGV
+
+
+
+
+
+7,0(6HFRQGV
+&$/&8/$7('(;32685(
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&$/&8/$7('(;32685(7,0(6HFRQGV
+DARKROOM RECOMMENDATIONS
+Handle unprocessed film in total darkness.
+Using a safelight will affect your results. If absolutely
+necessary, after development is half complete, you can use
+a safelight equipped with a KODAK 3 Safelight Filter (dark
+green) with a 15-watt bulb for a few seconds. Keep the
+safelight at least 4 feet (1.2 metres) from the film. Run tests
+to determine that safelight use gives acceptable results for
+your application.
+For information on safelight testing, see KODAK
+Publication No. K-4, How Safe Is Your Safelight?
+PROCESSING
+The following starting-point recommendations are
+intended to produce a contrast index of 0.56. Make tests to
+determine the best development time for your application.
+Note: Tank development times shorter than 5 minutes
+may produce unsatisfactory uniformity.
+MANUAL PROCESSING
+Small-T ank Processing (8- or 16-ounce tank)
+With small single- or double-reel tanks, drop the loaded
+film reel into the developer and attach the top to the tank.
+Firmly tap the tank on the top of the work surface to
+dislodge any air bubbles. Provide initial agitation of 5 to 7
+inversion cycles in 5 seconds; i.e., extend your arm and
+vigorously twist your wrist 180 degrees.
+Then repeat this agitation procedure at 30-second
+intervals for the rest of the development time.
+Large-T ank Processing (1/2- to 3 1/2-gallon
+tank)—Rolls and Sheets
+Agitate continuously for the first 15 to 30 seconds by
+raising and lowering the basket, rack, or spindle 1/2-inch.
+Do not agitate the basket, rack, or spindle for the remainder
+of the first minute. Then agitate once per minute by lifting
+the basket, rack, or spindle out of the developer, tilting it
+approximately 30 degrees, draining it for 5 to 10 seconds,
+and reimmersing it. Alternate the direction of tilting the
+basket, rack, or spindle.
+
+--- PAGE 3 ---
+
+KODAK PROFESSIONAL TRI-X 320 and 400 Films •  F-4017 3
+TRI-X 400 Film / 400TX
+* With agitation at 30-second intervals. Development times shorter than 5 minutes may produce unsatisfactory results.
+† With manual agitation at 1-minute intervals. Development times shorter than 5 minutes may produce unsatisfactory results.
+NR = Not Recommended.
+T ray and Large-T ank Processing —Sheets
+Provide continuous agitation; rotate the sheets 90 degrees as you interleave them. Prewetting sheet film
+may improve tray process uniformity.
+TRI-X 320 Film / 320TXP—Sheets
+* With continuous agitation.
+TRI-X 320 Film / 320TXP—Sheets
+* With manual agitation at 1-minute intervals.
+† With gaseous-burst agitation (1 second every 10 seconds) that provides pressure to raise the solution level 5/8 inch (16 mm). Development
+times shorter than 5 minutes may produce unsatisfactory uniformity.
+KODAK
+PROFESSIONAL
+Developer or
+Developer and
+Replenisher
+Development Time (Minutes)
+Small T ank* Large T ank†
+65°F
+(18°C)
+68°F
+(20°C)
+70°F
+(21°C)
+72°F
+(22°C)
+75°F
+(24°C)
+65°F
+(18°C)
+68°F
+(20°C)
+70°F
+(21°C)
+72°F
+(22°C)
+75°F
+(24°C)
+T-MAX 6 3⁄4 65 3⁄4 51⁄2 43⁄4 NR
+T-MAX RS 4 3⁄4 41⁄2 41⁄4 43 1⁄2 51⁄2 54 3⁄4 41⁄2 4
+HC-110 (B) 4 1⁄2 33⁄4 31⁄2 32 1⁄2 54 1⁄2 43 1⁄2 3
+D-76 8 6 3⁄4 61⁄4 51⁄2 43⁄4 91⁄4 73⁄4 76 1⁄2 51⁄2
+D-76 (1:1) 10 3⁄4 93⁄4 98 1⁄2 73⁄4 121⁄4 11 10 1⁄2 93⁄4 83⁄4
+XTOL 8 7 6 1⁄4 53⁄4 43⁄4 91⁄4 87 1⁄4 61⁄2 51⁄2
+XTOL (1:1) 10 9 8 1⁄2 87 1⁄4 111⁄2 101⁄2 93⁄4 91⁄4 81⁄4
+KODAK
+PROFESSIONAL
+Developer or
+Developer and
+Replenisher
+Development Time (Minutes)
+Tray*
+65°F
+(18°C)
+68°F
+(20°C)
+70°F
+(21°C)
+72°F
+(22°C)
+75°F
+(24°C)
+T-MAX RS 3 2 3⁄4 21⁄2 NR NR
+HC-110 (B) 3 3⁄4 31⁄4 32 3⁄4 21⁄2
+D-76 6 3⁄4 65 1⁄2 54 1⁄2
+D-76 (1:1) 10 1⁄4 98 1⁄2 73⁄4 63⁄4
+XTOL 6 3⁄4 65 1⁄2 54 1⁄2
+XTOL (1:1) 9 1⁄2 81⁄2 73⁄4 71⁄4 61⁄4
+KODAK
+PROFESSIONAL
+Developer or
+Developer and
+Replenisher
+Development Time (Minutes)
+Large T ank* Large T ank With Gaseous Burst†
+65°F
+(18°C)
+68°F
+(20°C)
+70°F
+(21°C)
+72°F
+(22°C)
+75°F
+(24°C)
+65°F
+(18°C)
+68°F
+(20°C)
+70°F
+(21°C)
+72°F
+(22°C)
+75°F
+(24°C)
+T-MAX RS 4 3 1⁄2 31⁄4 NR NR 3 2 3⁄4 21⁄2 NR NR
+HC-110 (B) 4 3⁄4 41⁄4 43 1⁄2 33 3⁄4 31⁄4 32 3⁄4 21⁄2
+D-76 8 1⁄2 71⁄2 76 1⁄4 51⁄2 63⁄4 65 1⁄2 54 1⁄2
+D-76 (1:1) 12 3⁄4 111⁄4 101⁄2 93⁄4 81⁄2 101⁄4 98 1⁄2 73⁄4 63⁄4
+XTOL 8 1⁄2 71⁄2 76 1⁄4 51⁄2 63⁄4 65 1⁄2 54 1⁄2
+XTOL (1:1) 12 10 1⁄2 93⁄4 97 3⁄4 91⁄2 81⁄2 73⁄4 71⁄4 61⁄4
+
+--- PAGE 4 ---
+
+4 KODAK PROFESSIONAL TRI-X 320 and 400 Films •  F-4017
+Rotary-T ube Processing
+Follow the agitation recommendations for your processor.
+The design of the machine and the agitation will
+significantly affect the development time required to
+obtain optimum contrast. The times given below are
+starting-point recommendations. Make tests to determine
+if results are acceptable for your needs.
+TRI-X 400 Film / 400TX
+TRI-X 320 Film / 320TXP—Sheets
+KODAK
+PROFESSIONAL
+Developer or
+Developer and
+Replenisher
+Development Time (Minutes)
+65°F
+(18°C)
+68°F
+(20°C)
+70°F
+(21°C)
+72°F
+(22°C)
+75°F
+(24°C)
+T-MAX 6 3⁄4 65 3⁄4 51⁄2 43⁄4
+T-MAX RS 4 3⁄4 41⁄2 41⁄4 43 1⁄2
+XTOL 8 7 6 1⁄4 53⁄4 43⁄4
+XTOL (1:1) 10 9 8 1⁄2 87 1⁄4
+HC-110 (B) 4 1⁄2 33⁄4 31⁄2 32 1⁄2
+D-76 8 6 3⁄4 61⁄4 51⁄2 43⁄4
+D-76 (1:1) 10 3⁄4 93⁄4 98 1⁄2 73⁄4
+KODAK
+PROFESSIONAL
+Developer or
+Developer and
+Replenisher
+Development Time (Minutes)
+65°F
+(18°C)
+68°F
+(20°C)
+70°F
+(21°C)
+72°F
+(22°C)
+75°F
+(24°C)
+T-MAX NR
+T-MAX RS 2 3⁄4 21⁄2 21⁄4 NR NR
+XTOL 6 5 1⁄4 43⁄4 41⁄2 4
+XTOL (1:1) 8 1⁄4 71⁄4 63⁄4 61⁄4 51⁄2
+HC-110 (B) 3 1⁄4 32 3⁄4 21⁄2 21⁄4
+D-76 6 5 1⁄4 43⁄4 41⁄2 4
+D-76 (1:1) 9 8 7 1⁄4 63⁄4 6
+FINAL STEPS
+65 to 75°F (18 to 24°C).
+PUSH PROCESSING
+Push processing allows you to expose the film at higher
+film-speed numbers for conditions such as low-level light,
+stop action, or existing light. However, there will be a loss
+of shadow detail and an increase in graininess.
+Because of these films’ exposure latitude, you can
+underexpose by one stop and use normal processing
+times. Prints will show a slight loss in shadow detail.
+You can underexpose by two stops if you increase
+development time by push processing. Prints will show an
+increase in contrast and graininess with further loss of
+shadow detail. However, results should be acceptable for
+many applications. Expose a test roll to determine the film
+speed that gives the best results for your application.
+You can underexpose TRI-X 400 Film / 400TX by three
+stops if you increase development time by push
+processing. Prints will show an increase in contrast and
+graininess, and an additional loss of shadow detail.
+However, results should be acceptable for some
+applications. Expose some test rolls to determine the film
+speed that gives the best results for your application.
+Step/Solution Time (min:sec)
+Rinse—with agitation:
+KODAK Indicator Stop Bath 0:30
+Fix—with frequent agitation:
+KODAK Fixer 5:00 to 10:00
+KODAK Rapid Fixer 2:00 to 4:00
+KODAFIX Solution 2:00 to 4:00
+KODAK POLYMAX T Fixer (1:3) 2:00 to 4:00
+Wash:
+Running water
+—OR—
+Rinse with water
+KODAK PROFESSIONAL Hypo
+Clearing Agent
+Running water
+20:00 to 30:00
+0:30
+1:00 to 2:00
+5:00
+FInal Rinse:
+KODAK PHOTO-FLO Solution 0:30
+Dry—in a dust-free place
+
+--- PAGE 5 ---
+
+KODAK PROFESSIONAL TRI-X 320 and 400 Films •  F-4017 5
+TRI-X 400 Film / 400TX
+NR = Not Recommended.
+TRI-X 400 Film / 400TX
+TRI-X 400 Film / 400TX
+NR = Not Recommended.
+KODAK
+PROFESSIONAL
+Developer or
+Developer and
+Replenisher
+Small T ank; Agitation at 30-second intervals
+EI 1600 (2-Stop Push Process)
+Development Time (Minutes)
+EI 3200 (3-Stop Push Process)
+Development Time (Minutes)
+65°F
+(18°C)
+68°F
+(20°C)
+70°F
+(21°C)
+72°F
+(22°C)
+75°F
+(24°C)
+65°F
+(18°C)
+68°F
+(20°C)
+70°F
+(21°C)
+72°F
+(22°C)
+75°F
+(24°C)
+T-MAX 9 1⁄2 83⁄4 81⁄4 73⁄4 7N R N R N R N R 8 1⁄4
+T-MAX RS 8 1⁄2 73⁄4 71⁄4 63⁄4 6— 9 1⁄2 98 1⁄4 71⁄2
+HC-110 (B) 7 6 5 1⁄2 54 1⁄4 —————
+D-76 11 1⁄4 91⁄2 83⁄4 73⁄4 61⁄2 123⁄4 11 9 3⁄4 97 1⁄2
+D-76 (1:1) 14 3⁄4 131⁄4 121⁄2 113⁄4 103⁄4 171⁄2 16 15 14 1⁄4 123⁄4
+XTOL 11 1⁄4 93⁄4 83⁄4 86 3⁄4 —1 1 1⁄2 101⁄2 91⁄2 8
+XTOL (1:1) 14 1⁄2 131⁄4 121⁄4 111⁄2 101⁄2 —1 5 1⁄2 141⁄2 133⁄4 121⁄4
+KODAK
+PROFESSIONAL
+Developer or
+Developer and
+Replenisher
+Large T ank; Agitation at 1-minute intervals
+EI 1600 (2-Stop Push Process)
+Development Time (Minutes)
+EI 3200 (3-Stop Push Process)
+Development Time (Minutes)
+65°F
+(18°C)
+68°F
+(20°C)
+70°F
+(21°C)
+72°F
+(22°C)
+75°F
+(24°C)
+65°F
+(18°C)
+68°F
+(20°C)
+70°F
+(21°C)
+72°F
+(22°C)
+75°F
+(24°C)
+T-MAX RS — 8 3⁄4 87 1⁄2 7— — —— —
+HC-110 (B) 8 6 3⁄4 61⁄4 51⁄2 43⁄4 —————
+D-76 12 1⁄2 103⁄4 93⁄4 83⁄4 71⁄2 —————
+XTOL 12 3⁄4 11 9 3⁄4 97 1⁄2 151⁄4 13 11 3⁄4 101⁄2 9
+KODAK
+PROFESSIONAL
+Developer or
+Developer and
+Replenisher
+Rotary T ube; Continuous agitation
+EI 1600 (2-Stop Push Process)
+Development Time (Minutes)
+EI 3200 (3-Stop Push Process)
+Development Time (Minutes)
+65°F
+(18°C)
+68°F
+(20°C)
+70°F
+(21°C)
+72°F
+(22°C)
+75°F
+(24°C)
+65°F
+(18°C)
+68°F
+(20°C)
+70°F
+(21°C)
+72°F
+(22°C)
+75°F
+(24°C)
+T-MAX 9 1⁄2 83⁄4 81⁄4 73⁄4 7N R N R N R N R 8 1⁄4
+T-MAX RS 8 1⁄2 73⁄4 71⁄4 63⁄4 6— 9 1⁄2 98 1⁄4 71⁄2
+HC-110 (B) 7 6 5 1⁄2 54 1⁄4 —————
+D-76 11 1⁄4 91⁄2 83⁄4 73⁄4 61⁄2 123⁄4 11 9 3⁄4 97 1⁄2
+D-76 (1:1) 14 3⁄4 131⁄4 121⁄2 113⁄4 103⁄4 171⁄2 16 15 14 1⁄4 123⁄4
+XTOL 11 1⁄4 93⁄4 83⁄4 86 3⁄4 —1 1 1⁄2 101⁄2 91⁄2 8
+XTOL (1:1) 14 1⁄2 131⁄4 121⁄4 111⁄2 101⁄2 —1 5 1⁄2 141⁄2 133⁄4 121⁄4
+
+--- PAGE 6 ---
+
+6 KODAK PROFESSIONAL TRI-X 320 and 400 Films •  F-4017
+TRI-X 320 Film / 320TXP—Sheets
+TRI-X 320 Film / 320TXP—Sheets
+TRI-X 320 Film / 320TXP—Sheets
+KODAK
+PROFESSIONAL
+Developer
+T ray; Continuous agitation
+EI 1250 (2-Stop Push Process)
+Development Time (Minutes)
+65°F
+(18°C)
+68°F
+(20°C)
+70°F
+(21°C)
+72°F
+(22°C)
+75°F
+(24°C)
+XTOL 9 3⁄4 83⁄4 87 1⁄2 61⁄2
+XTOL (1:1) 13 1⁄2 12 11 10 1⁄4 83⁄4
+KODAK
+PROFESSIONAL
+Developer
+Large T ank; Agitation at 1-minute intervals
+EI 1250 (2-Stop Push Process)
+Development Time (Minutes)
+65°F
+(18°C)
+68°F
+(20°C
+)
+70°F
+(21°C)
+72°F
+(22°C)
+75°F
+(24°C)
+XTOL 12 1⁄4 103⁄4 10 9 1⁄4 8
+KODAK
+PROFESSIONAL
+Developer
+Rotary T ube; Continuous agitation
+EI 1250 (2-Stop Push Process)
+Development Time (Minutes)
+65°F
+(18°C)
+68°F
+(20°C)
+70°F
+(21°C)
+72°F
+(22°C)
+75°F
+(24°C)
+XTOL 8 1⁄2 71⁄2 76 1⁄2 53⁄4
+XTOL (1:1) 11 3⁄4 101⁄2 91⁄2 83⁄4 73⁄4
+MACHINE PROCESSING
+Large T ank Rack-and-T ank Processors
+The development times for large-tank rack-and-tank
+processors are based on a machine speed that transfers
+the film every 2 minutes. The times given below are
+starting-point recommendations for KODAK
+PROFESSIONAL T-MAX RS Developer and Replenisher
+and KODAK PROFESSIONAL XTOL Developer. Make tests
+to determine if results are acceptable for your needs.
+Replenishment Rates
+T-MAX RS Developer and Replenisher—Add 45 mL
+(1.5 ounces) of replenisher solution for each 135-36 or 120
+roll or 8 x 10-inch sheet of film processed. Stir or
+recirculate the solution after each addition of replenisher
+solution.
+Note: Do not use T-MAX RS Developer and Replenisher to
+replenish T-MAX Developer. They are not designed to
+work together.
+XTOL Developer—Add 70 mL (2.4 ounces) of replenisher
+solution for each 135-36 or 120 roll or 8 x 10-inch sheet of
+film processed. Stir or recirculate the solution after each
+addition of replenisher solution.
+RETOUCHING
+Y ou can retouch KODAK PROFESSIONAL TRI-X 400 Film
+(135 and 120 sizes) on the emulsion side. Y ou can retouch
+KODAK PROFESSIONAL TRI-X 320 Film (sheet sizes) by
+applying liquid dyes to the base or emulsion side.
+IMAGE STRUCTURE
+The data in this section is based on development in
+KODAK HC-110 Developer (Dilution B), 68°F ( 2 0°C).
+* Read at a net diffuse density of 1.0, using a 48-micrometre aperture,
+12x magnification.
+Large-T ank Rack-and-T ank Processing
+KODAK
+PROFESSIONAL
+Film
+EI
+KODAK
+PROFESSIONAL
+Developer or
+Developer and
+Replenisher
+Time (min)
+at 72°F
+(22°C)
+TRI-X 320
+(rolls and sheets)
+320
+640 T-MAX RS 4 to 6
+TRI-X 400 400
+800
+T-MAX RS
+D-76
+XTOL
+4 to 6
+5 to 7
+5 to 7
+KODAK Film Diffuse rms
+Granularity
+*
+KODAK PROFESSIONAL TRI-X 400 Film 17  (fine)
+KODAK PROFESSIONAL TRI-X 320 Film 16 (fine)
+
+--- PAGE 7 ---
+
+KODAK PROFESSIONAL TRI-X 320 and 400 Films •  F-4017 7
+CURVES
+Modulation Transfer Function
+Spectral Sensitivity Curves
+10012 3 4 5 1 0 2 0 5 0 200 600
+SPATIAL FREQUENCY (cycles/mm)
+RESPONSE (%)
+10
+1
+2
+5
+3
+7
+30
+20
+100
+70
+50
+200
+KODAK PROFESSIONAL Developer D-76,
+Large Tank
+Densitometry:
+Process:
+Diffuse Visual
+700 750650600550500450400350300250
+*Sensitivity = reciprocal of exposure (erg/cm  ) required
+to produce specified density
+WAVELENGTH (nm)
+2
+LOG SENSITIVITY
+0.0
+*
+1.0
+2.0
+3.0
+4.0
+Diffuse Visual
+0.5 sec.Effective Exposure:
+Densitometry:
+D=1.0>Gross Fog
+D=0.3>Gross Fog
+Characteristic Curves
+KODAK PROFESSIONAL TRI-X 400 Film / 400TX, 35 mm
+Characteristic Curves
+KODAK PROFESSIONAL TRI-X 400 Film / 400TX, 120-size
+20°C (68°F)
+Small Tank; Agitation at 30 second intervals;
+6 minutes
+7 minutes
+9 minutes
+11 minutes
+3.0 1.0
+Diffuse visual
+KODAK PROFESSIONAL T-MAX Developer,Process:
+Densitometry:
+0.01.0
+4.0
+3.0
+2.0
+1.0
+DENSITY
+2.0
+0.0
+4.0
+LOG EXPOSURE (lux-seconds)
+20°C (68°F)
+Small Tank; Agitation at 30 second intervals;
+6 minutes
+7 minutes
+9 minutes
+11 minutes
+3.0 1.0
+Diffuse visual
+KODAK PROFESSIONAL T-MAX Developer,Process:
+Densitometry:
+0.01.0
+4.0
+3.0
+2.0
+1.0
+DENSITY
+2.0
+0.0
+4.0
+LOG EXPOSURE (lux-seconds)
+
+--- PAGE 8 ---
+
+8 KODAK PROFESSIONAL TRI-X 320 and 400 Films •  F-4017
+Characteristic Curves
+KODAK PROFESSIONAL TRI-X 400 Film / 400TX, 35 mm
+Characteristic Curves
+KODAK PROFESSIONAL TRI-X 400 Film / 400TX, 120-size
+LOG EXPOSURE (lux-seconds)
+4.0
+0.0
+2.0
+DENSITY
+1.0
+2.0
+3.0
+4.0
+1.0 0.0
+Densitometry:
+Process: KODAK PROFESSIONAL D-76 Developer,
+Diffuse visual
+1.03.0
+12 minutes
+10 minutes
+8 minutes
+6 minutes
+Large Tank; Agitation at 1 minute intervals;
+20°C (68°F)
+LOG EXPOSURE (lux-seconds)
+4.0
+0.0
+2.0
+DENSITY
+1.0
+2.0
+3.0
+4.0
+1.0 0.0
+Densitometry:
+Process: KODAK PROFESSIONAL D-76 Developer,
+Diffuse visual
+1.03.0
+12 minutes
+10 minutes
+8 minutes
+6 minutes
+Large Tank; Agitation at 1 minute intervals;
+20°C (68°F)
+Contrast Index Curves
+KODAK PROFESSIONAL TRI-X 400 Film / 400TX, 35 mm and
+120-size
+Characteristic Curves
+KODAK PROFESSIONAL TRI-X 320 Film / 320TXP, Sheets
+20
+DEVELOPMENT TIME (MINUTES)
+0.0
+05 10 15
+CONTRAST INDEX
+0.2
+0.4
+0.6
+0.8
+1.2
+30
+Densitometry:
+Process: Small Tank at 20°C (68°F)
+Diffuse visual
+1.0
+25
+D-76
+D-76 (1:1)
+T-MAX
+T-MAX RS
+XTOL
+XTOL 1:1
+HC-110 (B)
+Agitation at 1 minute intervals
+Dilution B, Large Tank 20°C (68°F),
+4 minutes
+6 minutes
+9 minutes
+14 minutes
+3.0 1.0
+Diffuse visual
+KODAK PROFESSIONAL HC-110 Developer,Process:
+Densitometry:
+0.01.0
+4.0
+3.0
+2.0
+1.0
+DENSITY
+2.0
+0.0
+4.0
+LOG EXPOSURE (lux-seconds)
+
+--- PAGE 9 ---
+
+KODAK PROFESSIONAL TRI-X 320 and 400 Films
+Revised 2-16
+KODAK PROFESSIONAL TRI-X 320 and 400 Films
+KODAK Publication No. F-4017
+KODAK ALARIS •  ROCHESTER, NY 14615
+Contrast Index Curves
+KODAK PROFESSIONAL TRI-X 320 Film / 320TXP, Sheets
+Characteristic Curves
+KODAK PROFESSIONAL TRI-X 320 Film / 320TXP, Sheets
+HC-110 (B)
+XTOL
+T-MAX RS
+D-76
+25
+0.8
+Diffuse visual
+Large Tank 20°C (68°F)Process:
+Densitometry:
+1.1
+0.7
+0.6
+0.5
+0.4
+CONTRAST INDEX
+151050
+0.3
+DEVELOPMENT TIME (MINUTES)
+20
+1.0
+0.9
+LOG EXPOSURE (lux-seconds)
+4.0
+0.0
+2.0
+DENSITY
+1.0
+2.0
+3.0
+4.0
+1.0 0.0
+Densitometry:
+Process: KODAK PROFESSIONAL D-76 Developer,
+Diffuse visual
+1.03.0
+12 minutes
+10 minutes
+8 minutes
+6 minutes
+ Large Tank 20°C (68°F),
+Agitation at 1 minute intervals
+Contrast Index Curves
+KODAK PROFESSIONAL TRI-X 320 Film / 320TXP, Sheets
+Contrast Index Curves
+KODAK PROFESSIONAL TRI-X 320 Film / 320TXP, Sheets
+0.9
+1.0
+20
+DEVELOPMENT TIME (MINUTES)
+0.3
+05 10 15
+CONTRAST INDEX
+0.4
+0.5
+0.6
+0.7
+1.1
+Densitometry:
+Process: Tray Development 20°C (68°F)
+Diffuse visual
+0.8
+25
+D-76
+T-MAX RS
+XTOL
+HC-110 (B)
+XTOL 1:1
+D-76 (1:1)
+D-76 (1:1)
+XTOL 1:1
+HC-110 (B)
+XTOL
+T-MAX RS
+D-76
+25
+0.8
+Diffuse visual
+Rotary Tube Development at 20°C (68°F)Process:
+Densitometry:
+1.1
+0.7
+0.6
+0.5
+0.4
+CONTRAST INDEX
+151050
+0.3
+DEVELOPMENT TIME (MINUTES)
+20
+1.0
+0.9
+© 2016 Kodak Alaris Inc.
+TM: D-76, HC-110, Photo-Flo, T-Max and Xtol
+The Kodak, Kodak Professional, Estar, Kodafix,T ri-X and Wratten trademarks are used under license from Eastman Kodak Company.

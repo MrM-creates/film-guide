@@ -1,0 +1,316 @@
+
+--- PAGE 1 ---
+
+© 2016 Kodak Alaris Inc.
+February 2016 •  E-7023TECHNICAL DATA / COLOR NEGATIVE FILM
+KODAK ULTRA MAX 400 Film
+KODAK UL TRA MAX 400 Film is a worry-free, easy-to-use
+high speed film designed for snapshooters. ULTRA MAX
+400 Film gives you the flexibility you need to take
+consistently better pictures in more picture taking
+situations—better low-light picture quality with fewer
+underexposures, better results with zoom lenses, greater
+flash range, better "stop-action" photos, and reduced
+impact of camera shake.
+Even when enlarged, ULTRA MAX 400 Film delivers
+excellent sharpness and fine grain for crisp, clear pictures.
+Optimized color precision technology provides
+consistently bright, vibrant colors with accurate skin-tone
+reproduction for natural-looking people pictures.
+ULTRA MAX 400 Film is designed for processing in
+KODAK FLEXICOLOR Chemicals for Process C-41. It is
+printing compatible with KODAK GOLD Films.
+STORAGE AND HANDLING
+Load and unload your camera in subdued light.
+Store unexposed film at 21°C (70°F) or lower in the
+original sealed package.  Always store film (exposed or
+unexposed) in a cool, dry place.  Process film as soon as
+possible after exposure.
+DARKROOM RECOMMENDATIONS
+Do not use a safelight.  Handle unprocessed film in total
+darkness.
+FEATURES ADVANTAGES BENEFIT
+• Advanced KODAK
+T-GRAIN Emulsion
+technology
+•A n t e n n a  d y e
+sensitization
+• Advanced
+development
+accelerators
+• Optimized color
+precision
+technology
+• Highest effective
+speed of any
+consumer 400
+offering
+• Better
+underexposure
+protection
+• Long flash range
+• Fine grain and
+high sharpness
+• Great skin tones
+and superb color
+• Better pictures
+under more
+conditions (inside,
+outside, bad light,
+fast action)
+EXPOSURE
+Film Speed:  ISO/DIN 400/27°
+Use these speed numbers in the table below with cameras
+or meters  marked for ISO, ASA, or DIN speeds or exposure
+indexes.  Do not change the film-speed setting when you
+use a filter if your camera has through-the-lens metering.
+For critical work, make a series of test exposures.
+Daylight
+Use the exposures in the table below for average frontlit
+subjects from 2 hours after sunrise to 2 hours before
+sunset.
+*Use f/5.6 for backlit close-up subjects.
+†Subject shaded from the sun but lighted by a large area of sky.
+Lighting Conditions
+Shutter
+Speed
+(seconds)
+Lens
+Opening
+Bright/Hazy Sun on Light Sand or
+Snow 1/500 f/16
+Bright or Hazy Sun (Distinct
+Shadows)* 1/500 f/11
+Weak, Hazy Sun (Soft Shadows) 1/500 f/8
+Cloudy Bright (No Shadows) 1/500 f/5.6
+Heavy Overcast, Open Shade† 1/500 f/4
+
+--- PAGE 2 ---
+
+2 KODAK ULTRA MAX 400 Film •  E-7023
+Electronic Flash:
+Use the appropriate guide number in the table below as a
+starting point for your equipment.  Select the unit output
+closest to the number given by your flash manufacturer.
+Then find the guide number for feet or metres.
+To determine the lens opening, divide the guide number
+by the flash-to-subject distance.  If negatives are too dark
+(overexposed), use a higher guide number; if they are too
+light (underexposed), use a lower number.
+*BCPS = beam candlepower seconds
+Automatic Flash Units: Set ISO / ASA selector to 400.
+Unit Output
+(BCPS)*
+Guide Number
+Distance in Feet Distance in Meters
+350 85 26
+500 100 30
+700 120 36
+1000 140 42
+1400 170 50
+2000 200 60
+2800 240 70
+4000 280 85
+5600 340 105
+8000 400 120
+Fluorescent and High-Intensity Discharge Lights
+For best results without special printing, use the
+color-correction filters in the table below as starting points
+when you expose these films under fluorescent and
+high-intensity discharge lamps.  Use exposure times of
+1/60 second or longer to avoid the brightness and color
+variations that occur during a single alternating-current
+cycle.
+Though this film is tolerant of mixed-lighting situations,
+for best color results under uniform fluorescent or
+high-intensity discharge sources, use the exposure and
+filter recommendations given below.  These
+recommendations are starting points.
+Actual filtration may vary between lamps and lamp
+manufacturers.  Depending on the specific source,
+additional filtration or special printing may be required to
+achieve best results.
+Note: When you do not know the type of fluorescent
+lamps, try a 10C + 20M filter combination and increase
+exposure by
+2⁄3 stop; color rendition may be less than
+optimum.
+Note: Some primary color filters were used in the tables
+above to reduce the number of filters and/or to keep the
+exposure adjustment to a minimum.  Red filters were
+substituted for equivalent filtration in magenta and yellow.
+Blue filters were substituted for equivalent filtration in cyan
+and magenta.
+Adjustments for Long and Short Exposures
+Y ou do not need to make any exposure or filter adjustments
+for exposure times of 1/10,000 second to 1 second.
+Exposures longer than 1 second may require compensation
+and filtration.
+Ty p e  o f
+Fluorescent
+Lamp
+KODAK Color
+Compensating Filters Exposure Adjustment
+Daylight 40R + 2⁄3 stop
+White 20C + 30M + 1 stop
+Warm White 40B + 1 stop
+Warm White
+Deluxe 30B + 30C + 1
+1⁄3 stops
+Cool White 30M + 2⁄3 stop
+Cool White
+Deluxe 10C + 10M + 2⁄3 stop
+Ty p e  o f  H i g h - I n t e n s i t y
+Discharge Lamp
+KODAK Color
+Compensating
+Filters
+Exposure
+Adjustment
+High Pressure Sodium Vapor 70B + 50C + 3 stops
+Metal Halide 10R + 20M + 2⁄3 stop
+Mercury Vapor with Phosphor 20R + 20M + 2⁄3 stop
+Mercury Vapor without
+Phosphor 80R + 1 2⁄3 stops
+
+--- PAGE 3 ---
+
+KODAK ULTRA MAX 400 Film •  E-7023 3
+PROCESSING
+Process in KODAK FLEXICOLOR Chemicals for Process
+C-41.
+JUDGING NEGATIVE EXPOSURES
+Y ou can check the exposure level of the color negative with
+a suitable electronic densitometer equipped with a filter
+such as the red filter for Status M Densitometry or a
+KODAK WRATTEN Gelatin Filter No. 92. Depending on the
+subject and the light source used for exposure, a normally
+exposed color negative measured through the red filter
+should have the approximate densities listed below. These
+densities apply for the recommended light sources and
+correct processing of the negative.
+Densities of Properly Exposed and Processed Negatives
+*KODAK Publication No. R-27
+†Because of the extreme range in skin color, use these values only as a guide.
+For best results, use a KODAK Gray Card (gray side).
+PRINTING NEGATIVES
+This film is optimized for printing on KODAK EDGE Paper,
+KODAK ROYAL Digital  Paper, KODAK Photo Book Paper
+and KODAK PROFESSIONAL ENDURA Premier Paper.
+Area  Measured on the Negative Density
+Reading
+The KODAK Gray Card* (gray side) receiving the
+same illumination as the subject 0.80 to 1.00
+The lightest step (darkest in the negative) of a
+KODAK Paper Gray Scale receiving the same
+illumination as the subject
+1.20 to 1.40
+Normally lighted forehead of person with light
+complexion† 1.10 to 1.40
+Normally lighted forehead of person with dark
+complexion† 0.85 to 1.25
+IMAGE STRUCTURE
+Print Grain Index Magnification T able:
+The Print Grain Index number refers to a method of
+defining graininess in a print made with diffuse-printing
+illumination.  It replaces rms granularity and has a different
+scale which cannot be compared to rms granularity.
+This method uses a uniform perceptual scale, with a
+change for four units equaling a just noticeable difference
+in graininess for 90 percent of observers.
+A Print Grain Index rating of 25 on the scale represents
+the approximate visual threshold for graininess.  A
+higher number indicates an increase in the amount of
+graininess observed.
+The standardized inspection (print-to-viewer) distance
+for all print sizes is 14 inches, the typical viewing
+distance for a 4 x 6-inch print.
+In practice, larger prints will likely be viewed from
+distances greater than 14 inches, which reduces
+apparent graininess.
+Print Grain Index numbers may not represent graininess
+observed from more specular printing illuminants, such
+as condenser enlargers.
+The Print Grain Index numbers listed in this publication
+apply to the following standards:
+Negative Size: 24 x 36 mm
+(135-size standard format)
+Print Size: 4 x 6 inches
+(10.2 x 15.2 cm)
+Magnification: 4.4X
+Print Grain Index: 46
+
+--- PAGE 4 ---
+
+KODAK ULTRA MAX 400 Film
+Revised 2/16
+KODAK ULTRA MAX 400 Film
+KODAK Publication No. E-7023
+KODAK ALARIS •  ROCHESTER, NY 14615
+CURVES
+Characteristic Curves
+Spectral-Sensitivity Curves
+Exposure: Daylight
+Process: C-41
+Densitometry: Status M
+Log H Ref: -1.44
+0.0
+DENSITY
+1.0
+2.0
+3.0
+4.0
+-4.0 -3.0 -2.0 -1.0 0.0 1.0
+LOG EXPOSURE (lux-seconds)
+B
+G
+R
+E7023A
+Exposure: Daylight
+Effective Exposure: 1/100 sec
+Densitometry: Status M
+Density: 0.2>D-min
+Yellow-
+Forming
+Layer Magenta-
+Forming
+Layer
+Cyan-
+Forming
+Layer
+700 750650600550500450400350300250
+*Sensitivity = reciprocal of exposure (erg/cm  ) required
+to produce specified density
+WAVELENGTH (nm)
+2
+LOG SENSITIVITY
+0.0
+*
+1.0
+2.0
+3.0
+4.0
+E7023B
+Spectral-Dye-Density Curves
+Process: C-41
+Minimum Density
+Midscale Neutral
+and D-min.
+Typical densities for a midscale neutral subject
+700
+2.5
+1.5
+2.0
+0.5
+1.0
+DIFFUSE SPECTRAL DENSITY
+600
+WAVELENGTH (nm)
+400
+0.0
+500
+E7023C
+© 2016 Kodak Alaris Inc.
+TM: Edge, Endura, Flexicolor and Royal
+The Kodak, Kodak Professional, Ektacolor, Estar, Gold, Max, T-Grain, Ultra, Vision  and Wratten trademarks are
+used under license from Eastman Kodak Company.

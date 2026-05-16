@@ -1,0 +1,397 @@
+
+--- PAGE 1 ---
+
+
+
+
+
+
+Page 1 of 7 Jun 2025
+
+ HARMAN technology Limited
+TECHNICAL INFORMATION
+DELTA 3200
+PROFESSIONAL
+EI 3200/36º, HIGH SPEED, BLACK AND WHITE
+PROFESSIONAL FILM FOR SUPERB PRINT QUALITY
+
+ILFORD DELTA 3200 Professional is a high speed, black and white professional film for making quality
+photographs in difficult exposing conditions.  It is ideal for action and available light photography. It is
+designed to be exposed at EI 3200/36 and given extended development.
+
+Recommended developers are ILFORD ILFOTEC DD-X, ILFORD MICROPHEN and ILFORD ID-11.
+
+DELTA 3200 Professional 35mm film is coated on 0.125mm/5-mil acetate base and is available in the
+following formats:
+
+• 135 DX coded cassettes, suitable for all 35mm cameras.
+• 120 Roll film edge numbered 1 to 19.
+• 35mm x 100ft bulk rolls.
+
+EXPOSURE RATING
+The recommended meter setting for DELTA 3200 Professional is EI 3200/36, but good image quality can also
+be obtained at meter settings from EI 400/27 to EI 6400/39. It can be used in all types of lighting.
+DELTA 3200 Professional is particularly recommended for exposing in the range EI 1600/33 to EI 6400/39.
+It can be exposed at ratings up to EI 25000/45, but it is important to make test exposures first to ensure the
+results will be suitable for the intended purpose.
+
+DELTA 3200 Professional has an ISO speed rating of 1000/31° (1000ASA, 31 DIN) to daylight.
+The ISO speed was measured using ILFORD ID-11 developer at 20°C/68°F with intermittent agitation in a
+spiral tank.
+
+It should be noted that exposure index (EI) range recommended for DELTA 3200 Professional is based on a
+practical evaluation of film speed and is not based on foot speed, as is the ISO standard.
+
+SPECTRAL SENSITIVITY
+
+Wedge spectrogram to tungsten light (2856K)
+
+
+--- PAGE 2 ---
+
+
+Page 2 of 7 Jun 2025
+
+DELTA 3200 PROFESSIONAL Technical Information
+HANDLING
+DELTA 3200 Professional is a very fast film. Always load and unload the camera in subdued light.
+We advise that DELTA 3200 Professional film is not subjected to airport scanners – but if it is, we advise to
+always carry the film as hand luggage.
+
+FILTER FACTORS
+DELTA 3200 Professional film may be used with all types of filters (eg colour, polarising and neutral density
+filters) in the usual way. Follow the instructions given by the filter manufacturer.
+The exposure increase in daylight may vary with the angle of the sun and the time of day. In the late afternoon
+or the winter months, when daylight contains more red light, green and blue filters may need slightly more
+exposure than usual.
+Cameras with through-the-lens metering will usually adjust the exposure automatically when using filters. With
+some automatic exposure cameras, the correction given for deep red and orange filters can produce negatives
+under exposed by as much as 1½ stops.
+
+MAKING LONG EXPOSURES
+For exposures between ½ and 1/10 000 second, no
+adjustments are needed for reciprocity law failure.
+
+When exposures longer than 1 second are given, DELTA
+3200 Professional, along with other films, needs to be
+given more exposure than indicated by a meter. Use the
+graph to calculate the increased exposure time which
+should be given once the metered time is known.
+
+The graph is based on the formulae Ta = Tm1.33
+
+Ta = Adjusted Time
+Tm = Metered Time
+CHOOSING THE BEST ILFORD DEVELOPER FOR THE JOB
+DELTA 3200 Professional will give good results in a wide range of developers when exposed at meter settings
+up to EI 6400/39. At higher speed ratings, ILFOTEC DD-X and MICROPHEN developers are recommended.
+Further details are given in the table below.
+Manual processing (eg spiral tank, dish/tray, deep tank) and rotary processors
+ Liquid Powder
+Best overall image quality at
+meter setting:
+EI 400/27
+EI 800/30
+EI 1600/33
+EI 3200/36
+EI 6400/39
+
+
+ILFOTEC DD-X
+ILFOTEC DD-X
+ILFOTEC DD-X
+ILFOTEC DD-X
+ILFOTEC DD-X
+
+
+PERCEPTOL (stock)
+PERCEPTOL (stock)
+MICROPHEN (stock)
+MICROPHEN (stock)
+MICROPHEN (stock
+Finest grain ILFOTEC DD-X
+
+PERCEPTOL (stock)
+Maximum sharpness  ILFOTEC DD-X MICROPHEN (stock)
+Maximum film speed
+(up to EI 25000/45) ILFOTEC DD-X MICROPHEN (stock)
+One-shot convenience ILFOSOL 3 (1+9) or ILFOTEC DD-X               -
+Replenishable ILFOTEC DD-X
+Rapid processing  ILFORD DD-X MICROPHEN (stock)
+
+
+--- PAGE 3 ---
+
+
+Page 3 of 7 Jun 2025
+
+DELTA 3200 PROFESSIONAL Technical Information
+
+
+Machine Processing
+Dip and dunk
+
+ILFOTEC DD
+ID-11
+Best overall image quality (liquid) and long tank life
+Best overall image quality (powder) and long tank life
+Short leader
+ ILFOTEC RT RAPID Rapid processing, best overall image quality and
+long tank life.
+Roller transport  ILFOTEC RT RAPID  Rapid processing
+
+DEVELOPMENT TIMES
+The table below gives development times for both manual and machine processing DELTA 3200 Professional.
+The development times are intended as a guide and may be altered if a different result is needed.
+For manual processing in spiral tanks and deep tanks, the development times are based on intermittent
+agitation. Where continuous agitation is used for manual processing (as in a dish/tray or with some types of
+developing tank), reduce these times by up to 15%. For use in rotary processors without a pre -rinse, reduce the
+spiral tank development times by up to15%. A pre-rinse is not recommended as it can lead to uneven
+processing.
+
+
+Note. Development times may need adjusting to suit individual processing systems and working practices. If an
+established system is producing good results, adjust the recommended development times until the desired
+contrast level is obtained.
+
+  35mm and Roll Film - 20°C/68°F
+ILFORD developer Dilution Meter setting (EI)
+400/27 800/30 1600/33 3200/36 6400/39 12500/42
+Spiral tank, deep tank, dip and dunk machines (min/20°C/68°F)
+ILFOTEC DD-X * 1+4 6 7 8 9½ 12½ 17
+ILFOSOL 3 1+9 6 7½ 10 11 18 ­
+ 1+14 11 13 15½ 17 23 ­
+ILFOTEC HC 1+15 ­ ­ 5 8 13 ­
+ 1+31 6 7½ 9 14½ ­ ­
+ILFOTEC LC29 1+9 ­ ­ 5 8 13 ­
+ 1+19 6 7½ 9 14½ ­ ­
+ID-11* stock 7 8 9½ 10½ 13 17
+MICROPHEN * stock 6 7 8 9 12 16½
+PERCEPTOL stock 11 13 15 18 ­ ­
+
+* = Recommended developers
+
+
+
+--- PAGE 4 ---
+
+
+Page 4 of 7 Jun 2025
+
+DELTA 3200 PROFESSIONAL Technical Information
+
+  35mm and Roll Film - 24°C/75°F
+ILFORD developer Dilution Meter setting (EI)
+400/27 800/30 1600/33 3200/36 6400/39 12500/42
+Spiral tank, deep tank, dip and dunk machines (min/24°C/75°F)
+ILFOTEC DD-X* 1+4 ­ 5 6 7 9 12
+ILFOSOL 3 1+9 5½ 7 8 9 15½ ­
+ 1+14 7 8 10 11 19 ­
+ILFOTEC HC 1+15 ­ ­ ­ 5½ 8½ ­
+ILFOTEC HC 1+31 5 6 7 10½ ­ ­
+ILFOTEC LC29 1+9 ­ ­ ­ 5½ 8½ ­
+ 1+19 5 6 7 10½ ­ ­
+ID-11* stock 6 7 8 9 11 13½
+MICROPHEN* stock ­ 5 6 7 9½ 13½
+PERCEPTOL stock 9½ 10½ 12 15½ ­ ­
+Dip and dunk machines (min/24°C/75°F)
+ILFOTEC DD 1+4 8 8½ 9½ 10½ 13½ 19
+ILFOLAB FP40, roller transport and short leader machines (sec/26°C/79°F)
+ILFOTEC RT RAPID 1+1+2 54 65 73  84 104 ­
+ 1+1+5 95 108 120 153 176 ­
+* = Recommended developers
+
+NOTE
+When using meter settings of EI 12500/42 and above, it is important to make test exposures first to ensure the
+results will be suitable for the intended purpose. A guide to development times for meter settings EI 12500/42
+is given in the development time tables. For exposures at EI 25000/45, use the guide in the below table.
+
+Meter setting EI 25000/45 manual processing
+ILFORD Developer Dilution 20°C/68°F
+min
+24°C/75°F
+min
+ILFOTEC DD-X 1+4 25 17
+MICROPHEN STOCK 22 17½
+
+--- PAGE 5 ---
+
+
+Page 5 of 7 Jun 2025
+
+DELTA 3200 PROFESSIONAL Technical Information
+PROCESSING
+Processing at Different Temperatures
+DELTA 3200 Professional film can be processed over a range of temperatures. Approximate development times
+at temperatures other than 20°C/68°F may be calculated from the charts below. For example, if 12 minutes at
+20°C/68°F is recommended, the time at 22°C/71½°F will be 10 mins and the time at 18°C/64½°F -15 mins.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CONTRAST – TIME GRAPHS
+
+ILFOTEC DD-X
+
+DELTA 3200 Professional film developed in ILFORD
+ILFOTEC DD-X 1+4 at 20ºC/68ºF.
+MICROPHEN
+
+DELTA 3200 Professional film developed in ILFORD
+MICROPHEN stock at 20ºC/68ºF.
+
+CHARACTERISTIC CURVES
+ILFOTEC DD-X
+
+DELTA 3200 Professional film developed in ILFORD
+ILFOTEC DD-X 1+4 for 7,9,12 and 16min at 20ºC/68ºF.
+MICROPHEN
+
+DELTA 3200 Professional film developed in ILFORD
+MICROPHEN stock for 7,9,12 and 16min at 20ºC/68ºF.
+
+
+--- PAGE 6 ---
+
+
+Page 6 of 7 Jun 2025
+
+DELTA 3200 PROFESSIONAL Technical Information
+PROCESSING
+DELTA 3200 Professional can be processed in all types of processing equipment including spiral tanks, rotary
+processors, dishes/trays, deep tanks and automatic processors. Standard capacity figures and replenishment
+rates can be maintained. When fixing DELTA 3200 Professional however, slightly longer times than used with
+conventional films are recommended for best results.
+
+Safelight recommendations
+Handle DELTA 3200 Professional film in total darkness.
+
+Agitation
+Intermittent agitation is recommended for use in spiral tanks and deep tanks. With spiral tanks, invert the tank
+four times during the first 10 seconds, then invert the tank four times again during the first 10 seconds of each
+further minute. Otherwise, follow the recommendations given by the processing equipment manufacturer.
+
+Stop, fix, wash and rinse
+For best results it is recommended that all process solutions are kept at the same temperature or at least within
+5ºC (9ºF) of the developer temperature.
+
+
+Stop Bath
+After development the film can be rinsed in
+water, but we recommend that an acid stop
+bath is used such as ILFORD ILFOSTOP (with
+indicator dye). ILFORD ILFOSTOP is also
+recommended for all machine processing
+applications. When tanks or dishes (trays) of
+process solutions are in use, a stop bath
+immediately stops development and reduces
+carry over of excess developer into the fixer
+bath. This helps to maintain the activity and
+prolong the life of the fixer solution.
+
+The process time given is the minimum required, if necessary, a longer time may be used and should not cause
+any process problems provided it is not excessive.
+
+
+Fix
+The recommended fixers are ILFORD RAPID
+FIXER or ILFORD HYPAM FIXER.
+
+Wash
+Wash the films in running water for 5–10
+minutes at a temperature within 5ºC (9ºF) of
+the process temperature. Or see note below
+for greater economy when using spiral tanks.
+
+
+Note: For spiral tank use, the following method of washing is recommended. This method of washing is faster,
+uses less water yet still gives negatives suitable for long term storage.
+After fixing, fill the spiral tank with water at the same temperature, +/ – 5ºC (9ºF), as the processing solutions
+and invert it five times. Drain the water away and refill. Invert the tank ten times. Once more drain the water
+away and refill. Finally, invert the tank twenty times and drain the water away.
+
+ILFORD ILFOSTOP
+Dilution 1+19
+Temperature Range 18–24ºC (64–75ºF)
+Time (sec) at 20ºC (68ºF) 10
+Capacity (films per litre,
+unreplenished) 15x (135-36)
+ILFORD RAPID OR HYPAM FIXERS
+Dilution 1+4
+Temperature Range 18–24ºC (64–75ºF)
+Time (mins) at 20ºC (68ºF) 2-5
+Capacity (films per litre,
+unreplenished) 24x (135-36)
+
+--- PAGE 7 ---
+
+
+Page 7 of 7 Jun 2025
+
+DELTA 3200 PROFESSIONAL Technical Information
+Rinse
+For a final rinse use ILFORD ILFOTOL wetting agent added to water, it helps the film to dry rapidly and evenly.
+Start by using 5ml per litre of rinse water (1+200), however the amount of ILFOTOL used may need some
+adjustment depending on the local water quality and drying method. Too little or too much wetting agent can
+lead to uneven drying. Remove excess rinse solution from the film before drying.
+
+Drying
+To avoid drying marks, use a clean squeegee or chamois cloth to wipe DELTA 3200 Professional film before
+hanging it to dry. Dry DELTA 3200 Professional at 30–40°C/86-104°F in a drying cabinet or at room
+temperature in a clean dust-free area.
+
+
+STORAGE
+
+Unexposed Film
+For immediate use, store DELTA 3200 Professional in a cool (10–20°C/50-68°F), dry place in its original
+packaging. DELTA 3200 Professional may be stored in a fridge/freezer but allow plenty of time for the film to
+acclimatise prior to use.
+
+Exposed film
+Once exposed, process DELTA 3200 Professional as soon as practical.
+Exposed films should always be stored in cool, dry conditions - as recommended above.
+
+Negatives
+Store processed negatives in a cool (10–20°C/50-68°F), dry place, in the dark. Suitable storage sleeves
+include those made of cellulose triacetate, Mylar, paper (pH6.5 –7.5) or inert polyester.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+A wide range of data sheets are available which describe and give guidance on using ILFORD PHOTO
+products. Some products in this data sheet might not be available in your country.
+
+HARMAN technology Limited, Ilford Way, Mobberley,
+Knutsford, Cheshire WA16 7JL, England
+www.ilfordphoto.com

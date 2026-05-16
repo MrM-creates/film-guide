@@ -3,7 +3,9 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 const CONFIG_KEY = "filmguide_admin_supabase_config";
 const FILMS_TABLE = "filmguide_films";
 const BUCKET = "filmguide-packshots";
-const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/13lPATFa6AumQkerDv_6CXJ68tp7QXoMfeP5GUFsekY0/export?format=csv&gid=158929564";
+const FACTSHEET_BUCKET = "filmguide-factsheets";
+const FACTSHEET_SOURCES_TABLE = "filmguide_factsheet_sources";
+const PROPOSALS_TABLE = "filmguide_film_proposals";
 const MAX_IMAGE_UPLOAD_BYTES = 20 * 1024 * 1024;
 const FORMAT_OPTIONS = ["135", "120", "Sheet", "4x5", "8x10", "Instax"];
 const USE_CASE_OPTIONS = [
@@ -29,6 +31,11 @@ const state = {
   films: [],
   selectedId: "",
   pendingImageFile: null,
+  savedFactsheets: [],
+  factsheetFileText: "",
+  factsheetFileName: "",
+  factsheetInput: null,
+  currentProposal: null,
   filters: {
     type: { key: "all", value: "all" },
     look: { key: "all", value: "all" }
@@ -51,13 +58,13 @@ const els = {
   accountSummary: document.querySelector("#accountSummary"),
   signedInActions: document.querySelector("#signedInActions"),
   newFilmBtn: document.querySelector("#newFilmBtn"),
+  newFilmDialog: document.querySelector("#newFilmDialog"),
+  closeNewFilmDialogBtn: document.querySelector("#closeNewFilmDialogBtn"),
+  cancelNewFilmDialogBtn: document.querySelector("#cancelNewFilmDialogBtn"),
   recordActions: document.querySelector("#recordActions"),
+  discardDraftBtn: document.querySelector("#discardDraftBtn"),
   duplicateBtn: document.querySelector("#duplicateBtn"),
   deleteBtn: document.querySelector("#deleteBtn"),
-  importSheetBtn: document.querySelector("#importSheetBtn"),
-  importDialog: document.querySelector("#importDialog"),
-  cancelImportBtn: document.querySelector("#cancelImportBtn"),
-  confirmImportBtn: document.querySelector("#confirmImportBtn"),
   searchInput: document.querySelector("#searchInput"),
   filterChips: document.querySelectorAll(".filter-chip"),
   filmList: document.querySelector("#filmList"),
@@ -69,13 +76,21 @@ const els = {
   imagePreview: document.querySelector("#imagePreview"),
   imagePlaceholder: document.querySelector("#imagePlaceholder"),
   formatsChoices: document.querySelector("#formatsChoices"),
-  useCasesChoices: document.querySelector("#useCasesChoices")
+  useCasesChoices: document.querySelector("#useCasesChoices"),
+  savedFactsheetSelect: document.querySelector("#savedFactsheetSelect"),
+  savedFactsheetActions: document.querySelector("#savedFactsheetActions"),
+  viewFactsheetBtn: document.querySelector("#viewFactsheetBtn"),
+  downloadFactsheetBtn: document.querySelector("#downloadFactsheetBtn"),
+  factsheetUrl: document.querySelector("#factsheetUrl"),
+  factsheetFile: document.querySelector("#factsheetFile"),
+  factsheetText: document.querySelector("#factsheetText"),
+  analyzeFactsheetBtn: document.querySelector("#analyzeFactsheetBtn"),
+  proposalPanel: document.querySelector("#proposalPanel")
 };
 
 function init() {
   renderChoiceGroup(els.formatsChoices, "formats", FORMAT_OPTIONS);
   renderChoiceGroup(els.useCasesChoices, "use_cases", USE_CASE_OPTIONS);
-  els.importSheetBtn.disabled = true;
 
   const config = loadConfig();
   if (config.url && config.anonKey) {
@@ -124,16 +139,51 @@ function bindEvents() {
 
   els.signUpBtn.addEventListener("click", signUp);
   els.signOutBtn.addEventListener("click", signOut);
-  els.newFilmBtn.addEventListener("click", resetForm);
+  els.newFilmBtn.addEventListener("click", openNewFilmDialog);
+  els.closeNewFilmDialogBtn.addEventListener("click", closeNewFilmDialog);
+  els.cancelNewFilmDialogBtn.addEventListener("click", closeNewFilmDialog);
+  els.newFilmDialog.addEventListener("click", event => {
+    if (event.target === els.newFilmDialog) closeNewFilmDialog();
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && !els.newFilmDialog.classList.contains("hidden")) {
+      closeNewFilmDialog();
+    }
+  });
+  els.discardDraftBtn.addEventListener("click", discardDraft);
   els.duplicateBtn.addEventListener("click", duplicateSelectedFilm);
   els.deleteBtn.addEventListener("click", deleteSelectedFilm);
-  els.importSheetBtn.addEventListener("click", openImportDialog);
-  els.cancelImportBtn.addEventListener("click", closeImportDialog);
-  els.confirmImportBtn.addEventListener("click", importSheetFilms);
-  els.importDialog.addEventListener("click", event => {
-    if (event.target === els.importDialog) closeImportDialog();
+  els.savedFactsheetSelect.addEventListener("change", selectSavedFactsheet);
+  els.viewFactsheetBtn.addEventListener("click", viewSelectedFactsheet);
+  els.downloadFactsheetBtn.addEventListener("click", downloadSelectedFactsheet);
+  els.factsheetFile.addEventListener("change", readFactsheetFile);
+  els.factsheetUrl.addEventListener("input", () => {
+    if (els.factsheetUrl.value.trim()) {
+      els.savedFactsheetSelect.value = "";
+      els.factsheetText.value = "";
+      state.factsheetFileText = "";
+      state.factsheetFileName = "";
+      state.factsheetInput = null;
+      els.factsheetFile.value = "";
+    }
   });
+  els.factsheetText.addEventListener("input", () => {
+    if (els.factsheetText.value.trim()) {
+      els.savedFactsheetSelect.value = "";
+      els.factsheetUrl.value = "";
+      state.factsheetFileText = "";
+      state.factsheetFileName = "";
+      state.factsheetInput = { type: "text", sourceName: "Eingefügter Text", sourceUrl: "" };
+      els.factsheetFile.value = "";
+    }
+  });
+  els.analyzeFactsheetBtn.addEventListener("click", createAndApplyFactsheetProposal);
   els.searchInput.addEventListener("input", renderFilmList);
+  document.addEventListener("click", event => {
+    if (!event.target.closest(".film-menu-wrap")) {
+      closeFilmMenus();
+    }
+  });
   els.filterChips.forEach(chip => {
     chip.addEventListener("click", () => {
       const group = chip.dataset.filterGroup;
@@ -169,6 +219,484 @@ function bindEvents() {
   els.filmForm.elements.name.addEventListener("input", maybeSuggestId);
   els.filmForm.elements.iso_box.addEventListener("input", maybeSuggestId);
   els.filmForm.elements.film_type.addEventListener("change", maybeSuggestProcess);
+}
+
+function openNewFilmDialog() {
+  resetForm();
+  resetFactsheetInputs();
+  els.newFilmDialog.classList.remove("hidden");
+  els.factsheetFile.focus();
+}
+
+function closeNewFilmDialog() {
+  els.newFilmDialog.classList.add("hidden");
+}
+
+function resetFactsheetInputs() {
+  els.savedFactsheetSelect.value = "";
+  els.factsheetUrl.value = "";
+  els.factsheetFile.value = "";
+  els.factsheetText.value = "";
+  state.factsheetFileText = "";
+  state.factsheetFileName = "";
+  state.factsheetInput = null;
+  state.currentProposal = null;
+  els.proposalPanel.classList.add("hidden");
+  els.proposalPanel.innerHTML = "";
+  updateSavedFactsheetActions();
+}
+
+async function loadSavedFactsheets() {
+  if (!state.client || !state.session) {
+    state.savedFactsheets = [];
+    renderSavedFactsheets();
+    return;
+  }
+
+  const { data, error } = await state.client
+    .from(FACTSHEET_SOURCES_TABLE)
+    .select("id, film_id, source_type, source_name, source_url, storage_path, extracted_text, extraction_status, created_at")
+    .order("created_at", { ascending: false })
+    .limit(100);
+
+  if (error) {
+    console.info("Vorhandene Factsheets konnten nicht geladen werden:", error.message);
+    state.savedFactsheets = [];
+  } else {
+    state.savedFactsheets = data || [];
+  }
+
+  renderSavedFactsheets();
+  renderFilmList();
+}
+
+function renderSavedFactsheets() {
+  els.savedFactsheetSelect.innerHTML = `<option value="">Factsheet wählen</option>`;
+  updateSavedFactsheetActions();
+
+  if (!state.session) {
+    const option = document.createElement("option");
+    option.value = "";
+    option.textContent = "Zum Laden einloggen";
+    option.disabled = true;
+    els.savedFactsheetSelect.append(option);
+    return;
+  }
+
+  if (state.savedFactsheets.length === 0) {
+    const option = document.createElement("option");
+    option.value = "";
+    option.textContent = "Keine gespeichert";
+    option.disabled = true;
+    els.savedFactsheetSelect.append(option);
+    return;
+  }
+
+  for (const source of state.savedFactsheets) {
+    const option = document.createElement("option");
+    option.value = source.id;
+    option.textContent = `${source.source_name || "Factsheet"} · ${source.source_type}`;
+    els.savedFactsheetSelect.append(option);
+  }
+}
+
+function selectSavedFactsheet() {
+  const id = els.savedFactsheetSelect.value;
+  if (!id) return;
+
+  const source = state.savedFactsheets.find(item => item.id === id);
+  if (!source) return;
+
+  state.factsheetFileText = source.extracted_text || "";
+  state.factsheetFileName = source.source_name || "Vorhandenes Factsheet";
+  state.factsheetInput = {
+    type: source.source_type || "text",
+    sourceName: source.source_name || "Vorhandenes Factsheet",
+    sourceUrl: source.source_url || "",
+    storagePath: source.storage_path || "",
+    existingSourceId: source.id
+  };
+  els.factsheetUrl.value = "";
+  els.factsheetText.value = "";
+  els.factsheetFile.value = "";
+  updateSavedFactsheetActions();
+  renderProposalMessage(`${state.factsheetFileName} geladen. Jetzt Vorschlag erstellen.`, false);
+}
+
+function updateSavedFactsheetActions() {
+  const source = getSelectedSavedFactsheet();
+  const hasSource = Boolean(source);
+  const hasFile = Boolean(source?.storage_path);
+  els.savedFactsheetActions.classList.toggle("hidden", !hasSource);
+  els.viewFactsheetBtn.disabled = !hasSource;
+  els.downloadFactsheetBtn.disabled = !hasFile;
+}
+
+function getSelectedSavedFactsheet() {
+  const id = els.savedFactsheetSelect.value;
+  if (!id) return null;
+  return state.savedFactsheets.find(item => item.id === id) || null;
+}
+
+async function viewSelectedFactsheet() {
+  const source = getSelectedSavedFactsheet();
+  if (!source) return;
+
+  if (source.storage_path) {
+    const url = await createFactsheetSignedUrl(source.storage_path);
+    if (url) window.open(url, "_blank", "noopener");
+    return;
+  }
+
+  if (source.source_url && /^https?:\/\//i.test(source.source_url)) {
+    window.open(source.source_url, "_blank", "noopener");
+    return;
+  }
+
+  renderProposalMessage("Diese Quelle hat keine Originaldatei. Der extrahierte Text ist im Datensatz gespeichert und kann erneut analysiert werden.", false);
+}
+
+async function downloadSelectedFactsheet() {
+  const source = getSelectedSavedFactsheet();
+  if (!source?.storage_path) return;
+
+  const url = await createFactsheetSignedUrl(source.storage_path, true);
+  if (!url) return;
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = source.source_name || "factsheet";
+  link.rel = "noopener";
+  document.body.append(link);
+  link.click();
+  link.remove();
+}
+
+async function createFactsheetSignedUrl(path, download = false) {
+  if (!state.client || !state.session) {
+    setStatus("Bitte zuerst einloggen.", true);
+    return "";
+  }
+
+  const options = download ? { download: true } : undefined;
+  const { data, error } = await state.client.storage
+    .from(FACTSHEET_BUCKET)
+    .createSignedUrl(path, 60, options);
+
+  if (error) {
+    setStatus(`Factsheet konnte nicht geöffnet werden: ${error.message}`, true);
+    return "";
+  }
+
+  return data.signedUrl;
+}
+
+async function readFactsheetFile(event) {
+  const [file] = event.target.files;
+  state.factsheetFileText = "";
+  state.factsheetFileName = "";
+  state.factsheetInput = null;
+  if (!file) return;
+
+  if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
+    await readPdfFactsheet(file);
+    return;
+  }
+
+  if (!file.type.includes("text") && !file.name.toLowerCase().endsWith(".txt")) {
+    renderProposalMessage("Bitte eine Textdatei oder ein PDF laden.", true);
+    event.target.value = "";
+    return;
+  }
+  state.factsheetFileText = await file.text();
+  state.factsheetFileName = file.name;
+  state.factsheetInput = {
+    type: "text",
+    sourceName: file.name,
+    sourceUrl: "",
+    storagePath: await uploadFactsheetSourceFile(file)
+  };
+  els.savedFactsheetSelect.value = "";
+  els.factsheetUrl.value = "";
+  els.factsheetText.value = "";
+  renderProposalMessage(`${file.name} geladen. Jetzt Vorschlag erstellen.`, false);
+}
+
+async function readPdfFactsheet(file) {
+  try {
+    setStatus("Lese PDF...");
+    const response = await fetch(`/api/factsheet/extract-pdf?sourceName=${encodeURIComponent(file.name)}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/pdf" },
+      body: file
+    });
+    const payload = await response.json();
+    if (!response.ok) throw new Error(payload.error || `HTTP ${response.status}`);
+
+    state.factsheetFileText = payload.text;
+    state.factsheetFileName = file.name;
+    state.factsheetInput = {
+      type: "pdf",
+      sourceName: file.name,
+      sourceUrl: "",
+      storagePath: await uploadFactsheetSourceFile(file)
+    };
+    els.savedFactsheetSelect.value = "";
+    els.factsheetUrl.value = "";
+    els.factsheetText.value = "";
+    renderProposalMessage(`${file.name} gelesen. Jetzt Vorschlag erstellen.`, false);
+  } catch (error) {
+    state.factsheetFileText = "";
+    state.factsheetFileName = "";
+    state.factsheetInput = null;
+    els.factsheetFile.value = "";
+    renderProposalMessage(`PDF konnte nicht gelesen werden: ${error.message}`, true);
+  }
+}
+
+async function createAndApplyFactsheetProposal() {
+  try {
+    const sourceUrl = els.factsheetUrl.value.trim();
+    let text = els.factsheetText.value.trim();
+    let sourceName = "Eingefügter Text";
+
+    if (state.factsheetFileText) {
+      text = state.factsheetFileText;
+      sourceName = state.factsheetFileName || "Textdatei";
+    } else if (sourceUrl) {
+      const urlSource = await readFactsheetUrl(sourceUrl);
+      text = urlSource.text;
+      sourceName = urlSource.sourceName;
+      state.factsheetInput = {
+        type: "url",
+        sourceName,
+        sourceUrl: urlSource.sourceUrl,
+        storagePath: ""
+      };
+    } else if (text) {
+      state.factsheetInput = {
+        type: "text",
+        sourceName,
+        sourceUrl: "",
+        storagePath: ""
+      };
+    }
+
+    if (!text || text.length < 120) {
+      renderProposalMessage("Bitte erst eine Factsheet-Quelle wählen oder mehr Text einfügen.", true);
+      return;
+    }
+
+    const localProposal = buildFactsheetProposal(text, sourceName);
+    state.currentProposal = await getBestFactsheetProposal(text, sourceName, localProposal);
+    await saveProposalDraft(text, state.currentProposal);
+    applyFactsheetProposal(state.currentProposal);
+    renderFactsheetProposalSummary(state.currentProposal);
+    closeNewFilmDialog();
+  } catch (error) {
+    renderProposalMessage(`Vorschlag konnte nicht erstellt werden: ${error.message}`, true);
+  }
+}
+
+async function readFactsheetUrl(sourceUrl) {
+  setStatus("Lese Website...");
+  const response = await fetch("/api/factsheet/read-url", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ url: sourceUrl })
+  });
+  const payload = await response.json();
+  if (!response.ok) throw new Error(payload.error || `HTTP ${response.status}`);
+  return payload;
+}
+
+function renderProposalMessage(message, isError) {
+  els.proposalPanel.classList.remove("hidden");
+  els.proposalPanel.innerHTML = `<p class="proposal-warning">${escapeHtml(message)}</p>`;
+  if (isError) setStatus(message, true);
+}
+
+function renderFactsheetProposalSummary(proposal) {
+  const fieldCount = Object.values(proposal.film).filter(value => {
+    if (Array.isArray(value)) return value.length > 0;
+    return value !== "" && value !== 0 && value !== null && value !== undefined;
+  }).length;
+  els.proposalPanel.classList.remove("hidden");
+  els.proposalPanel.innerHTML = `
+    <div class="proposal-title">
+      <strong>${escapeHtml(proposal.film.brand || "Unbekannt")} ${escapeHtml(proposal.film.name || "")} übernommen</strong>
+      <span>${escapeHtml(proposal.sourceName)} · ${proposal.provider === "openai" ? "LLM-Vorschlag" : "Lokaler Vorschlag"}</span>
+    </div>
+    <p class="proposal-warning">${fieldCount} Felder vorgeschlagen. Bitte im Formular prüfen.</p>
+  `;
+  setStatus("Factsheet-Vorschlag übernommen. Bitte prüfen.");
+}
+
+async function getBestFactsheetProposal(text, sourceName, localProposal) {
+  setStatus("Erstelle Vorschlag...");
+
+  try {
+    const response = await fetch("/api/factsheet/propose", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        sourceName,
+        text,
+        localProposal
+      })
+    });
+
+    if (!response.ok) throw new Error((await response.json()).error || `HTTP ${response.status}`);
+
+    const payload = await response.json();
+    return normalizeRemoteProposal(payload, sourceName, localProposal);
+  } catch (error) {
+    console.info("Nutze lokalen Factsheet-Vorschlag:", error.message);
+    return {
+      ...localProposal,
+      provider: "local",
+      warnings: [
+        ...localProposal.warnings,
+        "LLM-Auswertung nicht verfügbar; lokaler Vorschlag wurde verwendet."
+      ]
+    };
+  }
+}
+
+function normalizeRemoteProposal(payload, sourceName, fallback) {
+  const remote = payload.proposal || {};
+  const remoteFilm = remote.film || {};
+  const film = {
+    ...fallback.film,
+    ...remoteFilm,
+    id: slugify(remoteFilm.id || fallback.film.id),
+    iso_box: Number(remoteFilm.iso_box || fallback.film.iso_box || 0),
+    formats: filterAllowed(remoteFilm.formats, FORMAT_OPTIONS, fallback.film.formats),
+    use_cases: filterAllowed(remoteFilm.use_cases, USE_CASE_OPTIONS, fallback.film.use_cases),
+    review_needed: true,
+    image_url: "",
+    image_path: ""
+  };
+
+  if (!film.id) film.id = fallback.film.id;
+
+  return {
+    sourceName: payload.sourceName || sourceName,
+    provider: payload.provider || "openai",
+    model: payload.model || "",
+    film,
+    confidence: Number(remote.confidence || fallback.confidence || 0),
+    warnings: [...(remote.warnings || []), ...(remote.review_notes || [])].filter(Boolean),
+    field_sources: remote.field_sources || {},
+    evidence: fallback.evidence || {}
+  };
+}
+
+async function uploadFactsheetSourceFile(file) {
+  if (!state.client || !state.session) return "";
+
+  try {
+    const ext = file.name.split(".").pop().toLowerCase();
+    const baseName = slugify(file.name.replace(/\.[^.]+$/, "")) || "factsheet";
+    const path = `${baseName}/${Date.now()}-${baseName}.${ext}`;
+    const { error } = await state.client.storage
+      .from(FACTSHEET_BUCKET)
+      .upload(path, file, {
+        cacheControl: "31536000",
+        upsert: true
+      });
+
+    if (error) throw error;
+    return path;
+  } catch (error) {
+    console.info("Factsheet-Datei wurde nicht in Supabase gespeichert:", error.message);
+    return "";
+  }
+}
+
+async function saveProposalDraft(extractedText, proposal) {
+  if (!state.client || !state.session || !proposal?.film) return;
+
+  const input = state.factsheetInput || {
+    type: "text",
+    sourceName: proposal.sourceName || "Factsheet",
+    sourceUrl: "",
+    storagePath: ""
+  };
+
+  try {
+    let source = null;
+
+    if (input.existingSourceId) {
+      const { data, error } = await state.client
+        .from(FACTSHEET_SOURCES_TABLE)
+        .update({
+          film_id: state.selectedId || null,
+          extracted_text: extractedText,
+          extraction_status: "ready"
+        })
+        .eq("id", input.existingSourceId)
+        .select()
+        .single();
+
+      if (error) throw error;
+      source = data;
+    } else {
+      const { data, error } = await state.client
+        .from(FACTSHEET_SOURCES_TABLE)
+        .insert({
+        film_id: state.selectedId || null,
+        source_type: input.type || "text",
+        source_name: input.sourceName || proposal.sourceName || "Factsheet",
+        source_url: input.sourceUrl || "",
+        storage_path: input.storagePath || "",
+        extracted_text: extractedText,
+        extraction_status: "ready"
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      source = data;
+    }
+
+    const { error: proposalError } = await state.client
+      .from(PROPOSALS_TABLE)
+      .insert({
+        factsheet_source_id: source.id,
+        proposed_data: proposal.film,
+        field_sources: proposal.field_sources || {},
+        status: "draft"
+      });
+
+    if (proposalError) throw proposalError;
+    await loadSavedFactsheets();
+  } catch (error) {
+    console.info("Proposal-Entwurf wurde nicht in Supabase gespeichert:", error.message);
+  }
+}
+
+function filterAllowed(values, allowed, fallback) {
+  const set = new Set(allowed);
+  const filtered = (Array.isArray(values) ? values : [])
+    .map(value => String(value || "").trim())
+    .filter(value => set.has(value));
+  return filtered.length ? [...new Set(filtered)] : fallback;
+}
+
+function applyFactsheetProposal(proposal) {
+  state.selectedId = "";
+  state.pendingImageFile = null;
+  fillForm({
+    ...proposal.film,
+    active: true,
+    image_url: "",
+    image_path: ""
+  });
+  els.editorTitle.textContent = "Vorschlag prüfen";
+  updateRecordActions();
+  renderFilmList();
+  setStatus("Vorschlag übernommen. Bitte prüfen und speichern.");
 }
 
 function loadConfig() {
@@ -209,13 +737,13 @@ function updateAuthUi() {
     els.authForm.classList.add("hidden");
     els.signedInActions.classList.remove("hidden");
     els.setupForm.classList.add("hidden");
-    els.importSheetBtn.disabled = false;
+    loadSavedFactsheets();
   } else if (state.client) {
     setConnection("Nicht angemeldet", false);
     els.accountSummary.textContent = "Nicht angemeldet";
     els.authForm.classList.remove("hidden");
     els.signedInActions.classList.add("hidden");
-    els.importSheetBtn.disabled = true;
+    loadSavedFactsheets();
   }
 }
 
@@ -266,6 +794,7 @@ async function loadFilms() {
   state.films = data || [];
   renderFilmList();
   setConnection(state.session?.user?.email || "Nicht angemeldet", Boolean(state.session));
+  loadSavedFactsheets();
 }
 
 function renderFilmList() {
@@ -305,6 +834,9 @@ function renderFilmList() {
   }
 
   for (const film of films) {
+    const item = document.createElement("div");
+    item.className = "film-list-item";
+
     const button = document.createElement("button");
     button.type = "button";
     button.className = `film-item${film.id === state.selectedId ? " active" : ""}`;
@@ -313,8 +845,154 @@ function renderFilmList() {
       <span>ISO ${escapeHtml(String(film.iso_box || ""))} · ${escapeHtml(film.process || "")} · ${film.active ? "aktiv" : "archiviert"}</span>
     `;
     button.addEventListener("click", () => selectFilm(film.id));
-    els.filmList.append(button);
+
+    const menuWrap = document.createElement("div");
+    menuWrap.className = "film-menu-wrap";
+
+    const menuButton = document.createElement("button");
+    menuButton.className = "icon-btn film-menu-button";
+    menuButton.type = "button";
+    menuButton.setAttribute("aria-label", `Aktionen für ${film.brand} ${film.name}`);
+    menuButton.textContent = "...";
+    menuButton.addEventListener("click", event => {
+      event.stopPropagation();
+      const menu = menuWrap.querySelector(".film-action-menu");
+      const willOpen = menu.classList.contains("hidden");
+      closeFilmMenus();
+      menu.classList.toggle("hidden", !willOpen);
+    });
+
+    const menu = document.createElement("div");
+    menu.className = "film-action-menu hidden";
+    const factsheet = getFactsheetForFilm(film);
+
+    const viewButton = document.createElement("button");
+    viewButton.type = "button";
+    viewButton.className = "menu-item";
+    viewButton.innerHTML = `<span><strong>Factsheet ansehen</strong><small>${escapeHtml(getFactsheetActionLabel(film, factsheet, "view"))}</small></span>`;
+    viewButton.addEventListener("click", event => {
+      event.stopPropagation();
+      closeFilmMenus();
+      viewFactsheetSource(film, factsheet);
+    });
+
+    const downloadButton = document.createElement("button");
+    downloadButton.type = "button";
+    downloadButton.className = "menu-item";
+    downloadButton.innerHTML = `<span><strong>Factsheet herunterladen</strong><small>${escapeHtml(getFactsheetActionLabel(film, factsheet, "download"))}</small></span>`;
+    downloadButton.addEventListener("click", event => {
+      event.stopPropagation();
+      closeFilmMenus();
+      downloadFactsheetSource(film, factsheet);
+    });
+
+    menu.append(viewButton, downloadButton);
+    menuWrap.append(menuButton, menu);
+
+    item.append(button, menuWrap);
+    els.filmList.append(item);
   }
+}
+
+function closeFilmMenus() {
+  document.querySelectorAll(".film-action-menu").forEach(menu => {
+    menu.classList.add("hidden");
+  });
+}
+
+function getFactsheetForFilm(film) {
+  const filmIdSlug = slugify(film.id);
+  const filmNameSlug = slugify([film.brand, film.name, film.iso_box].filter(Boolean).join(" "));
+  const filmNameWithoutBrandSlug = slugify([film.name, film.iso_box].filter(Boolean).join(" "));
+  const candidates = [filmIdSlug, filmNameSlug, filmNameWithoutBrandSlug].filter(Boolean);
+
+  const byFilmId = state.savedFactsheets.find(source => slugify(source.film_id) === filmIdSlug);
+  if (byFilmId) return byFilmId;
+
+  return state.savedFactsheets.find(source => {
+    const sourceSlug = slugify(source.source_name || source.storage_path || "");
+    return candidates.some(candidate => sourceSlug === candidate || sourceSlug.includes(candidate));
+  }) || null;
+}
+
+function getFactsheetActionLabel(film, source, mode) {
+  if (source?.storage_path) {
+    return source.storage_path.toLowerCase().endsWith(".pdf")
+      ? source.source_name || "Original-PDF"
+      : source.source_name || "Gespeicherte Textdatei";
+  }
+  if (source?.extracted_text) return `${source.source_name || "Factsheet"} als Text`;
+  if (source?.source_url && mode === "view") return source.source_name || "Original-Link";
+  return `${film.brand} ${film.name} als Text`;
+}
+
+async function viewFactsheetSource(film, source) {
+  if (source?.storage_path) {
+    const url = await createFactsheetSignedUrl(source.storage_path);
+    if (url) window.open(url, "_blank", "noopener");
+    return;
+  }
+
+  if (source?.source_url && /^https?:\/\//i.test(source.source_url)) {
+    window.open(source.source_url, "_blank", "noopener");
+    return;
+  }
+
+  openTextDocument(getFactsheetText(film, source), `${film.brand} ${film.name}`);
+}
+
+async function downloadFactsheetSource(film, source) {
+  if (source?.storage_path) {
+    const url = await createFactsheetSignedUrl(source.storage_path, true);
+    if (!url) return;
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = source.source_name || "factsheet";
+    link.rel = "noopener";
+    document.body.append(link);
+    link.click();
+    link.remove();
+    return;
+  }
+
+  downloadTextDocument(getFactsheetText(film, source), `${slugify([film.brand, film.name, film.iso_box].filter(Boolean).join(" ")) || "film"}-factsheet.txt`);
+}
+
+function getFactsheetText(film, source) {
+  if (source?.extracted_text) return source.extracted_text;
+
+  const lines = [
+    `${film.brand || ""} ${film.name || ""}`.trim(),
+    film.iso_box ? `ISO: ${film.iso_box}` : "",
+    film.film_type ? `Filmtyp: ${film.film_type}` : "",
+    film.process ? `Prozess: ${film.process}` : "",
+    Array.isArray(film.formats) && film.formats.length ? `Formate: ${film.formats.join(", ")}` : "",
+    film.short_description ? `Kurzbeschreibung: ${film.short_description}` : "",
+    film.look_description ? `Look: ${film.look_description}` : "",
+    film.tip_exposure ? `Belichtung: ${film.tip_exposure}` : "",
+    film.tip_development ? `Entwicklung: ${film.tip_development}` : "",
+    film.tip_scan ? `Scan: ${film.tip_scan}` : ""
+  ].filter(Boolean);
+
+  return `${lines.join("\n\n")}\n`;
+}
+
+function openTextDocument(text, title) {
+  const url = URL.createObjectURL(new Blob([text], { type: "text/plain;charset=utf-8" }));
+  window.open(url, "_blank", "noopener");
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
+}
+
+function downloadTextDocument(text, filename) {
+  const url = URL.createObjectURL(new Blob([text], { type: "text/plain;charset=utf-8" }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
 }
 
 function matchesFilmFilters(film) {
@@ -341,6 +1019,7 @@ function selectFilm(id) {
   if (!film) return;
   state.selectedId = id;
   state.pendingImageFile = null;
+  state.currentProposal = null;
   fillForm(film);
   updateRecordActions();
   renderFilmList();
@@ -349,6 +1028,7 @@ function selectFilm(id) {
 function resetForm() {
   state.selectedId = "";
   state.pendingImageFile = null;
+  state.currentProposal = null;
   els.filmForm.reset();
   els.filmForm.elements.active.checked = true;
   els.filmForm.elements.film_type.value = "Color Negative";
@@ -385,7 +1065,19 @@ function fillForm(film) {
 }
 
 function updateRecordActions() {
-  els.recordActions.classList.toggle("hidden", !state.selectedId);
+  const hasDraft = Boolean(readForm().brand || readForm().name || readForm().id);
+  els.recordActions.classList.toggle("hidden", !state.selectedId && !hasDraft);
+  els.discardDraftBtn.classList.toggle("hidden", state.selectedId && !state.currentProposal);
+  els.duplicateBtn.classList.toggle("hidden", !state.selectedId);
+  els.deleteBtn.classList.toggle("hidden", !state.selectedId);
+}
+
+function discardDraft() {
+  state.currentProposal = null;
+  resetForm();
+  els.proposalPanel.classList.add("hidden");
+  els.proposalPanel.innerHTML = "";
+  setStatus("Entwurf verworfen");
 }
 
 function maybeSuggestId() {
@@ -528,6 +1220,7 @@ function duplicateSelectedFilm() {
     image_url: ""
   };
   state.selectedId = "";
+  state.currentProposal = null;
   fillForm(copy);
   els.editorTitle.textContent = "Kopie bearbeiten";
   setImagePreview("");
@@ -557,144 +1250,386 @@ async function deleteSelectedFilm() {
   setStatus("Gelöscht");
 }
 
-async function importSheetFilms() {
-  if (!requireClient() || !requireSession()) return;
+function buildFactsheetProposal(text, sourceName) {
+  const compact = text.replace(/\s+/g, " ").trim();
+  const brand = inferBrand(compact, sourceName);
+  const name = inferFilmName(compact, sourceName, brand);
+  const iso = inferIso(compact, sourceName, name);
+  const filmType = inferFilmType(compact, sourceName, name);
+  const process = inferProcess(compact, filmType);
+  const formats = inferFormats(compact, sourceName, name);
+  const useCases = inferUseCases(compact, filmType);
+  const look = inferLook(compact, filmType);
+  const voice = inferFilmVoice(brand, name, filmType);
+  const priceLevel = inferPriceLevel(brand, name);
+  const exposure = inferExposure(compact, filmType);
+  const warnings = [];
 
-  closeImportDialog();
-  setStatus("Importiere Sheet...");
+  if (!brand || !name || !iso) warnings.push("Basisdaten sind nicht vollständig eindeutig.");
+  if (filmType === "Slide") warnings.push("Diafilm: Belichtungsspielraum eng prüfen, technische Push/Pull-Werte nicht als Praxis-Toleranz übernehmen.");
+  if (!formats.length) warnings.push("Formate wurden nicht sicher erkannt.");
 
-  try {
-    const response = await fetch(`${SHEET_CSV_URL}&ts=${Date.now()}`);
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const csv = await response.text();
-    const rows = parseCsv(csv);
-    const films = rows.map(mapSheetRowToFilm).filter(film => film.id && film.brand && film.name);
-    if (films.length === 0) throw new Error("Keine gültigen Filme gefunden.");
-
-    const { error } = await state.client
-      .from(FILMS_TABLE)
-      .upsert(films, { onConflict: "id" });
-
-    if (error) throw error;
-    await loadFilms();
-    setStatus(`${films.length} Filme importiert`);
-  } catch (error) {
-    setStatus(`Import fehlgeschlagen: ${error.message}`, true);
-  }
-}
-
-function openImportDialog() {
-  if (!requireClient() || !requireSession()) return;
-  els.importDialog.classList.remove("hidden");
-}
-
-function closeImportDialog() {
-  els.importDialog.classList.add("hidden");
-}
-
-function mapSheetRowToFilm(row) {
-  const filmType = first(row, ["Filmtyp", "Typ"]) || "Color Negative";
-  const process = first(row, ["Prozess"]) || (filmType === "B&W" ? "B&W" : filmType === "Slide" ? "E-6" : "C-41");
-  const imageValue = first(row, ["Bilder", "Dateiname"]);
-
-  return {
-    id: slugify(first(row, ["ID"]) || [first(row, ["Marke"]), first(row, ["Name"]), first(row, ["ISO Box", "ISO"])].filter(Boolean).join(" ")),
-    brand: first(row, ["Marke"]),
-    name: first(row, ["Name"]),
+  const film = {
+    id: slugify([brand, name, String(name).includes(String(iso)) ? "" : iso].filter(Boolean).join(" ")),
+    brand,
+    name,
     film_type: filmType,
     process,
-    iso_box: Number(first(row, ["ISO Box", "ISO"]) || 0),
-    formats: splitList(first(row, ["Formate aktuell", "Formate"])),
-    use_cases: splitList(first(row, ["Einsatz", "Alt Einsatzgebiete"])),
-    grain: first(row, ["Korn", "Grain"]),
-    saturation: first(row, ["Sättigung"]),
-    tone: first(row, ["Farbton"]),
-    contrast: first(row, ["Kontrast"]),
-    look_description: first(row, ["Look Beschreibung"]),
-    price_level: first(row, ["Preisniveau", "Budget"]),
-    exposure_latitude: first(row, ["Belichtungsspielraum", "Handling"]),
-    exposure_note: first(row, ["Belichtungsspielraum Hinweis"]),
-    short_description: first(row, ["Kurzbeschreibung"]),
-    tip_exposure: first(row, ["Tipp Belichtung", "Tipp: Belichtung"]),
-    tip_development: first(row, ["Tipp Entwicklung", "Tipp: Dev"]),
-    tip_scan: first(row, ["Tipp Scan", "Tipp: Scan"]),
-    image_url: getLegacyImageUrl(imageValue),
-    image_path: "",
-    review_needed: ["ja", "true", "1", "yes"].includes(first(row, ["Review nötig"]).toLowerCase()),
-    notes: first(row, ["Notiz Migration"]),
-    active: true
+    iso_box: iso,
+    formats,
+    use_cases: useCases,
+    grain: look.grain,
+    saturation: look.saturation,
+    tone: look.tone,
+    contrast: look.contrast,
+    look_description: makeLookDescription(brand, name, filmType, look, compact, voice),
+    price_level: priceLevel,
+    exposure_latitude: exposure.level,
+    exposure_note: exposure.note,
+    short_description: makeShortDescription(brand, name, filmType, iso, useCases, look, voice),
+    tip_exposure: makeExposureTip(filmType, iso, exposure.level, compact),
+    tip_development: makeDevelopmentTip(process, filmType, compact),
+    tip_scan: makeScanTip(filmType, look),
+    review_needed: true,
+    notes: `Aus Factsheet-Vorschlag übernommen. Quelle: ${sourceName}. Bitte technische Werte und interpretierte Texte prüfen.`
+  };
+
+  const filled = Object.entries(film).filter(([, value]) => {
+    if (Array.isArray(value)) return value.length > 0;
+    return value !== "" && value !== 0 && value !== null && value !== undefined;
+  }).length;
+
+  return {
+    sourceName,
+    film,
+    confidence: Math.max(45, Math.min(92, Math.round((filled / Object.keys(film).length) * 100) - warnings.length * 4)),
+    warnings,
+    evidence: {
+      brand: getEvidence(compact, [brand]) || "Aus Quelle/Dateiname abgeleitet",
+      name: getEvidence(compact, [name]) || "Aus Quelle/Dateiname abgeleitet",
+      iso_box: getEvidence(compact, [`ISO ${iso}`, `ASA ${iso}`, `EI ${iso}`, String(iso)]) || "Aus Name oder Film-Speed-Tabelle abgeleitet",
+      film_type: getEvidence(compact, ["color negative", "black-and-white", "black and white", "panchromatic", "reversal", "slide"]),
+      process: getEvidence(compact, [process, "Process C-41", "E-6", "black-and-white"]),
+      formats: formats.length ? `Erkannt: ${formats.join(", ")}` : ""
+    }
   };
 }
 
-function getLegacyImageUrl(imageValue) {
-  const imageName = clean(imageValue);
-  if (!imageName) return "";
-  if (/^https?:\/\//i.test(imageName)) return imageName;
-  if (imageName.startsWith("img/")) return `../${imageName}`;
-  const vintageImageName = imageName.replace(/\.[^.]+$/, "").toLowerCase() + ".webp";
-  return `../img/packshots-vintage/${vintageImageName}`;
+function inferBrand(text, sourceName) {
+  const value = `${sourceName} ${text}`;
+  const brands = [
+    ["CineStill", /cinestill/i],
+    ["Fujifilm", /fuji|fujifilm|fujichrome/i],
+    ["Ilford", /ilford/i],
+    ["Kodak", /kodak/i],
+    ["Foma", /foma|fomapan/i],
+    ["Lomography", /lomography/i]
+  ];
+  return brands.find(([, pattern]) => pattern.test(value))?.[0] || "";
 }
 
-function first(row, names) {
-  for (const name of names) {
-    const value = row[name];
-    if (value !== undefined && String(value).trim() !== "") return String(value).trim();
+function inferFilmName(text, sourceName, brand) {
+  const fromSource = sourceName
+    .replace(/\.[^.]+$/, "")
+    .replace(/_/g, " ")
+    .replace(new RegExp(`^${brand}\\s+`, "i"), "")
+    .replace(/^Fujichrome\s+/i, "")
+    .replace(/^Fujifilm\s+/i, "")
+    .trim();
+  const known = [
+    ["HP5 Plus", /hp5\s*plus/i],
+    ["FP4 Plus", /fp4\s*plus/i],
+    ["Delta 3200", /delta\s*3200/i],
+    ["Tri-X 400", /tri[-\s]?x\s*400/i],
+    ["Portra 160", /portra\s*160/i],
+    ["Portra 400", /portra\s*400/i],
+    ["Portra 800", /portra\s*800/i],
+    ["Gold 200", /gold\s*200/i],
+    ["Ultramax 400", /ultramax\s*400/i],
+    ["Ektar 100", /ektar\s*100/i],
+    ["Velvia 50", /velvia\s*50/i],
+    ["Provia 100F", /provia\s*100f?/i],
+    ["Fomapan 200", /fomapan\s*200/i],
+    ["Fomapan 400", /fomapan\s*400/i],
+    ["800T", /800t|800 tungsten/i],
+    ["Lomography 800", /lomography\s*800/i]
+  ];
+  return known.find(([, pattern]) => pattern.test(`${sourceName} ${text}`))?.[0] || titleCase(fromSource);
+}
+
+function inferIso(text, sourceName, name) {
+  const value = `${sourceName} ${name} ${text}`;
+  const match = value.match(/\b(?:ISO|ASA|EI)?\s*(25|50|64|80|100|125|160|200|400|800|1600|3200)\b/i);
+  return match ? Number(match[1]) : 0;
+}
+
+function inferFilmType(text, sourceName, name) {
+  const value = `${sourceName} ${name} ${text}`;
+  if (/reversal|slide|transparency|e-6|e6|velvia|provia/i.test(value)) return "Slide";
+  if (/black[-\s]?and[-\s]?white|black & white|panchromatic|monochrome|b&w|hp5|fp4|tri[-\s]?x|delta|fomapan/i.test(value)) return "B&W";
+  return "Color Negative";
+}
+
+function inferProcess(text, filmType) {
+  if (/ecn-2|ecn2/i.test(text)) return "ECN-2";
+  if (/c-41|c41|color negative/i.test(text)) return "C-41";
+  if (/e-6|e6|reversal|slide/i.test(text)) return "E-6";
+  return filmType === "B&W" ? "B&W" : filmType === "Slide" ? "E-6" : "C-41";
+}
+
+function inferFormats(text, sourceName, name) {
+  const knownFormats = {
+    "delta 3200": ["135", "120"],
+    "ektar 100": ["135", "120", "4x5"],
+    "fomapan 200": ["135", "120", "Sheet"],
+    "fomapan 400": ["135", "120", "Sheet"],
+    "fp4 plus": ["135", "120", "Sheet"],
+    "gold 200": ["135", "120"],
+    "hp5 plus": ["135", "120", "Sheet"],
+    "portra 160": ["135", "120", "4x5"],
+    "portra 400": ["135", "120", "4x5"],
+    "portra 800": ["135", "120"],
+    "provia 100f": ["135", "120"],
+    "tri-x 400": ["135", "120"],
+    "ultramax 400": ["135"],
+    "velvia 50": ["135", "120", "4x5"]
+  };
+  const known = knownFormats[String(name || "").toLowerCase()];
+  if (known) return known;
+
+  const value = `${sourceName} ${text}`;
+  const formats = [];
+  if (/\b135\b|35\s*mm|135\s*format/i.test(value)) formats.push("135");
+  if (/\b120\s*film\b|\b120\s*format\b|roll\s*film/i.test(value)) formats.push("120");
+  if (/sheet|large format|4\s*x\s*5/i.test(value)) formats.push("Sheet");
+  if (/4\s*x\s*5/i.test(value)) formats.push("4x5");
+  if (/8\s*x\s*10/i.test(value)) formats.push("8x10");
+  return [...new Set(formats)];
+}
+
+function inferUseCases(text, filmType) {
+  const value = text.toLowerCase();
+  const cases = [];
+  if (/portrait|skin|wedding/.test(value)) cases.push("Portrait");
+  if (/street|reportage|documentary/.test(value)) cases.push("Street", "Reportage");
+  if (/travel|general picture-taking|snapshot/.test(value)) cases.push("Travel", "Snapshot");
+  if (/landscape|nature|scenic/.test(value)) cases.push("Landscape");
+  if (/daylight|sun|sunny/.test(value)) cases.push("Sunny");
+  if (/flash|studio/.test(value)) cases.push("Studio");
+  if (/low light|available light|night|tungsten/.test(value)) cases.push("Low Light");
+  if (filmType === "Slide" && !cases.includes("Landscape")) cases.push("Landscape");
+  if (filmType === "B&W" && !cases.includes("Street")) cases.push("Street");
+  return [...new Set(cases)].slice(0, 6);
+}
+
+function inferLook(text, filmType) {
+  const value = text.toLowerCase();
+  return {
+    grain: /very fine|extremely fine|fine grain|feines korn/.test(value) ? "Fein" : /coarse|pronounced|sichtbar|classic grain/.test(value) ? "Sichtbar" : "",
+    saturation: filmType === "B&W" ? "Monochrom" : /saturated|vivid|rich color|color saturation/.test(value) ? "Hoch" : /natural|neutral/.test(value) ? "Natürlich" : "Mittel",
+    tone: filmType === "B&W" ? "Neutral" : /warm|gold|yellow|red/.test(value) ? "Warm" : /cool|blue/.test(value) ? "Kühl" : "Neutral",
+    contrast: /high contrast|contrasty|hoher kontrast/.test(value) ? "Hoch" : /soft contrast|low contrast|weicher kontrast/.test(value) ? "Weich" : "Mittel"
+  };
+}
+
+function inferPriceLevel(brand, name) {
+  const value = `${brand} ${name}`.toLowerCase();
+  if (/gold|ultramax|fomapan|kodacolor/.test(value)) return "Budget";
+  if (/portra|ektar|velvia|provia|cinestill|delta/.test(value)) return "Premium";
+  return "Mittel";
+}
+
+function inferFilmVoice(brand, name, filmType) {
+  const value = `${brand} ${name}`.toLowerCase();
+  if (/portra/.test(value)) {
+    return {
+      short: "Ein ruhiger, sehr flexibler Film für Menschen, Hauttöne und weiches Licht. Er wirkt professionell, ohne steril zu werden, und bleibt auch bei wechselnden Bedingungen verlässlich.",
+      look: "Der Look ist weich, warm und sehr schmeichelhaft. Farben bleiben kontrolliert, Haut wirkt natürlich, und leichte Überbelichtung gibt dem Film oft diesen luftigen Portra-Charakter."
+    };
   }
+  if (/gold|ultramax|kodacolor/.test(value)) {
+    return {
+      short: "Ein unkomplizierter Alltagsfilm für Reisen, Familie, Sonne und spontane Bilder. Er bringt schnell Wärme ins Bild und macht auch einfache Motive freundlich und lebendig.",
+      look: "Der Look ist warm, farbig und leicht nostalgisch. Gelb- und Rottöne kommen gerne nach vorne, Kontrast und Korn bleiben präsent genug, damit die Bilder klar analog wirken."
+    };
+  }
+  if (/hp5|tri[-\s]?x|delta|fomapan/.test(value)) {
+    return {
+      short: "Ein Schwarzweissfilm für direkte, ehrliche Bilder. Er passt gut zu Street, Reportage und Available Light, besonders wenn das Bild nicht zu glatt wirken soll.",
+      look: "Der Look lebt von Struktur, Korn und Kontrast. Schatten dürfen Gewicht haben, helle Kanten setzen sich gut ab, und Motive bekommen schnell eine dokumentarische Präsenz."
+    };
+  }
+  if (/velvia|provia/.test(value)) {
+    return {
+      short: "Ein Diafilm für bewusstes Arbeiten mit Licht, Farbe und Komposition. Er ist weniger verzeihend, belohnt saubere Belichtung aber mit sehr klaren, dichten Ergebnissen.",
+      look: "Der Look ist präzise, farbdicht und brillant. Farben wirken direkt, Kontrast ist klar gesetzt, und jede Belichtungsentscheidung bleibt sichtbar."
+    };
+  }
+  if (/ektar/.test(value)) {
+    return {
+      short: "Ein feiner, farbstarker Film für klare Motive, Reisen, Landschaft und detailreiche Szenen. Er wirkt sauber und modern, ohne den analogen Charakter zu verlieren.",
+      look: "Der Look ist scharf, gesättigt und vergleichsweise sauber. Farben haben Druck, feine Details bleiben gut erhalten, und das Korn tritt eher in den Hintergrund."
+    };
+  }
+  if (/cinestill|800t/.test(value)) {
+    return {
+      short: "Ein Film für Kunstlicht, Nacht und farbige Lichtquellen. Er ist besonders spannend, wenn vorhandenes Licht Teil der Bildstimmung werden soll.",
+      look: "Der Look ist cineastisch, warm in Kunstlicht und oft von Halation geprägt. Lichtquellen bekommen Glühen, Schatten bleiben atmosphärisch, Farben wirken schnell filmisch."
+    };
+  }
+  if (/lomography/.test(value)) {
+    return {
+      short: "Ein spielerischer Film für spontane Situationen, wechselndes Licht und Bilder, die nicht zu kontrolliert wirken müssen.",
+      look: "Der Look ist farbig, direkt und etwas unberechenbarer. Genau das kann gut passen, wenn die Bilder locker, lebendig und weniger perfektionistisch wirken sollen."
+    };
+  }
+  return null;
+}
+
+function inferExposure(text, filmType) {
+  const value = text.toLowerCase();
+  if (filmType === "Slide") {
+    return { level: "Gering", note: "Diafilm: Lichter präzise schützen; technische Push/Pull-Angaben separat prüfen." };
+  }
+  if (/wide exposure latitude|two stops underexposure to three stops overexposure|2 stops under.*3 stops over/.test(value)) {
+    return { level: "Hoch", note: "Factsheet nennt breiten Belichtungsspielraum; konkrete Stop-Werte vor Freigabe prüfen." };
+  }
+  if (/push|pull|flexible|latitude/.test(value) && filmType === "B&W") {
+    return { level: "Sehr hoch", note: "Schwarzweiss-Factsheet weist auf flexible Belichtung oder Entwicklung hin; Push-Werte als Entwicklungsangabe prüfen." };
+  }
+  if (/latitude|overexposure|underexposure/.test(value)) {
+    return { level: "Hoch", note: "Factsheet erwähnt Belichtungsspielraum; genaue Praxisgrenzen prüfen." };
+  }
+  return { level: "Mittel", note: "Kein eindeutiger Belichtungsspielraum erkannt." };
+}
+
+function makeShortDescription(brand, name, filmType, iso, useCases, look, voice) {
+  if (voice?.short) return `${brand} ${name}: ${voice.short}`;
+
+  const typeLabel = filmType === "B&W" ? "Schwarzweissfilm" : filmType === "Slide" ? "Diafilm" : "Farbnegativfilm";
+  const use = getUseCasePhrase(useCases);
+  const saturation = getSaturationAdjective(look.saturation);
+  const grain = getGrainPhrase(look.grain);
+
+  if (filmType === "B&W") {
+    return `${brand} ${name} ist ein vielseitiger ISO-${iso}-${typeLabel}${use}. Er passt gut, wenn Bilder direkt, zeitlos und etwas rau wirken dürfen${grain ? `, ohne dass ${grain} stört` : ""}.`;
+  }
+
+  if (filmType === "Slide") {
+    return `${brand} ${name} ist ein ISO-${iso}-${typeLabel}${use}. Er belohnt präzise Belichtung mit klaren Farben, hoher Schärfe und einem Look, der sehr bewusst wirkt.`;
+  }
+
+  return `${brand} ${name} ist ein ISO-${iso}-${typeLabel}${use}. Er liefert ${saturation}e Farben, bleibt dabei unkompliziert und eignet sich gut für Situationen, in denen der Filmcharakter sichtbar sein soll${grain ? `, aber ${grain} fein bleibt` : ""}.`;
+}
+
+function makeLookDescription(brand, name, filmType, look, text, voice) {
+  if (voice?.look) return voice.look;
+
+  if (filmType === "B&W") {
+    return `${brand} ${name} zeichnet mit ${getContrastPhrase(look.contrast)} und ${getGrainPhrase(look.grain) || "sichtbarem Korn"}. Der Look wirkt klassisch, ehrlich und eignet sich besonders gut für Motive mit Struktur, Lichtkanten und Bewegung.`;
+  }
+  if (filmType === "Slide") {
+    return `${brand} ${name} wirkt dicht, klar und sehr präzise. Farben stehen schnell im Vordergrund, der Kontrast ist präsent, und Lichter brauchen Aufmerksamkeit.`;
+  }
+  const sharp = /sharpness|high sharpness|schärfe/i.test(text) ? " und guter Schärfe" : "";
+  return `${brand} ${name} zeigt ${getSaturationSentencePart(look.saturation)}, ${getTonePhrase(look.tone)} und ${getContrastPhrase(look.contrast)}${sharp}. Der Look bleibt zugänglich, wirkt aber deutlich analog statt neutral-digital.`;
+}
+
+function getSaturationPhrase(value) {
+  if (value === "Hoch") return "hoher Sättigung";
+  if (value === "Natürlich") return "natürlicher Farbwiedergabe";
+  if (value === "Monochrom") return "monochromer Wiedergabe";
+  return "mittlerer Sättigung";
+}
+
+function getSaturationAdjective(value) {
+  if (value === "Hoch") return "satte";
+  if (value === "Natürlich") return "natürliche";
+  if (value === "Monochrom") return "monochrome";
+  return "ausgewogene";
+}
+
+function getSaturationSentencePart(value) {
+  if (value === "Hoch") return "eine hohe Sättigung";
+  if (value === "Natürlich") return "eine natürliche Farbwiedergabe";
+  if (value === "Monochrom") return "eine monochrome Wiedergabe";
+  return "eine mittlere Sättigung";
+}
+
+function getContrastPhrase(value) {
+  if (value === "Hoch") return "hohem Kontrast";
+  if (value === "Weich") return "weichem Kontrast";
+  return "mittlerem Kontrast";
+}
+
+function getGrainPhrase(value) {
+  if (value === "Fein") return "feinem Korn";
+  if (value === "Grob") return "grobem Korn";
+  if (value === "Sichtbar") return "sichtbarem Korn";
   return "";
 }
 
-function parseCsv(text) {
-  const rows = parseCsvRows(text);
-  if (rows.length < 2) return [];
-  const headers = rows[0].map(header => header.trim());
-  return rows.slice(1).map(row => {
-    const item = {};
-    headers.forEach((header, index) => {
-      item[header] = row[index] || "";
-    });
-    return item;
-  });
+function getTonePhrase(value) {
+  if (value === "Warm") return "warme Grundtöne";
+  if (value === "Kühl") return "kühle Grundtöne";
+  if (value === "Variabel") return "variable Farbstimmung";
+  return "neutrale Grundtöne";
 }
 
-function parseCsvRows(text) {
-  const rows = [];
-  let row = [];
-  let cell = "";
-  let inQuote = false;
-  const firstLine = text.split("\n")[0] || "";
-  const separator = firstLine.includes(";") ? ";" : ",";
+function makeExposureTip(filmType, iso, level, text) {
+  if (filmType === "Slide") return "Lichter sauber messen und lieber etwas vorsichtiger belichten. Der Film verzeiht wenig, wirkt dafür sehr stark, wenn die Belichtung sitzt.";
+  if (/two stops underexposure to three stops overexposure/i.test(text)) return `Als ISO ${iso} starten. Etwas mehr Licht hilft den Schatten und macht den Scan entspannter; knappe Belichtung lieber nur bewusst einsetzen.`;
+  if (filmType === "B&W") return `Als ISO ${iso} starten. Pushen funktioniert als Stilmittel gut, bringt aber mehr Korn und härtere Kontraste mit.`;
+  return `Als ISO ${iso} starten. Ein wenig reichlicher belichten ist meist die angenehmere Richtung, besonders wenn Schatten sauber bleiben sollen.`;
+}
 
-  for (let i = 0; i < text.length; i += 1) {
-    const char = text[i];
-    const next = text[i + 1];
+function makeDevelopmentTip(process, filmType, text) {
+  if (process === "C-41") return "C-41 Standard ist die sichere Wahl. Push oder Pull nur gezielt nutzen, wenn der Look bewusst härter oder dichter werden soll.";
+  if (process === "E-6") return "E-6 Standardprozess bevorzugen. Push kann spannend sein, macht den Film aber kontrastreicher und weniger tolerant.";
+  if (filmType === "B&W") return "Entwickler nach gewünschtem Charakter wählen: ausgewogen für Alltag, härter für Reportage, körniger für mehr Biss.";
+  return `${process} Prozess nach Herstellerangabe.`;
+}
 
-    if (char === "\"") {
-      if (inQuote && next === "\"") {
-        cell += "\"";
-        i += 1;
-      } else {
-        inQuote = !inQuote;
-      }
-    } else if (char === separator && !inQuote) {
-      row.push(cell);
-      cell = "";
-    } else if ((char === "\n" || char === "\r") && !inQuote) {
-      if (cell || row.length > 0) row.push(cell);
-      if (row.length > 0) rows.push(row);
-      row = [];
-      cell = "";
-      if (char === "\r" && next === "\n") i += 1;
-    } else {
-      cell += char;
+function makeScanTip(filmType, look) {
+  if (filmType === "B&W") return "Beim Scan nicht zu glatt ziehen. Kontrast und Korn dürfen sichtbar bleiben, sonst verliert der Film schnell seinen Charakter.";
+  if (filmType === "Slide") return "Neutral starten und die Lichter schützen. Farben nur vorsichtig korrigieren, damit der Dia-Look nicht flach wird.";
+  return look.tone === "Warm" ? "Warme Grundtöne ruhig stehen lassen. Schatten moderat öffnen und nicht zu stark neutralisieren." : "Neutral starten, Schwarzpunkt sauber setzen und die Farbstimmung nur leicht führen.";
+}
+
+function getUseCasePhrase(useCases) {
+  const labels = {
+    Portrait: "Porträts",
+    Street: "Street",
+    Travel: "Reisen",
+    Landscape: "Landschaften",
+    Studio: "Studioarbeit",
+    Sunny: "sonnige Tage",
+    "Low Light": "weniger Licht",
+    Night: "Nacht",
+    Reportage: "Reportage",
+    Wedding: "Hochzeiten",
+    Snapshot: "Alltag",
+    Action: "Bewegung",
+    Experimental: "Experimente",
+    Neon: "Neonlicht"
+  };
+  const selected = useCases.slice(0, 3).map(value => labels[value] || value);
+  if (!selected.length) return "";
+  if (selected.length === 1) return ` für ${selected[0]}`;
+  return ` für ${selected.slice(0, -1).join(", ")} und ${selected.at(-1)}`;
+}
+
+function getEvidence(text, terms) {
+  for (const term of terms) {
+    if (!term) continue;
+    const index = text.toLowerCase().indexOf(String(term).toLowerCase());
+    if (index >= 0) {
+      const start = Math.max(0, index - 55);
+      const end = Math.min(text.length, index + String(term).length + 70);
+      return text.slice(start, end).trim();
     }
   }
-
-  if (cell || row.length > 0) {
-    row.push(cell);
-    rows.push(row);
-  }
-
-  return rows;
+  return "";
 }
 
 function setImagePreview(url) {
@@ -748,6 +1683,12 @@ function slugify(value) {
 
 function clean(value) {
   return String(value || "").trim();
+}
+
+function titleCase(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/\b[a-z0-9]/g, char => char.toUpperCase());
 }
 
 function setStatus(message, isError = false) {
