@@ -1,5 +1,3 @@
-const { PDFParse } = require("pdf-parse");
-
 const maxPdfUploadBytes = 20 * 1024 * 1024;
 const maxFactsheetChars = 36000;
 
@@ -8,7 +6,6 @@ module.exports = async function handler(request, response) {
     return sendJson(response, 405, { error: "Method not allowed" });
   }
 
-  let parser;
   try {
     const buffer = await readRawBody(request, maxPdfUploadBytes);
     if (!buffer.length) {
@@ -16,8 +13,7 @@ module.exports = async function handler(request, response) {
     }
 
     const sourceName = clean(request.query?.sourceName) || "PDF Factsheet";
-    parser = new PDFParse({ data: buffer });
-    const result = await parser.getText();
+    const result = await extractPdfText(buffer);
     const text = clean(result.text).slice(0, maxFactsheetChars);
 
     if (text.length < 120) {
@@ -35,8 +31,6 @@ module.exports = async function handler(request, response) {
     return sendJson(response, 422, {
       error: `PDF konnte nicht gelesen werden: ${error.message || "Unbekannter Fehler"}`
     });
-  } finally {
-    await parser?.destroy();
   }
 };
 
@@ -45,6 +39,33 @@ module.exports.config = {
     bodyParser: false
   }
 };
+
+async function extractPdfText(buffer) {
+  const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
+  const loadingTask = pdfjs.getDocument({
+    data: new Uint8Array(buffer),
+    disableFontFace: true,
+    isEvalSupported: false,
+    useWorkerFetch: false
+  });
+  const document = await loadingTask.promise;
+
+  try {
+    const pages = [];
+    for (let pageNumber = 1; pageNumber <= document.numPages; pageNumber += 1) {
+      const page = await document.getPage(pageNumber);
+      const content = await page.getTextContent();
+      pages.push(content.items.map(item => item.str || "").join(" "));
+    }
+
+    return {
+      text: pages.join("\n\n"),
+      total: document.numPages
+    };
+  } finally {
+    await document.destroy();
+  }
+}
 
 async function readRawBody(request, maxBytes) {
   if (Buffer.isBuffer(request.body)) return request.body;
